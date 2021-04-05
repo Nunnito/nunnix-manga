@@ -12,6 +12,10 @@ environ["QT_QUICK_CONTROLS_MATERIAL_VARIANT"] = "Dense"
 # Set init variables
 application = QGuiApplication(sys.argv)
 engine = QQmlApplicationEngine()
+context = engine.rootContext()
+
+# Load variables to QML
+context.setContextProperty("thm", settings.get_theme_file_content())  # Theme
 
 # Load QML file and execute it
 engine.load(str(Path(__file__).parent / "nunnix_manga" / "qml" / "main.qml"))
