@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import "../utils"
 
 Rectangle {
 	id: titleBar
@@ -7,7 +8,7 @@ Rectangle {
 	// Properties
 	width: parent.width
 	height: 24
-	color: "#3A4047"
+	color: t.titleBg
 
 	// Rectangle button
 	Component {
@@ -15,12 +16,21 @@ Rectangle {
 
 		Rectangle {
 			id: button
-			property string name
+			property string name  // Possible names: close, maximize, minimize
 
 			height: titleBar.height
 			width: titleBar.height
 
-			color: mouseArea.containsMouse ? "#4C535B" : "#3A4047"
+			color: {
+				if (mouseArea.containsMouse) {
+					return name == "close" ? t.titleButtonCloseBgOver
+										   : t.titleButtonBgOver
+				}
+				else {
+					return name == "close" ? t.titleButtonCloseBg
+										   : t.titleButtonBg
+				}
+			}
 
 			// Icon button
 			Image {
@@ -31,11 +41,16 @@ Rectangle {
 						return "../resources/close.svg"
 					}
 					else if (name == "maximize") {
-						return visibility == 4 ? "../resources/restore.svg" : "../resources/maximize.svg"
+						return visibility == 4 ? "../resources/restore.svg"
+											   : "../resources/maximize.svg"
 					}
 					else {
 						return "../resources/minimize.svg"
 					}
+				}
+				ChangeColor {
+					color: mouseArea.containsMouse ? t.titleButtonFgOver
+												   : t.titleButtonFg
 				}
 			}
 
