@@ -3,7 +3,7 @@ import QtQuick 2.15
 
 QtObject {
     id: t
-    property bool ct: JSON.stringify(thm) != "{}" // Is there a custom theme?
+    property bool ct: Object.keys(thm).length != 0 // Is there a custom theme?
 
 
     // Custom window titlebar background
