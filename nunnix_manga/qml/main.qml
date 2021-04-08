@@ -10,20 +10,22 @@ import "theme"
 ApplicationWindow {
     id: rootWindow
 
-    visible: true
+	// Is there a custom theme, load it, else load dark or light theme
+	property var theme: Object.keys(thm).length ? thm : Material.theme ? Dark : Light
 
     // Minimum and initial width and height
 	minimumWidth: Screen.width / 1.5
 	minimumHeight: Screen.height / 1.5
-    title: "Nunnix Manga"
 
-	Material.theme:  Material.Dark
+	// Properties
+    title: "Nunnix Manga"
+    visible: true
 	flags: Qt.FramelessWindowHint | Qt.Window
+
+	// Material properties
+	Material.theme:  Material.Dark
 
 	// Create the title bar and resize border
 	menuBar: TitleBar {id: titleBar}
     ResizeBorder {}
-
-	// instantiate theme colors
-	Theme {id: t}
 }
