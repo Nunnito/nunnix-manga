@@ -8,7 +8,7 @@ Rectangle {
 	// Properties
 	width: parent.width
 	height: 24
-	color: t.titleBg
+	color: theme.titleBg
 
 	// Rectangle button
 	Component {
@@ -23,12 +23,12 @@ Rectangle {
 
 			color: {
 				if (mouseArea.containsMouse) {
-					return name == "close" ? t.titleButtonCloseBgOver
-										   : t.titleButtonBgOver
+					return name == "close" ? theme.titleButtonCloseBgOver
+										   : theme.titleButtonBgOver
 				}
 				else {
-					return name == "close" ? t.titleButtonCloseBg
-										   : t.titleButtonBg
+					return name == "close" ? theme.titleButtonCloseBg
+										   : theme.titleButtonBg
 				}
 			}
 
@@ -49,8 +49,8 @@ Rectangle {
 					}
 				}
 				ChangeColor {
-					color: mouseArea.containsMouse ? t.titleButtonFgOver
-												   : t.titleButtonFg
+					color: mouseArea.containsMouse ? theme.titleButtonFgOver
+												   : theme.titleButtonFg
 				}
 			}
 
