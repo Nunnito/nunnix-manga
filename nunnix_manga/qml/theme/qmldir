@@ -1,0 +1,2 @@
+singleton Light Light.qml
+singleton Dark Dark.qml
