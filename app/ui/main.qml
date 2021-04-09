@@ -23,9 +23,15 @@ ApplicationWindow {
 	flags: Qt.FramelessWindowHint | Qt.Window
 
 	// Material properties
-	Material.theme:  Material.Dark
+	Material.theme: Material.Dark
+	Material.accent: theme.windowAccent
+ 	Material.background: theme.windowBg
+	Material.foreground: theme.windowFg
 
 	// Create the title bar and resize border
 	menuBar: TitleBar {id: titleBar}
     ResizeBorder {}
+	ComboBox {
+		model: ["wa", "to", "so"]
+	}
 }
