@@ -38,14 +38,14 @@ Rectangle {
 				anchors.centerIn: parent
 				source: {
 					if (name == "close") {
-						return "../resources/close.svg"
+						return Icon.get_icon("close.svg")
 					}
 					else if (name == "maximize") {
-						return visibility == 4 ? "../resources/restore.svg"
-											   : "../resources/maximize.svg"
+						return visibility == 4 ? Icon.get_icon("restore.svg")
+											   : Icon.get_icon("maximize.svg")
 					}
 					else {
-						return "../resources/minimize.svg"
+						return Icon.get_icon("minimize.svg")
 					}
 				}
 				ChangeColor {
