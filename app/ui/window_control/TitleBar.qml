@@ -49,8 +49,16 @@ Rectangle {
 					}
 				}
 				ChangeColor {
-					color: mouseArea.containsMouse ? theme.titleButtonFgOver
+					color: {
+						if (mouseArea.containsMouse) {
+							return name == "close" ? theme.titleButtonCloseFgOver 
+												   : theme.titleButtonFgOver
+						}
+						else {
+							return name == "close" ? theme.titleButtonCloseFg
 												   : theme.titleButtonFg
+						}
+					}
 				}
 			}
 
