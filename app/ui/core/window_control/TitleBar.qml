@@ -12,10 +12,9 @@ Rectangle {
 
 	// Rectangle button
 	Component {
-		id: rectangleButton
+		id: button
 
 		Rectangle {
-			id: button
 			property string name  // Possible names: close, maximize, minimize
 
 			height: titleBar.height
@@ -34,7 +33,6 @@ Rectangle {
 
 			// Icon button
 			Image {
-				id: image
 				anchors.centerIn: parent
 				source: {
 					if (name == "close") {
@@ -92,15 +90,15 @@ Rectangle {
 		height: titleBar.height
 
 		Loader {
-			sourceComponent: rectangleButton
+			sourceComponent: button
 			Component.onCompleted: item.name = "close"
 		}
 		Loader {
-			sourceComponent: rectangleButton
+			sourceComponent: button
 			Component.onCompleted: item.name = "maximize"
 		}
 		Loader {
-			sourceComponent: rectangleButton
+			sourceComponent: button
 			Component.onCompleted: item.name = "minimize"
 		}
 	}
