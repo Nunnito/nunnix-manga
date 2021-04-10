@@ -3,8 +3,9 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Window 2.15
 
-import "window_control"
 import "theme"
+import "core"
+import "core/window_control"
 
 
 ApplicationWindow {
@@ -25,13 +26,10 @@ ApplicationWindow {
 	// Material properties
 	Material.theme: Material.Dark
 	Material.accent: theme.windowAccent
- 	Material.background: theme.windowBg
+ 	Material.background: "#00000000"  // Fake background, for transparent borders
 	Material.foreground: theme.windowFg
 
-	// Create the title bar and resize border
-	menuBar: TitleBar {id: titleBar}
+	// Create main UI and resize border
     ResizeBorder {}
-	ComboBox {
-		model: ["wa", "to", "so"]
-	}
+	MainUI {id: mainUI}
 }
