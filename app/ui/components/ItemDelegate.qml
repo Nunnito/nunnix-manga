@@ -61,7 +61,6 @@ T.ItemDelegate {
         }
     }
 
-  }
 
     // Fade-in transition animation
     IconLabel {
