@@ -4,24 +4,30 @@ import QtQuick 2.15
 QtObject {
     // Window background
     property string windowBg: "#121212"
-    // Text color
+    // Text and icon color (control)
     property string windowFg: "#ededed"
     // Accent color
     property string windowAccent: "#B39DDB"
 
 
+    // Default control background
+    property string controlBg: "#1d1d1d"
+    // Default control background with mouse over (ripple color in #AARRGGBB)
+    property string controlBgOver: "#aa282828"
+    // Default control icon color with mouse over
+    property string controlFgOver: "#ededed"
+
+
     // Sidebar background
-    property string sideBarBg: "#181818"
-    // Sidebar icon color
-    property string sideBarFg
-    // Sidebar background with mouse over
-    property string sidebarBgOver
-    // Sidebar icon color with mouse over
-    property string sideBarFgOver
-    // Sidebar background selected
-    property string sidebarBgSelect
-    // Sidebar icon color selected
-    property string sideBarFgSelect
+    property string sidebarBg: "#1D1D1D"
+    // Sidebar button background (when is selected)
+    property string sidebarButtonBg: "#2C2C2C"
+    // Sidebar button icon color
+    property string sidebarButtonFg: "#ededed"
+    // Sidebar button background with mouse over (ripple color in #AARRGGBB)
+    property string sidebarButtonBgOver: "#aa282828"
+    // Sidebar button icon color with mouse over
+    property string sidebarButtonFgOver: "#ededed"
 
 
     // Titlebar background
