@@ -1,3 +1,6 @@
 import QtQuick 2.15
 
-Rectangle {color: "blue"}
+Item {
+    property string name: "library"
+    Rectangle {color: "blue"; anchors.fill: parent}
+}

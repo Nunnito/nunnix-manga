@@ -1,3 +1,6 @@
 import QtQuick 2.15
 
-Rectangle {color: "red"}
+Item {
+    property string name: "history"
+    Rectangle {color: "white"; anchors.fill: parent}
+}
