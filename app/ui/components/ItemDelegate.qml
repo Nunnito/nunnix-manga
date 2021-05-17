@@ -14,6 +14,9 @@ T.ItemDelegate {
     property string colorBgOver: theme.controlBgOver
     property string colorFgOver: theme.controlFgOver
 
+    property alias firstIcon: firstIcon
+    property alias secondIcon: secondIcon
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset,
@@ -29,6 +32,7 @@ T.ItemDelegate {
     icon.color: enabled ? (control.hovered ? colorFgOver : colorFg) : Material.hintTextColor
 
     contentItem: IconLabel {
+        id: firstIcon
         spacing: control.spacing
         mirrored: control.mirrored
         display: control.display
@@ -55,5 +59,27 @@ T.ItemDelegate {
             active: control.down || control.visualFocus || control.hovered
             color: colorBgOver
         }
+    }
+
+  }
+
+    // Fade-in transition animation
+    IconLabel {
+        id: secondIcon
+        anchors.centerIn: parent
+        icon: control.icon
+        opacity: 0
+    }
+
+    ParallelAnimation {
+        running: highlighted
+        OpacityAnimator {target: secondIcon; from: 0; to: 1; duration: 200}
+        OpacityAnimator {target: firstIcon; from: 1; to: 0; duration: 200}
+    }
+
+    ParallelAnimation {
+        running: !highlighted
+        OpacityAnimator {target: secondIcon; from: 1; to: 0; duration: 200}
+        OpacityAnimator {target: firstIcon; from: 0; to: 1; duration: 200}
     }
 }
