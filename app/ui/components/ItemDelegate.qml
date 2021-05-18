@@ -38,7 +38,9 @@ T.ItemDelegate {
         display: control.display
         alignment: control.display === IconLabel.IconOnly || control.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft
 
-        icon: control.icon
+        icon.width: control.icon.width
+        icon.height: control.icon.height
+        icon.color: control.icon.color
         text: control.text
         font: control.font
         color: control.enabled ? colorFgOver : control.Material.hintTextColor
@@ -65,8 +67,18 @@ T.ItemDelegate {
     // Fade-in transition animation
     IconLabel {
         id: secondIcon
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+
+        icon.width: control.icon.width
+        icon.height: control.icon.height
+        icon.color: control.icon.color
+        text: control.text
+        font: control.font
+        color: control.enabled ? (control.hovered ? colorFgOver : colorFg) : control.Material.hintTextColor
+
         anchors.centerIn: parent
-        icon: control.icon
         opacity: 0
     }
 
