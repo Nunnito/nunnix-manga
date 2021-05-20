@@ -1,7 +1,12 @@
 import requests
 import re
 
+from core.utils.logger import logger
+
+
 LANG = "en"  # Used to get manga by language
+QUALITY_MODE = "data"  # Image quality mode: "data" or "data-saver"
+BASE_URL = "https://api.mangadex.org"  # Used for API requests
 
 
 def get_manga_data(uuid: str) -> dict:
@@ -30,23 +35,31 @@ def get_manga_data(uuid: str) -> dict:
         "cover": "",
         "genres: [],
         "status": "",
-        "total_chapters": ""
+        "chapters_data": ""
     }
     """
     # TODO: Status code handler
+    logger.info("Getting manga data...")
+    api_manga = f"{BASE_URL}/manga/{uuid}"
 
-    response = requests.get(f"https://api.mangadex.org/manga/{uuid}")
+    logger.debug(f"Requesting manga data at {api_manga}")
+    response = requests.get(api_manga)
 
     attrs = response.json()["data"]["attributes"]
     relationships = response.json()["relationships"]
 
-    # Gathers all manga attributes.
+    # Collects all manga attributes.
+    logger.debug("Getting manga title...")
     title = attrs["title"][LANG]
-    author = get_manga_author(relationships[0]["id"])
+    logger.debug("Getting manga description...")
     description = attrs["description"]
+    logger.debug("Getting manga cover...")
     cover = "https://i.imgur.com/BY58k5E.jpg"
+    logger.debug("Getting manga cover...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
+    logger.debug("Getting manga status...")
     status = attrs["status"]
+    author = get_manga_author(relationships[0]["id"])
     chapters_data = get_chapters_data(uuid)
 
     data = {
@@ -59,6 +72,8 @@ def get_manga_data(uuid: str) -> dict:
         "chapters_data": chapters_data
     }
 
+    logger.debug("Done. Returning data...\n")
+    logger.info("Done!\n")
     return data
 
 
@@ -76,12 +91,16 @@ def get_manga_author(uuid: str) -> str:
         Author name.
     """
     # TODO: Status code handler
+    api_author = f"{BASE_URL}/author/{uuid}"
 
-    response = requests.get(f"https://api.mangadex.org/author/{uuid}")
+    logger.debug(f"Requesting author data at {api_author}")
+    response = requests.get(api_author)
 
+    logger.debug("Getting manga author...")
     attrs = response.json()["data"]["attributes"]
     author = attrs["name"]
 
+    logger.debug("Done. Returning data...")
     return author
 
 
@@ -99,16 +118,19 @@ def get_chapters_data(uuid: str) -> dict:
         Dictionary with all chapters data.
     """
     # TODO: Status code handler
-
+    api_chapters_data = (f"{BASE_URL}/manga/{uuid}/feed?limit=500&" +
+                         f"order[chapter]=asc&locales[]={LANG}")
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
 
     chapters = {}
-    response = requests.get(f"https://api.mangadex.org/manga/{uuid}/feed?\
-                              limit=500&order[chapter]=asc&locales[]={LANG}")
+
+    logger.debug(f"Requesting chapters data at {api_chapters_data}")
+    response = requests.get(api_chapters_data)
 
     total = response.json()["total"]
     results = response.json()["results"]
 
+    logger.debug("Collecting chapters data...\n")
     # Here, we get all the attributes
     for i, result in enumerate(results):
         results_data = result["data"]
@@ -119,6 +141,60 @@ def get_chapters_data(uuid: str) -> dict:
         chapter_id = results_data["id"]
         chapters[f"{i}"] = {"name": name, "date": date, "link": chapter_id}
 
+        logger.debug(f"Name: {name} | Date: {date} | UUID: {chapter_id}\n")
+
     data = {"total": total, "chapters": chapters}
 
+    logger.debug("Done. Returning data...")
     return data
+
+
+def get_chapter_images(uuid: str) -> list:
+    """ Get chapter images.
+
+    Parameters
+    ----------
+    uuid : str
+        The chapter UUID.
+
+    Returns
+    -------
+    list
+        A list with all images links.
+
+    Example
+    -------
+        >>> get_chapter_images("da63389a-3d60-4634-8652-47a52e35eacc")
+    """
+
+    logger.info("Getting chapters images...")
+
+    api_at_home = f"{BASE_URL}/at-home/server/{uuid}"
+    api_chapter_images = f"{BASE_URL}/chapter/{uuid}"
+    images = []
+
+    # Requests
+    logger.debug(f"Requesting base url at {api_at_home}")
+    base_url = requests.get(api_at_home).json()["baseUrl"]
+    logger.debug(f"Requesting chapter data at {api_chapter_images}")
+    data = requests.get(api_chapter_images).json()
+    attributes = data["data"]["attributes"]
+
+    # Necessary data to make URLs
+    logger.debug("Getting chapter hash...")
+    hash = attributes["hash"]
+    logger.debug("Getting chapter images name...")
+    logger.debug(f"Quality mode is \"{QUALITY_MODE}\"")
+    names = attributes["data" if QUALITY_MODE == "data" else "dataSaver"]
+
+    # Making images URLs
+    logger.debug("Making images URLs...\n")
+    for i, name in enumerate(names):
+        image_url = f"{base_url}/{QUALITY_MODE}/{hash}/{name}"
+        images.append(image_url)
+        logger.debug(f"IMAGE {i}: {image_url}\n")
+
+    logger.debug("Done. Returning data...")
+    logger.info("Done!")
+
+    return images
