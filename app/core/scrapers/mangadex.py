@@ -1,3 +1,4 @@
+from requests import Request, Session
 import requests
 import re
 
@@ -166,6 +167,7 @@ def get_chapter_images(uuid: str) -> list:
     -------
         >>> get_chapter_images("da63389a-3d60-4634-8652-47a52e35eacc")
     """
+    # TODO: Status code handler
 
     logger.info("Getting chapters images...")
 
@@ -198,3 +200,99 @@ def get_chapter_images(uuid: str) -> list:
     logger.info("Done!")
 
     return images
+
+
+def search_manga(
+    limit: int = 25,
+    offset: int = None,
+    title: str = None,
+    authors: list[str] = None,
+    artists: list[str] = None,
+    year: int = None,
+    include_tags: list[str] = None,
+    included_tags_mode: str = None,
+    excluded_tags: list[str] = None,
+    excluded_tags_mode: str = None,
+    status: list[str] = None,
+    original_language: list[str] = None,
+    publication_demographic: list[str] = None,
+    ids: list[str] = None,
+    content_rating: list[str] = None,
+    created_at_since: str = None,
+    updated_at_since: str = None,
+    order: dict[str, str] = None,
+) -> dict:
+    # TODO: Status code handler
+
+    # Query strings
+    payload = {
+        "limit": limit,
+        "offset": offset,
+        "title": title,
+        "authors": authors,
+        "artists": artists,
+        "year": year,
+        "includeTags": include_tags,
+        "includedTagsMode": included_tags_mode,
+        "excludedTags": excluded_tags,
+        "excludedTagsMode": excluded_tags_mode,
+        "status": status,
+        "originalLanguage": original_language,
+        "publicationDemographic": publication_demographic,
+        "ids": ids,
+        "contentRating": content_rating,
+        "createdAtSince": created_at_since,
+        "updatedAtSince": updated_at_since,
+        ("order" if order is None else f"order[{list(order.keys())[0]}]"):
+        (order if order is None else order[list(order.keys())[0]])
+    }
+
+    data = []  # To store searches
+
+    # Prepare requests
+    session = Session()
+    response = Request("GET", BASE_URL + "/manga", params=payload).prepare()
+    logger.info("Searching manga...")
+    logger.debug(f"Requesting search at {response.url}")
+
+    response = session.send(response)  # Make request
+    results = response.json()["results"]
+
+    logger.debug(f"Total results: {response.json()['total']}\n")
+
+    for result in results:
+        attributes = result["data"]["attributes"]
+        relationships = result["relationships"]
+
+        title = attributes["title"]["en"]
+        link = result["data"]["id"]
+        cover = relationships[-1]["id"]
+
+        logger.debug(f"Title {title}")
+        logger.debug(f"Link {link}")
+        logger.debug(f"Cover {cover}\n")
+
+        data.append({
+            "title": title,
+            "link": link,
+            "cover": cover
+        })
+
+    logger.debug("Done. Returning data...")
+    logger.info("Done!")
+    return data
+
+
+def get_manga_cover(m_uuid: str, c_uuid: str) -> str:
+    # Prepare requests
+    session = Session()
+    response = Request("GET", BASE_URL + f"/cover/{c_uuid}").prepare()
+    logger.debug(f"Requesting cover at {response.url}")
+
+    response = session.send(response)  # Make request
+    attributes = response.json()["data"]["attributes"]
+    filename = attributes["fileName"]
+    cover = f"https://uploads.mangadex.org/covers/{m_uuid}/{filename}.256.jpg"
+
+    logger.debug("Done. Returning data...\n")
+    return cover
