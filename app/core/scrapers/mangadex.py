@@ -52,14 +52,19 @@ def get_manga_data(uuid: str) -> dict:
     # Collects all manga attributes.
     logger.debug("Getting manga title...")
     title = attrs["title"][LANG]
+
     logger.debug("Getting manga description...")
     description = attrs["description"]
+
     logger.debug("Getting manga cover...")
-    cover = relationships[-1]["id"]
+    cover = get_manga_cover(uuid, relationships[-1]["id"])
+
     logger.debug("Getting manga cover...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
+
     logger.debug("Getting manga status...")
     status = attrs["status"]
+
     author = get_manga_author(relationships[0]["id"])
     chapters_data = get_chapters_data(uuid)
 
@@ -266,7 +271,7 @@ def search_manga(
 
         title = attributes["title"]["en"]
         link = result["data"]["id"]
-        cover = relationships[-1]["id"]
+        cover = get_manga_cover(link, relationships[-1]["id"])
 
         logger.debug(f"Title {title}")
         logger.debug(f"Link {link}")
@@ -296,8 +301,3 @@ def get_manga_cover(m_uuid: str, c_uuid: str) -> str:
 
     logger.debug("Done. Returning data...\n")
     return cover
-
-# search = search_manga(title="Berserk")
-data = get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")
-
-print(data)
