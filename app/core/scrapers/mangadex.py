@@ -55,7 +55,7 @@ def get_manga_data(uuid: str) -> dict:
     logger.debug("Getting manga description...")
     description = attrs["description"]
     logger.debug("Getting manga cover...")
-    cover = "https://i.imgur.com/BY58k5E.jpg"
+    cover = relationships[-1]["id"]
     logger.debug("Getting manga cover...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
     logger.debug("Getting manga status...")
@@ -120,7 +120,7 @@ def get_chapters_data(uuid: str) -> dict:
     """
     # TODO: Status code handler
     api_chapters_data = (f"{BASE_URL}/manga/{uuid}/feed?limit=500&" +
-                         f"order[chapter]=asc&locales[]={LANG}")
+                         f"order[chapter]=asc&translatedLanguage[]={LANG}")
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
 
     chapters = {}
@@ -296,3 +296,8 @@ def get_manga_cover(m_uuid: str, c_uuid: str) -> str:
 
     logger.debug("Done. Returning data...\n")
     return cover
+
+# search = search_manga(title="Berserk")
+data = get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")
+
+print(data)
