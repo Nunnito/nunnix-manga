@@ -227,6 +227,58 @@ def search_manga(
     updated_at_since: str = None,
     order: dict[str, str] = None,
 ) -> dict:
+    """ Search manga, with advanced parameters.
+        See: https://api.mangadex.org/docs.html#operation/get-search-manga
+
+    Parameters
+    ----------
+    limit : int, optional
+        Number of results
+    offset : int, optional
+        Offset between mangas, this will be used to "jump" to the next page.
+    title : str, optional
+        Manga title.
+    authors : list[str], optional
+        Manga authors (UUID).
+    artists : list[str], optional
+        Manga artist (UUID).
+    year : int, optional
+        Manga year.
+    include_tags : list[str], optional
+        Manga genres (UUID).
+    included_tags_mode : str, optional
+        Genres inclusion mode ("AND" or "OR").
+    excluded_tags : list[str], optional
+        Manga excluded genres.
+    excluded_tags_mode : str, optional
+        Excluded genres inclusion mode ("AND" or "OR")
+    status : list[str], optional
+        Manga status ("ongoing", "completed", "hiatus", "cancelled").
+    original_language : list[str], optional
+        Manga original language, in ISO 639-1 standard.
+    publication_demographic : list[str], optional
+        Manga demography ("shounen", "shoujo", "josei", "seinen", "none").
+    ids : list[str], optional
+        Manga ids (UUID).
+    content_rating : list[str], optional
+        Manga content rating ("none", "safe", "suggestive", "erotica",
+        "pornographic").
+    created_at_since : str, optional
+        Datetime string with following format: YYYY-MM-DDTHH:MM:SS
+    updated_at_since : str, optional
+        Datetime string with following format: YYYY-MM-DDTHH:MM:SS
+    order : dict[str, str], optional
+        Manga order (createdAt: "asc", "desc". updatedAt: "asc", "desc").
+
+    Returns
+    -------
+    dict
+        Dictionary with all manga results.
+
+    Example
+    -------
+        >>> search_manga(title="Kumo", offset=20, order={"updatedAt": "asc"})
+    """
     # TODO: Status code handler
 
     # Query strings
@@ -289,6 +341,22 @@ def search_manga(
 
 
 def get_manga_cover(m_uuid: str, c_uuid: str) -> str:
+    """ Get manga cover by UUID.
+
+    Parameters
+    ----------
+    m_uuid : str
+        Manga UUID
+    c_uuid : str
+        Cover UUID
+
+    Returns
+    -------
+    str
+        Cover URL
+    """
+    # TODO: Status code handler
+
     # Prepare requests
     session = Session()
     response = Request("GET", BASE_URL + f"/cover/{c_uuid}").prepare()
