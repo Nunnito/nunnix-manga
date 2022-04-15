@@ -1,6 +1,7 @@
 import QtQuick 2.15
+import "components"
 
 Item {
     property string name: "explore"
-    Rectangle {color: "yellow"; anchors.fill: parent}
+    TopBar {}
 }
