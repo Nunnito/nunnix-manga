@@ -1,11 +1,12 @@
-from core.utils.get_icon import Icon
-from core.utils import settings
+import sys
+from os import environ
+from pathlib import Path
 
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtGui import QGuiApplication, QIcon
-from pathlib import Path
-from os import environ
-import sys
+
+from core.utils import settings
+from core.utils import qml_utils
 
 # Set init variables
 application = QGuiApplication(sys.argv)
@@ -24,8 +25,8 @@ def main():
     environ["QT_QUICK_CONTROLS_MATERIAL_VARIANT"] = "Dense"
 
     # Load variables to QML
-    icon_engine = Icon()
-    context.setContextProperty("thm", settings.get_theme_file_content())  # Theme
+    icon_engine = qml_utils.Icon()
+    context.setContextProperty("themeConf", settings.get_theme_file_content())
     context.setContextProperty("Icon", icon_engine)
 
     # Set application properties

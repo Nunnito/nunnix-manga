@@ -27,7 +27,8 @@ Page {
 
         StackView {
             id: stackView
-            implicitWidth: sideBar.visible ? parent.width - sideBar.width : parent.width
+            implicitWidth: sideBar.visible ?
+                           parent.width - sideBar.width : parent.width
             implicitHeight: parent.height
             initialItem: "library/Library.qml"
 

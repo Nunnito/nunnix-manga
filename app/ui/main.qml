@@ -12,7 +12,8 @@ ApplicationWindow {
     id: rootWindow
 
 	// Is there a custom theme, load it, else load dark or light theme
-	property var theme: Object.keys(thm).length ? thm : Material.theme ? Dark : Light
+	property var theme: (Object.keys(themeConf).length ?
+						 themeConf : Material.theme ? Dark : Light)
 
     // Minimum and initial width and height
 	minimumWidth: Screen.width / 1.5
