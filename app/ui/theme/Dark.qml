@@ -16,6 +16,10 @@ QtObject {
     property string controlBgOver: "#aa282828"
     // Default control icon color with mouse over
     property string controlFgOver: "#ededed"
+    // Default control background with mouse clicked
+    property string controlBgClick: "#212121"
+    // Default control icon color with mouse clicked
+    property string controlFgClick: "#ededed"
 
 
     // Sidebar background
@@ -48,4 +52,6 @@ QtObject {
     property string titleButtonCloseBgOver: "#ee4444"
     // Titlebar close button icon color with mouse over
     property string titleButtonCloseFgOver: "#ededed"
+    // Topbar background
+    property string topBarBg: "#1F1F1F"
 }
