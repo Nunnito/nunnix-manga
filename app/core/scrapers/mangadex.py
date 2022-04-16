@@ -47,7 +47,7 @@ def get_manga_data(uuid: str) -> dict:
     response = requests.get(api_manga)
 
     attrs = response.json()["data"]["attributes"]
-    relationships = response.json()["relationships"]
+    relationships = response.json()["data"]["relationships"]
 
     # Collects all manga attributes.
     logger.debug("Getting manga title...")
@@ -57,7 +57,8 @@ def get_manga_data(uuid: str) -> dict:
     description = attrs["description"]
 
     logger.debug("Getting manga cover...")
-    cover = get_manga_cover(relationships[-1]["id"])[uuid]
+    cover_id = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
+    cover = get_manga_cover(cover_id)[uuid]
 
     logger.debug("Getting manga cover...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
@@ -134,17 +135,16 @@ def get_chapters_data(uuid: str) -> dict:
     response = requests.get(api_chapters_data)
 
     total = response.json()["total"]
-    results = response.json()["results"]
+    results = response.json()["data"]
 
     logger.debug("Collecting chapters data...\n")
     # Here, we get all the attributes
     for i, result in enumerate(results):
-        results_data = result["data"]
-        attrs = results_data["attributes"]
+        attrs = result["attributes"]
 
-        name = attrs["chapter"] + " " + attrs["title"]
+        name = f"Ch.{attrs['chapter']} - {attrs['title']}"
         date = re.match(date_pattern, attrs["publishAt"]).group()
-        chapter_id = results_data["id"]
+        chapter_id = result["id"]
         chapters[f"{i}"] = {"name": name, "date": date, "link": chapter_id}
 
         logger.debug(f"Name: {name} | Date: {date} | UUID: {chapter_id}\n")
@@ -313,17 +313,17 @@ def search_manga(
     logger.debug(f"Requesting search at {response.url}")
 
     response = session.send(response)  # Make request
-    results = response.json()["results"]
+    results = response.json()["data"]
 
     logger.debug(f"Total results: {response.json()['total']}\n")
 
     for result in results:
-        attributes = result["data"]["attributes"]
+        attributes = result["attributes"]
         relationships = result["relationships"]
 
         title = attributes["title"]["en"]
-        link = result["data"]["id"]
-        cover = relationships[-1]["id"]
+        link = result["id"]
+        cover = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
 
         logger.debug(f"Title {title}")
         logger.debug(f"Link {link}")
@@ -371,11 +371,11 @@ def get_manga_cover(uuid: list[str]) -> dict[str, str]:
     logger.debug(f"Requesting covers at {response.url}")
 
     response = session.send(response)  # Make request
-    results = response.json()["results"]
+    results = response.json()["data"]
 
     # Iterate through resutls, and append the cover URL to the dict.
     for result in results:
-        attributes = result["data"]["attributes"]
+        attributes = result["attributes"]
         manga = result["relationships"][0]["id"]
         name = attributes["fileName"]
         cover = f"https://uploads.mangadex.org/covers/{manga}/{name}.256.jpg"
@@ -384,3 +384,6 @@ def get_manga_cover(uuid: list[str]) -> dict[str, str]:
 
     logger.debug("Done. Returning data...\n")
     return covers
+
+
+get_manga_data("1c5863f0-d91c-4fc8-81ee-0056af135288")
