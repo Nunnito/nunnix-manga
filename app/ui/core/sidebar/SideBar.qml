@@ -20,7 +20,7 @@ Rectangle {
     Pane {
         anchors.fill: parent
         Material.background: parent.color
-        Material.elevation: 9
+        Material.elevation: 1
     }
 
     // Positionate all buttons

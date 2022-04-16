@@ -23,7 +23,7 @@ Page {
         property alias stackView: stackView 
         anchors.fill: parent
 
-        SideBar {id: sideBar}
+        SideBar {id: sideBar; z: 99}
 
         StackView {
             id: stackView
