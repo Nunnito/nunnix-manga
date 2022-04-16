@@ -5,7 +5,7 @@ QtObject {
     // Window background
     property string windowBg: "#EDEDD0"
     // Text and icon color (control)
-    property string windowFg: "#907FA4"
+    property string windowFg: "#EDEDD0"
     // Accent color
     property string accent: "#A58FAA"
 
