@@ -11,9 +11,8 @@ import "core/window_control"
 ApplicationWindow {
     id: rootWindow
 
-	// Is there a custom theme, load it, else load dark or light theme
-	property var theme: (Object.keys(themeConf).length ?
-						 themeConf : Material.theme ? Dark : Light)
+	// Get the theme, custom, dark or light
+	property var theme: Theme.get_theme(Dark, Light)
 
     // Minimum and initial width and height
 	minimumWidth: Screen.width / 1.5

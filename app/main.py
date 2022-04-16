@@ -5,7 +5,6 @@ from pathlib import Path
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtGui import QGuiApplication, QIcon
 
-from core.utils import settings
 from core.utils import qml_utils
 
 # Set init variables
@@ -26,8 +25,9 @@ def main():
 
     # Load variables to QML
     icon_engine = qml_utils.Icon()
-    context.setContextProperty("themeConf", settings.get_theme_file_content())
+    theme_engine = qml_utils.Theme()
     context.setContextProperty("Icon", icon_engine)
+    context.setContextProperty("Theme", theme_engine)
 
     # Set application properties
     application.aboutToQuit.connect(before_close)
