@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls.Material 2.15
 
 import "../../components" as C
 import "components"
@@ -14,6 +15,13 @@ Rectangle {
     height: parent.height
 
     color: theme.sidebarBg
+
+    // Pane for elevation shadow
+    Pane {
+        anchors.fill: parent
+        Material.background: parent.color
+        Material.elevation: 9
+    }
 
     // Positionate all buttons
     ColumnLayout {
