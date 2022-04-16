@@ -71,8 +71,8 @@ T.RoundButton {
         highlighted ? Material.primaryHighlightedTextColor :
         (control.down ? colorFgClick : control.hovered ? colorFgOver : colorFg)
 
-    Material.elevation: flat ? control.down || control.hovered ? 2 : 0
-                             : control.down ? 12 : 6
+    Material.elevation: flat ? control.down || control.hovered ? 0 : 0
+                             : control.down ? 0 : 0
     Material.background: flat ? "transparent" : undefined
 
     contentItem: IconLabel {
