@@ -111,13 +111,15 @@ def get_manga_author(uuid: str) -> str:
     return author
 
 
-def get_chapters_data(uuid: str) -> dict:
+def get_chapters_data(uuid: str, offset: int = 0) -> dict:
     """ Get chapters data. This function is used by get_manga_data function.
 
     Parameters
     ----------
     uuid : str
         The manga UUID.
+    offset : int (optional)
+        The offset to get the chapters.
 
     Returns
     -------
@@ -126,7 +128,8 @@ def get_chapters_data(uuid: str) -> dict:
     """
     # TODO: Status code handler
     api_chapters_data = (f"{BASE_URL}/manga/{uuid}/feed?limit=500&" +
-                         f"order[chapter]=asc&translatedLanguage[]={LANG}")
+                         f"offset={offset}&order[chapter]=asc&" +
+                         f"translatedLanguage[]={LANG}")
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
 
     chapters = {}
@@ -139,7 +142,7 @@ def get_chapters_data(uuid: str) -> dict:
 
     logger.debug("Collecting chapters data...\n")
     # Here, we get all the attributes
-    for i, result in enumerate(results):
+    for i, result in enumerate(results, offset):
         attrs = result["attributes"]
 
         name = f"Ch.{attrs['chapter']} - {attrs['title']}"
@@ -151,7 +154,11 @@ def get_chapters_data(uuid: str) -> dict:
 
     data = {"total": total, "chapters": chapters}
 
-    logger.debug("Done. Returning data...")
+    if total > 500 and offset + 500 < total:
+        data["chapters"].update(get_chapters_data(uuid,
+                                                  offset + 500)["chapters"])
+
+    logger.debug(f"Done. Returning data... (offset: {offset})")
     return data
 
 
@@ -386,4 +393,6 @@ def get_manga_cover(uuid: list[str]) -> dict[str, str]:
     return covers
 
 
-get_manga_data("1c5863f0-d91c-4fc8-81ee-0056af135288")
+m = get_manga_data("6b1eb93e-473a-4ab3-9922-1a66d2a29a4a")
+print(len(m["chapters_data"]["chapters"]))
+
