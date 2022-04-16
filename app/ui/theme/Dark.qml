@@ -52,6 +52,20 @@ QtObject {
     property string titleButtonCloseBgOver: "#ee4444"
     // Titlebar close button icon color with mouse over
     property string titleButtonCloseFgOver: "#ededed"
+
+
     // Topbar background
     property string topBarBg: "#1F1F1F"
+    // Topbar button background
+    property string topBarButtonBg: "#1F1F1F"
+    // Topbar button icon color
+    property string topBarButtonFg: "#ededed"
+    // Topbar button background with mouse over (ripple color in #AARRGGBB)
+    property string topBarButtonBgOver: "#aa303030"
+    // Topbar button icon color with mouse over
+    property string topBarButtonFgOver: "#ededed"
+    // Topbar button background with mouse clicked
+    property string topBarButtonBgClick: "#3A3A3A"
+    // Topbar button icon color with mouse clicked
+    property string topBarButtonFgClick: "#ededed"
 }
