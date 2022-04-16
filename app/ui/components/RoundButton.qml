@@ -127,7 +127,7 @@ T.RoundButton {
 
             OpacityAnimator {
                 running: control.down;
-                target: rectClicked; from: opacity; to: 1; duration: 200
+                target: rectClicked; from: 0; to: 1; duration: 200
             }
             OpacityAnimator {
                 running: !control.down;
