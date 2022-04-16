@@ -7,7 +7,7 @@ QtObject {
     // Text and icon color (control)
     property string windowFg: "#EDEDD0"
     // Accent color
-    property string accent: "#A58FAA"
+    property string accent: "#645474"
 
 
     // Default control background
@@ -68,4 +68,22 @@ QtObject {
     property string topBarButtonBgClick: "#bea8d9"
     // Topbar button icon color with mouse clicked
     property string topBarButtonFgClick: "#EDEDD0"
+
+
+    // Textfield text color
+    property string textfieldFg: "#EDEDD0"
+    // Textfield selection background
+    property string textfieldSelectionBg: "#645474"
+    // Textfield selection text color
+    property string textfieldSelectionFg: "#9f8db6"
+    // Textfield placeholder text color
+    property string textfieldPlaceholderFg: "#5a5a5a"
+    // Textfield cursor color
+    property string textfieldCursor: "#645474"
+    // Textfield decoration inactive color
+    property string textfieldDecorationInactive: "#5a5a5a"
+    // Textfield decoration active color
+    property string textfieldDecorationActive: "#645474"
+    // Textfield decoration hover color
+    property string textfieldDecorationHover: "#EDEDD0"
 }

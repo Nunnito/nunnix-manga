@@ -68,4 +68,22 @@ QtObject {
     property string topBarButtonBgClick: "#3A3A3A"
     // Topbar button icon color with mouse clicked
     property string topBarButtonFgClick: "#ededed"
+
+
+    // Textfield text color
+    property string textfieldFg: "#ededed"
+    // Textfield selection background
+    property string textfieldSelectionBg: "#B39DDB"
+    // Textfield selection text color
+    property string textfieldSelectionFg: "#1F1F1F"
+    // Textfield placeholder text color
+    property string textfieldPlaceholderFg: "#626262"
+    // Textfield cursor color
+    property string textfieldCursor: "#B39DDB"
+    // Textfield decoration inactive color
+    property string textfieldDecorationInactive: "#626262"
+    // Textfield decoration active color
+    property string textfieldDecorationActive: "#B39DDB"
+    // Textfield decoration hover color
+    property string textfieldDecorationHover: "#ededed"
 }
