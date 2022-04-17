@@ -133,6 +133,8 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
 
     chapters = {}
+    scanlations = {}
+    users = {}
 
     logger.debug(f"Requesting chapters data at {api_chapters_data}")
     response = requests.get(api_chapters_data)
@@ -141,16 +143,39 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
     results = response.json()["data"]
 
     logger.debug("Collecting chapters data...\n")
+
+    # Iterate through results, and append scanlations to the list.
+    for result in results:
+        relationships = result["relationships"]
+        scanlations[result["id"]] = []
+
+        for relationship in relationships:
+            if relationship["type"] == "scanlation_group":
+                scanlations[result["id"]].append(relationship["id"])
+            elif relationship["type"] == "user":
+                if not scanlations[result["id"]]:
+                    users[result["id"]] = relationship["id"]
+
+    users = get_chapter_user(users)
+    scanlations = get_chapter_scanlation(scanlations)
+    scanlations.update(users)
+
     # Here, we get all the attributes
     for i, result in enumerate(results, offset):
         attrs = result["attributes"]
 
         name = f"Ch.{attrs['chapter']} - {attrs['title']}"
         date = re.match(date_pattern, attrs["publishAt"]).group()
+        scanlation = scanlations[result["id"]]
         chapter_id = result["id"]
-        chapters[f"{i}"] = {"name": name, "date": date, "link": chapter_id}
+        chapters[f"{i}"] = {
+            "name": name,
+            "date": date,
+            "link": chapter_id,
+            "scanlation": scanlations[chapter_id]
+            }
 
-        logger.debug(f"Name: {name} | Date: {date} | UUID: {chapter_id}\n")
+        logger.debug(f"Name: {name} | Date: {date} | Scanlation: {scanlation}")
 
     data = {"total": total, "chapters": chapters}
 
@@ -159,6 +184,107 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
                                                   offset + 500)["chapters"])
 
     logger.debug(f"Done. Returning data... (offset: {offset})")
+    return data
+
+
+def get_chapter_scanlation(scanlations_dict: dict[str: str]) -> str:
+    """ Get chapters scanlations. This function is used by get_chapter_data.
+
+    Parameters
+    ----------
+    uuid : dict[str: str]
+        Scanlations dict with chapter UUID as key.
+
+    Returns
+    -------
+    str
+        Scanlation data.
+    """
+    # TODO: Status code handler
+
+    # Get scanlations UUIDs, and remove duplicates
+    uuid = []
+    for scanlations_id in scanlations_dict.values():
+        for scanlation_id in scanlations_id:
+            uuid.append(scanlation_id)
+
+    uuid = list(set(uuid))
+
+    scanlation = {}  # Scanlations dict
+    data = {}  # Scanlations data
+    payload = {"ids[]": uuid, "limit": 100}
+
+    # Prepare requests
+    session = Session()
+    response = Request("GET", BASE_URL + "/group", params=payload).prepare()
+    logger.debug(f"Requesting scanlations at {response.url}")
+
+    response = session.send(response)  # Make request
+    results = response.json()["data"]
+
+    # Iterate through results, and append the scanlation name to the dict.
+    for result in results:
+        scanlation_id = result["id"]
+        attributes = result["attributes"]
+        name = attributes["name"]
+
+        scanlation[scanlation_id] = name
+
+    # Iterate through scanlations dict, and set the scanlation name to the
+    # chapter UUID.
+    for chapter_id, scanlation_ids in scanlations_dict.items():
+        data[chapter_id] = []
+        # Iterate through scanlations UUIDs, and append the scanlation name
+        for scanlation_id in scanlation_ids:
+            data[chapter_id].append(scanlation[scanlation_id])
+
+        data[chapter_id] = " | ".join(data[chapter_id])
+
+    logger.debug("Done. Returning data...\n")
+    return data
+
+
+def get_chapter_user(users_dict: dict[str: str]) -> str:
+    """ Get chapters users. This function is used by get_chapter_data.
+
+    Parameters
+    ----------
+    uuid : dict[str: str]
+        Users dict with chapter UUID as key.
+
+    Returns
+    -------
+    str
+        Users data.
+    """
+    # TODO: Status code handler
+
+    # Get users UUIDs, and remove duplicates
+    uuid = list(set(users_dict.values()))
+
+    user = {}  # Users dict
+    data = {}  # Users data
+
+    for user_id in uuid:
+        # Prepare requests
+        session = Session()
+        response = Request("GET", BASE_URL + "/user/" + user_id).prepare()
+        logger.debug(f"Requesting users at {response.url}")
+
+        response = session.send(response)  # Make request
+        result = response.json()["data"]
+
+        # Append the user name to the dict.
+        user_id = result["id"]
+        name = result["attributes"]["username"]
+        user[user_id] = name
+
+    # Iterate through users dict, and set the user name to the
+    # chapter UUID.
+    for chapter_id, user_id in users_dict.items():
+        data[chapter_id] = user[user_id]
+
+    logger.debug("Done. Returning data...\n")
     return data
 
 
@@ -394,5 +520,4 @@ def get_manga_cover(uuid: list[str]) -> dict[str, str]:
 
 
 m = get_manga_data("6b1eb93e-473a-4ab3-9922-1a66d2a29a4a")
-print(len(m["chapters_data"]["chapters"]))
-
+# print(m)
