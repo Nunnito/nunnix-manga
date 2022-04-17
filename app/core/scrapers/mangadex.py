@@ -58,7 +58,7 @@ def get_manga_data(uuid: str) -> dict:
 
     logger.debug("Getting manga cover...")
     cover_id = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
-    cover = get_manga_cover(cover_id)[uuid]
+    cover = get_manga_cover(cover_id, 512)[uuid]
 
     logger.debug("Getting manga cover...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
@@ -480,7 +480,7 @@ def search_manga(
     return data
 
 
-def get_manga_cover(uuid: list[str]) -> dict[str, str]:
+def get_manga_cover(uuid: list[str], resolution: int = 256) -> dict[str, str]:
     """ Get manga covers by UUID.
 
     Parameters
@@ -511,13 +511,10 @@ def get_manga_cover(uuid: list[str]) -> dict[str, str]:
         attributes = result["attributes"]
         manga = result["relationships"][0]["id"]
         name = attributes["fileName"]
-        cover = f"https://uploads.mangadex.org/covers/{manga}/{name}.256.jpg"
+        cover = (f"https://uploads.mangadex.org/covers/{manga}/{name}" +
+                 f".{resolution}.jpg")
 
         covers[manga] = cover
 
     logger.debug("Done. Returning data...\n")
     return covers
-
-
-m = get_manga_data("6b1eb93e-473a-4ab3-9922-1a66d2a29a4a")
-# print(m)
