@@ -30,13 +30,23 @@ def get_manga_data(uuid: str) -> dict:
     Dictionary content
     ------------------
     data = {
-        "title": "",
-        "author": "",
-        "description": "",
-        "cover": "",
-        "genres: [],
-        "status": "",
-        "chapters_data": ""
+        "title": "Kumo desu ga, nani ka?",
+        "author": "Miura Kentaro",
+        "description": "Some description",
+        "cover": "https://uploads.mangadex.org/covers/MUUID/CUUID.jpg.512.jpg",
+        "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
+        "status": "completed" | "ongoing" | "hiatus" | "cancelled",
+        "chapters_data": {
+            "total": "100",
+            "chapters": {
+                "0": {
+                    "name": "Ch.1 - Chapter 1",
+                    "date": "2020-01-01",
+                    "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
+                    "scanlation": "Band of the Hawks"
+                }
+            }
+        }
     }
     """
     # TODO: Status code handler
@@ -518,3 +528,7 @@ def get_manga_cover(uuid: list[str], resolution: int = 256) -> dict[str, str]:
 
     logger.debug("Done. Returning data...\n")
     return covers
+
+
+m = get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")["chapters_data"]
+print(m)
