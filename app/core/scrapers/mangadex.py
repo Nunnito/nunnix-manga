@@ -1,3 +1,4 @@
+from datetime import datetime
 from requests import Request, Session
 import requests
 import re
@@ -176,14 +177,15 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
 
         name = f"Ch.{attrs['chapter']} - {attrs['title']}"
         date = re.match(date_pattern, attrs["publishAt"]).group()
+        date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
         scanlation = scanlations[result["id"]]
         chapter_id = result["id"]
         chapters[f"{i}"] = {
             "name": name,
-            "date": date,
+            "date": date.split("/"),
             "link": chapter_id,
-            "scanlation": scanlations[chapter_id]
-            }
+            "scanlation": scanlation
+        }
 
         logger.debug(f"Name: {name} | Date: {date} | Scanlation: {scanlation}")
 
@@ -528,7 +530,3 @@ def get_manga_cover(uuid: list[str], resolution: int = 256) -> dict[str, str]:
 
     logger.debug("Done. Returning data...\n")
     return covers
-
-
-m = get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")["chapters_data"]
-print(m)
