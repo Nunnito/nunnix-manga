@@ -118,14 +118,14 @@ def get_manga_data(uuid: str) -> dict:
         "status": "completed" | "ongoing" | "hiatus" | "cancelled",
         "chapters_data": {
             "total": "100",
-            "chapters": {
-                "0": {
+            "chapters": [
+                {
                     "name": "Ch.1 - Chapter 1",
                     "date": "2020-01-01",
                     "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
                     "scanlation": "Band of the Hawks"
                 }
-            }
+            ]
         }
     }
     """
@@ -211,9 +211,7 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
         "includes[]": ["scanlation_group", "user"]
         }
 
-    chapters = {}
-    scanlations = {}
-    users = {}
+    chapters = []
 
     # Prepare requests
     session = Session()
@@ -227,7 +225,7 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
     logger.debug("Collecting chapters data...\n")
 
     # Here, we get all the attributes
-    for i, result in enumerate(results, offset):
+    for result in results:
         attrs = result["attributes"]
         relation = result["relationships"]
 
@@ -251,12 +249,12 @@ def get_chapters_data(uuid: str, offset: int = 0) -> dict:
             scanlation = " | ".join(users_list)
 
         chapter_id = result["id"]
-        chapters[f"{i}"] = {
+        chapters.append({
             "name": name,
             "date": date.split("/"),
             "link": chapter_id,
             "scanlation": scanlation
-        }
+        })
 
         logger.debug(f"Name: {name} | Date: {date} | Scanlation: {scanlation}")
 
@@ -291,15 +289,13 @@ def get_chapter_images(uuid: str) -> list:
     # TODO: Status code handler
 
     api_at_home = f"{BASE_URL}/at-home/server/{uuid}"
-    api_chapter_images = f"{BASE_URL}/chapter/{uuid}"
     images = []
 
     # Requests
-    logger.debug(f"Requesting base url at {api_at_home}")
-    base_url = requests.get(api_at_home).json()["baseUrl"]
-    logger.debug(f"Requesting chapter data at {api_chapter_images}")
-    data = requests.get(api_chapter_images).json()
-    attributes = data["data"]["attributes"]
+    logger.debug(f"Requesting chapter data at {api_at_home}")
+    response = requests.get(api_at_home).json()
+    base_url = response["baseUrl"]
+    attributes = response["chapter"]
 
     # Necessary data to make URLs
     logger.debug("Getting chapter hash...")
