@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import re
 
@@ -81,15 +82,16 @@ def get_manga_data(url: str) -> dict:
 
     logger.debug("Collecting chapters data...\n")
     # Here, we get all the chapters attributes
-    for i, chapter in enumerate(chapters_data):
+    for i, chapter in enumerate(chapters_data[::-1]):
 
         name = chapter.find("div", {"class": "chapter"}).find("a").text.strip()
         date = chapter.find("div", {"class": "update_time"}).text.strip()
+        date = datetime.strptime(date, "%b-%d-%Y").strftime("%d-%m-%Y")
         link = chapter.find("div", {"class": "chapter"}).find("a").get("href")
         scanlation = None
         chapters[f"{i}"] = {
             "name": name,
-            "date": date,
+            "date": date.split("-"),
             "link": link,
             "scanlation": None
         }
@@ -110,3 +112,6 @@ def get_manga_data(url: str) -> dict:
 
     logger.debug("Done. Returning data...\n")
     return data
+
+
+print(get_manga_data("https://mangakatana.com/manga/time-roulette.25837"))
