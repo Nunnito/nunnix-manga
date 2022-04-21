@@ -42,14 +42,14 @@ def get_manga_data(url: str) -> dict:
         "status": "completed" | "ongoing" | "hiatus" | "cancelled",
         "chapters_data": {
             "total": "100",
-            "chapters": {
-                "0": {
+            "chapters": [
+                {
                     "name": "Ch.1 - Chapter 1",
                     "date": "2020-01-01",
                     "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
                     "scanlation": "Band of the Hawks"
                 }
-            }
+            ]
         }
     }
     """
@@ -87,22 +87,22 @@ def get_manga_data(url: str) -> dict:
     total_chapters = soup.find("div", {"class": "uk-width-medium-1-4"})
     total_chapters = re.search(r"\d+", total_chapters.text).group()
     chapters_data = soup.find("div", {"class": "chapters"}).find_all("tr")
-    chapters = {}
+    chapters = []
 
     # Here, we get all the chapters attributes
-    for i, chapter in enumerate(chapters_data[::-1]):
+    for chapter in chapters_data[::-1]:
 
         name = chapter.find("div", {"class": "chapter"}).find("a").text.strip()
         date = chapter.find("div", {"class": "update_time"}).text.strip()
         date = datetime.strptime(date, "%b-%d-%Y").strftime("%d-%m-%Y")
         link = chapter.find("div", {"class": "chapter"}).find("a").get("href")
         scanlation = None
-        chapters[f"{i}"] = {
+        chapters.append({
             "name": name,
             "date": date.split("-"),
             "link": link,
             "scanlation": None
-        }
+        })
 
         logger.debug(f"Name: {name} | Date: {date} | Scanlation: {scanlation}")
 
@@ -122,7 +122,7 @@ def get_manga_data(url: str) -> dict:
     return data
 
 
-def get_chapters_images(url: str) -> list:
+def get_chapter_images(url: str) -> list:
     """ Get chapter images.
 
     Parameters
