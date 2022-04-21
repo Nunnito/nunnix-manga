@@ -130,7 +130,6 @@ def get_manga_data(uuid: str) -> dict:
     }
     """
     # TODO: Status code handler
-    logger.info("Getting manga data...")
     payload = {"includes[]": ["cover_art", "author"]}
     api_manga = f"{BASE_URL}/manga/{uuid}"
 
@@ -145,10 +144,13 @@ def get_manga_data(uuid: str) -> dict:
 
     # Collects all manga attributes.
     logger.debug("Getting manga title...")
-    title = attrs["title"][list(attrs["title"].keys())[0]]
+    title = attrs["title"][list(attrs["title"].keys())[0]]  # Get first title
 
     logger.debug("Getting manga description...")
-    description = attrs["description"]
+    description = attrs["description"][
+            LANG if LANG in attrs["description"]
+            else list(attrs["description"].keys())[0]  # Get first description
+        ]
 
     logger.debug("Getting manga cover...")
     cover = [i for i in relationships if i["type"] == "cover_art"][0]
@@ -156,7 +158,8 @@ def get_manga_data(uuid: str) -> dict:
     cover = f"{COVERS_URL}/{uuid}/{cover}.512.jpg"
 
     logger.debug("Getting manga genres...")
-    genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
+    genres = [genre["attributes"]["name"][list(genre["attributes"]
+              ["name"].keys())[0]] for genre in attrs["tags"]]  # First genre
 
     logger.debug("Getting manga status...")
     status = attrs["status"]
@@ -179,7 +182,6 @@ def get_manga_data(uuid: str) -> dict:
     }
 
     logger.debug("Done. Returning data...\n")
-    logger.info("Done!\n")
     return data
 
 
@@ -288,8 +290,6 @@ def get_chapter_images(uuid: str) -> list:
     """
     # TODO: Status code handler
 
-    logger.info("Getting chapters images...")
-
     api_at_home = f"{BASE_URL}/at-home/server/{uuid}"
     api_chapter_images = f"{BASE_URL}/chapter/{uuid}"
     images = []
@@ -316,7 +316,6 @@ def get_chapter_images(uuid: str) -> list:
         logger.debug(f"IMAGE {i}: {image_url}\n")
 
     logger.debug("Done. Returning data...")
-    logger.info("Done!")
 
     return images
 
@@ -335,7 +334,7 @@ def search_manga(
     status: list[str] = None,
     original_language: list[str] = None,
     excluded_original_language: list[str] = None,
-    available_translated_language: list[str] = None,
+    available_translated_language: list[str] = [LANG],
     publication_demographic: list[str] = None,
     ids: list[str] = None,
     content_rating: list[str] = None,
@@ -553,7 +552,6 @@ def search_manga(
     # Prepare requests
     session = Session()
     response = Request("GET", BASE_URL + "/manga", params=payload).prepare()
-    logger.info("Searching manga...")
     logger.debug(f"Requesting search at {response.url}")
 
     response = session.send(response)  # Make request
@@ -584,8 +582,4 @@ def search_manga(
         })
 
     logger.debug("Done. Returning data...")
-    logger.info("Done!")
     return data
-
-
-print(get_manga_data("da229b4e-7722-40e2-8c0b-4def041fe884"))
