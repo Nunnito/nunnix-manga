@@ -134,9 +134,12 @@ def get_manga_data(uuid: str) -> dict:
     payload = {"includes[]": ["cover_art", "author"]}
     api_manga = f"{BASE_URL}/manga/{uuid}"
 
-    logger.debug(f"Requesting manga data at {api_manga}")
-    response = requests.get(api_manga, params=payload)
+    # Prepare requests
+    session = Session()
+    response = Request("GET", api_manga, params=payload).prepare()
+    logger.debug(f"Requesting manga data at {response.url}")
 
+    response = session.send(response)
     attrs = response.json()["data"]["attributes"]
     relationships = response.json()["data"]["relationships"]
 
@@ -159,7 +162,8 @@ def get_manga_data(uuid: str) -> dict:
     status = attrs["status"]
 
     logger.debug("Getting manga author...")
-    author = get_manga_author(relationships[0]["id"])
+    author = [i for i in relationships if i["type"] == "author"][0]
+    author = author["attributes"]["name"]
 
     logger.debug("Getting manga chapters...")
     chapters_data = get_chapters_data(uuid)
@@ -177,33 +181,6 @@ def get_manga_data(uuid: str) -> dict:
     logger.debug("Done. Returning data...\n")
     logger.info("Done!\n")
     return data
-
-
-def get_manga_author(uuid: str) -> str:
-    """ Get manga author. This function is used by get_manga_data function.
-
-    Parameters
-    ----------
-    uuid : str
-        The author UUID.
-
-    Returns
-    -------
-    str
-        Author name.
-    """
-    # TODO: Status code handler
-    api_author = f"{BASE_URL}/author/{uuid}"
-
-    logger.debug(f"Requesting author data at {api_author}")
-    response = requests.get(api_author)
-
-    logger.debug("Getting manga author...")
-    attrs = response.json()["data"]["attributes"]
-    author = attrs["name"]
-
-    logger.debug("Done. Returning data...")
-    return author
 
 
 def get_chapters_data(uuid: str, offset: int = 0) -> dict:
@@ -703,4 +680,4 @@ def search_manga(
     return data
 
 
-print(search_manga(1))
+print(get_manga_data("da229b4e-7722-40e2-8c0b-4def041fe884"))
