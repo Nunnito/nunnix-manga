@@ -9,6 +9,7 @@ from core.utils.logger import logger
 LANG = "en"  # Used to get manga by language
 QUALITY_MODE = "data"  # Image quality mode: "data" or "data-saver"
 BASE_URL = "https://api.mangadex.org"  # Used for API requests
+COVERS_URL = "https://uploads.mangadex.org/covers"
 TAGS = {  # Genres UUIDs. Thanks MangaDexFilters.kt
     0: "391b0423-d847-456f-aff0-8b0cfc03066b",
     1: "f4122d1c-3b44-44d0-9936-ff7502c39ad3",
@@ -130,10 +131,11 @@ def get_manga_data(uuid: str) -> dict:
     """
     # TODO: Status code handler
     logger.info("Getting manga data...")
+    payload = {"includes[]": ["cover_art", "author"]}
     api_manga = f"{BASE_URL}/manga/{uuid}"
 
     logger.debug(f"Requesting manga data at {api_manga}")
-    response = requests.get(api_manga)
+    response = requests.get(api_manga, params=payload)
 
     attrs = response.json()["data"]["attributes"]
     relationships = response.json()["data"]["relationships"]
@@ -146,8 +148,9 @@ def get_manga_data(uuid: str) -> dict:
     description = attrs["description"]
 
     logger.debug("Getting manga cover...")
-    cover_id = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
-    cover = get_manga_cover(cover_id, 512)[uuid]
+    cover = [i for i in relationships if i["type"] == "cover_art"][0]
+    cover = cover["attributes"]["fileName"]
+    cover = f"{COVERS_URL}/{uuid}/{cover}.512.jpg"
 
     logger.debug("Getting manga genres...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
@@ -656,7 +659,8 @@ def search_manga(
         ("order" if order is None else f"order[{list(order.keys())[0]}]"):
         (order if order is None else order[list(order.keys())[0]]),
         "hasAvailableChapters": "true" if has_available_chapters else "false",
-        "group": group
+        "group": group,
+        "includes[]": ["cover_art"]
     }
 
     data = []  # To store searches
@@ -678,7 +682,11 @@ def search_manga(
 
         title = attributes["title"][list(attributes["title"].keys())[0]]
         link = result["id"]
-        cover = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
+
+        # Get manga cover
+        cover = [i for i in relationships if i["type"] == "cover_art"][0]
+        cover = cover["attributes"]["fileName"]
+        cover = f"{COVERS_URL}/{link}/{cover}.256.jpg"
 
         logger.debug(f"Title {title}")
         logger.debug(f"Link {link}")
@@ -690,58 +698,9 @@ def search_manga(
             "cover": cover
         })
 
-    # Replace covers UUID with covers URL.
-    c_list = [cover["cover"] for cover in data]
-    c_dict = get_manga_cover(c_list)
-
-    for i in range(len(data)):
-        data[i]["cover"] = c_dict[data[i]["link"]]
-
     logger.debug("Done. Returning data...")
     logger.info("Done!")
     return data
 
 
-def get_manga_cover(uuid: list[str], resolution: int = 256) -> dict[str, str]:
-    """ Get manga covers by UUID.
-
-    Parameters
-    ----------
-    uuid : list[str]
-        Covers UUID
-    resolution : int, optional
-        Cover resolution [256, 512]
-
-    Returns
-    -------
-    dict[str, str]
-        Covers URL
-    """
-    # TODO: Status code handler
-
-    covers = {}  # Covers dict
-    payload = {"ids[]": uuid, "limit": 25}
-
-    # Prepare requests
-    session = Session()
-    response = Request("GET", BASE_URL + "/cover", params=payload).prepare()
-    logger.debug(f"Requesting covers at {response.url}")
-
-    response = session.send(response)  # Make request
-    results = response.json()["data"]
-
-    # Iterate through resutls, and append the cover URL to the dict.
-    for result in results:
-        attributes = result["attributes"]
-        manga = result["relationships"][0]["id"]
-        name = attributes["fileName"]
-        cover = (f"https://uploads.mangadex.org/covers/{manga}/{name}" +
-                 f".{resolution}.jpg")
-
-        covers[manga] = cover
-
-    logger.debug("Done. Returning data...\n")
-    return covers
-
-
-print(search_manga())
+print(search_manga(1))
