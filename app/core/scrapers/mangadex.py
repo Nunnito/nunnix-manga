@@ -71,13 +71,16 @@ def get_manga_data(uuid: str) -> dict:
     cover_id = [i for i in relationships if i["type"] == "cover_art"][0]["id"]
     cover = get_manga_cover(cover_id, 512)[uuid]
 
-    logger.debug("Getting manga cover...")
+    logger.debug("Getting manga genres...")
     genres = [genre["attributes"]["name"][LANG] for genre in attrs["tags"]]
 
     logger.debug("Getting manga status...")
     status = attrs["status"]
 
+    logger.debug("Getting manga author...")
     author = get_manga_author(relationships[0]["id"])
+
+    logger.debug("Getting manga chapters...")
     chapters_data = get_chapters_data(uuid)
 
     data = {
@@ -499,6 +502,8 @@ def get_manga_cover(uuid: list[str], resolution: int = 256) -> dict[str, str]:
     ----------
     uuid : list[str]
         Covers UUID
+    resolution : int, optional
+        Cover resolution [256, 512]
 
     Returns
     -------

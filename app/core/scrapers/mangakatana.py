@@ -57,30 +57,36 @@ def get_manga_data(url: str) -> dict:
     soup = BeautifulSoup(response.text, "lxml")
 
     # Collects all manga attributes.
+    logger.debug("Getting manga title...")
     title = soup.find("h1", {"class": "heading"})
     title = title.text.strip()
 
+    logger.debug("Getting manga description...")
     description = soup.find("div", {"class": "summary"})
     description = description.find("p").text.strip()
 
+    logger.debug("Getting manga cover...")
     cover = soup.find("img", {"alt": "[Cover]"})
     cover = cover.get("src")
 
+    logger.debug("Getting manga genres...")
     genres = soup.find("div", {"class": "genres"}).find_all("a")
     genres = [genre.text.strip() for genre in genres]
 
+    logger.debug("Getting manga status...")
     status = soup.find("div", {"class": "status"})
     status = status.text.strip()
 
+    logger.debug("Getting manga author...")
     author = soup.find("a", {"class": "author"})
     author = author.text.strip()
 
+    logger.debug("Getting manga chapters...")
     total_chapters = soup.find("div", {"class": "uk-width-medium-1-4"})
     total_chapters = re.search(r"\d+", total_chapters.text).group()
     chapters_data = soup.find("div", {"class": "chapters"}).find_all("tr")
     chapters = {}
 
-    logger.debug("Collecting chapters data...\n")
     # Here, we get all the chapters attributes
     for i, chapter in enumerate(chapters_data[::-1]):
 
