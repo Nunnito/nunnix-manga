@@ -1,4 +1,5 @@
 import os
+from PyQt5.QtCore import QObject, QVariant, QJsonValue, pyqtSlot, pyqtProperty
 from importlib import import_module
 from pathlib import Path
 
@@ -6,22 +7,47 @@ from core import scrapers
 from core.types import MangaSearch
 
 
-class Scraper:
-    def __init__(self) -> None:
+class Scraper(QObject):
+    def __init__(self, parent=None) -> None:
+        super(Scraper, self).__init__(parent)
+
         self._scrapers_list = self.get_scrapers()
         self._scraper = self._scrapers_list[0]
 
-    def search_manga(self, **kwargs) -> list[MangaSearch]:
-        data = self._scraper.search_manga(**kwargs)
+    # Get as input a dict with all parameters to search
+    @pyqtSlot(QJsonValue, result=QVariant)
+    def search_manga(self, params: QJsonValue) -> list[MangaSearch]:
+        params = params.toVariant()
+        data = self._scraper.search_manga(**params)
 
         results = []
         for result in data:
             title = result["title"]
             link = result["link"]
             cover = result["cover"]
-            results.append(MangaSearch(self._scraper, title, link, cover))
+            results.append(MangaSearch(self._scraper, title, link, cover,
+                                       self))
 
         return results
+
+    @pyqtProperty(QVariant)
+    def scraper(self) -> object:
+        return self._scraper
+
+    @scraper.setter
+    def scraper(self, scraper: str) -> None:
+        for class_obj in self._scrapers_list:
+            if class_obj.NAME == scraper:
+                self._scraper = class_obj
+                break
+
+    @pyqtProperty(list)
+    def scrapers_list(self) -> list:
+        scrapers_list = []
+        for scraper in self._scrapers_list:
+            scrapers_list.append(scraper.NAME)
+
+        return scrapers_list
 
     def get_scrapers(self) -> list:
         classes = []
@@ -35,22 +61,3 @@ class Scraper:
                     classes.append(class_obj)
 
         return classes
-
-    @property
-    def scraper(self) -> object:
-        return self._scraper
-
-    @scraper.setter
-    def scraper(self, scraper: str) -> None:
-        for class_obj in self._scrapers_list:
-            if class_obj.NAME == scraper:
-                self._scraper = class_obj
-                break
-
-    @property
-    def scrapers_list(self) -> list:
-        scrapers_list = []
-        for scraper in self._scrapers_list:
-            scrapers_list.append(scraper.NAME)
-
-        return scrapers_list
