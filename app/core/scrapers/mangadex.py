@@ -1,13 +1,14 @@
-from datetime import datetime
-from requests import Request, Session
 import requests
+import time
 import re
+
+from requests import Request, Session
 
 from core.utils.logger import logger
 
 
 LANG = "en"  # Used to get manga by language
-QUALITY_MODE = "data"  # Image quality mode: "data" or "data-saver"
+QUALITY_MODE = "data"  # Image quality: "data" or "data-saver"
 BASE_URL = "https://api.mangadex.org"  # Used for API requests
 COVERS_URL = "https://uploads.mangadex.org/covers"
 TAGS = {  # Genres UUIDs. Thanks MangaDexFilters.kt
@@ -90,492 +91,498 @@ TAGS = {  # Genres UUIDs. Thanks MangaDexFilters.kt
 }
 
 
-def get_manga_data(uuid: str) -> dict:
-    """ Get manga data.
+class Mangadex:
+    @classmethod
+    def get_manga_data(self, uuid: str) -> dict:
+        """ Get manga data.
 
-    Parameters
-    ----------
-    uuid : str
-        The manga UUID.
+        Parameters
+        ----------
+        uuid : str
+            The manga UUID.
 
-    Returns
-    -------
-    dict
-        Dictionary with all the manga data.
+        Returns
+        -------
+        dict
+            Dictionary with all the manga data.
 
-    Example
-    -------
-        >>> get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")
+        Example
+        -------
+            >>> get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")
 
-    Dictionary content
-    ------------------
-    data = {
-        "title": "Kumo desu ga, nani ka?",
-        "author": "Miura Kentaro",
-        "description": "Some description",
-        "cover": "https://uploads.mangadex.org/covers/MUUID/CUUID.jpg.512.jpg",
-        "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
-        "status": "completed" | "ongoing" | "hiatus" | "cancelled",
-        "chapters_data": {
-            "total": "100",
-            "chapters": [
-                {
-                    "name": "Ch.1 - Chapter 1",
-                    "date": "2020-01-01",
-                    "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
-                    "scanlation": "Band of the Hawks"
-                }
+        Dictionary content
+        ------------------
+        data = {
+            "title": "Kumo desu ga, nani ka?",
+            "author": "Miura Kentaro",
+            "description": "Some description",
+            "cover": "https://uploads.mangadex.org/covers/UID/UID.jpg.512.jpg",
+            "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
+            "status": "completed" | "ongoing" | "hiatus" | "cancelled",
+            "chapters_data": {
+                "total": "100",
+                "chapters": [
+                    {
+                        "name": "Ch.1 - Chapter 1",
+                        "date": "2020-01-01",
+                        "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
+                        "scanlation": "Band of the Hawks"
+                    }
+                ]
+            }
+        }
+        """
+        # TODO: Status code handler
+        payload = {"includes[]": ["cover_art", "author"]}
+        api_manga = f"{BASE_URL}/manga/{uuid}"
+
+        # Prepare requests
+        session = Session()
+        response = Request("GET", api_manga, params=payload).prepare()
+        logger.debug(f"Requesting manga data at {response.url}")
+
+        response = session.send(response)
+        attrs = response.json()["data"]["attributes"]
+        relationships = response.json()["data"]["relationships"]
+
+        # Collects all manga attributes.
+        logger.debug("Getting manga title...")
+        title = attrs["title"][list(attrs["title"].keys())[0]]  # First title
+
+        logger.debug("Getting manga description...")
+        description = attrs["description"][
+                LANG if LANG in attrs["description"]
+                else list(attrs["description"].keys())[0]  # First description
             ]
-        }
-    }
-    """
-    # TODO: Status code handler
-    payload = {"includes[]": ["cover_art", "author"]}
-    api_manga = f"{BASE_URL}/manga/{uuid}"
 
-    # Prepare requests
-    session = Session()
-    response = Request("GET", api_manga, params=payload).prepare()
-    logger.debug(f"Requesting manga data at {response.url}")
-
-    response = session.send(response)
-    attrs = response.json()["data"]["attributes"]
-    relationships = response.json()["data"]["relationships"]
-
-    # Collects all manga attributes.
-    logger.debug("Getting manga title...")
-    title = attrs["title"][list(attrs["title"].keys())[0]]  # Get first title
-
-    logger.debug("Getting manga description...")
-    description = attrs["description"][
-            LANG if LANG in attrs["description"]
-            else list(attrs["description"].keys())[0]  # Get first description
-        ]
-
-    logger.debug("Getting manga cover...")
-    cover = [i for i in relationships if i["type"] == "cover_art"][0]
-    cover = cover["attributes"]["fileName"]
-    cover = f"{COVERS_URL}/{uuid}/{cover}.512.jpg"
-
-    logger.debug("Getting manga genres...")
-    genres = [genre["attributes"]["name"][list(genre["attributes"]
-              ["name"].keys())[0]] for genre in attrs["tags"]]  # First genre
-
-    logger.debug("Getting manga status...")
-    status = attrs["status"]
-
-    logger.debug("Getting manga author...")
-    author = [i for i in relationships if i["type"] == "author"][0]
-    author = author["attributes"]["name"]
-
-    logger.debug("Getting manga chapters...")
-    chapters_data = get_chapters_data(uuid)
-
-    data = {
-        "title": title,
-        "author": author,
-        "description": description,
-        "cover": cover,
-        "genres": genres,
-        "status": status,
-        "chapters_data": chapters_data
-    }
-
-    logger.debug("Done. Returning data...\n")
-    return data
-
-
-def get_chapters_data(uuid: str, offset: int = 0) -> dict:
-    """ Get chapters data. This function is used by get_manga_data function.
-
-    Parameters
-    ----------
-    uuid : str
-        The manga UUID.
-    offset : int (optional)
-        The offset to get the chapters.
-
-    Returns
-    -------
-    dict
-        Dictionary with all chapters data.
-    """
-    # TODO: Status code handler
-    date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
-    api_chapters = f"{BASE_URL}/manga/{uuid}/feed"
-    payload = {
-        "limit": 500,
-        "offset": offset,
-        "order[chapter]": "asc",
-        "translatedLanguage[]": LANG,
-        "includes[]": ["scanlation_group", "user"]
-        }
-
-    chapters = []
-
-    # Prepare requests
-    session = Session()
-    response = Request("GET", api_chapters, params=payload).prepare()
-    logger.debug(f"Requesting chapters data at {response.url}")
-
-    response = session.send(response)
-    total = response.json()["total"]
-    results = response.json()["data"]
-
-    logger.debug("Collecting chapters data...\n")
-
-    # Here, we get all the attributes
-    for result in results:
-        attrs = result["attributes"]
-        relation = result["relationships"]
-
-        name = f"Ch.{attrs['chapter']} - {attrs['title']}"
-        date = re.match(date_pattern, attrs["publishAt"]).group()
-        date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
-
-        # Scanlation group
-        scanlations = [i for i in relation if i["type"] == "scanlation_group"]
-        scanlations_list = []
-        for scanlation in scanlations:
-            scanlations_list.append(scanlation["attributes"]["name"])
-        scanlation = " | ".join(scanlations_list)
-
-        # If not scanlation group, we get the user
-        if not any(scanlations_list):
-            users = [i for i in relation if i["type"] == "user"]
-            users_list = []
-            for user in users:
-                users_list.append(user["attributes"]["username"])
-            scanlation = " | ".join(users_list)
-
-        chapter_id = result["id"]
-        chapters.append({
-            "name": name,
-            "date": date.split("/"),
-            "link": chapter_id,
-            "scanlation": scanlation
-        })
-
-        logger.debug(f"Name: {name} | Date: {date} | Scanlation: {scanlation}")
-
-    data = {"total": total, "chapters": chapters}
-
-    # If there are more chapters, we get them too
-    if total > 500 and offset + 500 < total:
-        data["chapters"].update(get_chapters_data(uuid,
-                                                  offset + 500)["chapters"])
-
-    logger.debug(f"Done. Returning data... (offset: {offset})")
-    return data
-
-
-def get_chapter_images(uuid: str) -> list:
-    """ Get chapter images.
-
-    Parameters
-    ----------
-    uuid : str
-        The chapter UUID.
-
-    Returns
-    -------
-    list
-        A list with all images links.
-
-    Example
-    -------
-        >>> get_chapter_images("da63389a-3d60-4634-8652-47a52e35eacc")
-    """
-    # TODO: Status code handler
-
-    api_at_home = f"{BASE_URL}/at-home/server/{uuid}"
-    images = []
-
-    # Requests
-    logger.debug(f"Requesting chapter data at {api_at_home}")
-    response = requests.get(api_at_home).json()
-    base_url = response["baseUrl"]
-    attributes = response["chapter"]
-
-    # Necessary data to make URLs
-    logger.debug("Getting chapter hash...")
-    hash = attributes["hash"]
-    logger.debug("Getting chapter images name...")
-    logger.debug(f"Quality mode is \"{QUALITY_MODE}\"")
-    names = attributes["data" if QUALITY_MODE == "data" else "dataSaver"]
-
-    # Making images URLs
-    logger.debug("Making images URLs...\n")
-    for i, name in enumerate(names):
-        image_url = f"{base_url}/{QUALITY_MODE}/{hash}/{name}"
-        images.append(image_url)
-        logger.debug(f"IMAGE {i}: {image_url}\n")
-
-    logger.debug("Done. Returning data...")
-
-    return images
-
-
-def search_manga(
-    limit: int = 25,
-    offset: int = None,
-    title: str = None,
-    authors: list[str] = None,
-    artists: list[str] = None,
-    year: int = None,
-    included_tags: list[str] = [],
-    included_tags_mode: str = None,
-    excluded_tags: list[str] = [],
-    excluded_tags_mode: str = None,
-    status: list[str] = None,
-    original_language: list[str] = None,
-    excluded_original_language: list[str] = None,
-    available_translated_language: list[str] = [LANG],
-    publication_demographic: list[str] = None,
-    ids: list[str] = None,
-    content_rating: list[str] = None,
-    created_at_since: str = None,
-    updated_at_since: str = None,
-    order: dict[str, str] = None,
-    has_available_chapters: bool = True,
-    group: str = None
-) -> dict:
-    """ Search manga, with advanced parameters.
-    See: https://api.mangadex.org/swagger.html#/Manga/get-search-manga
-
-    Parameters
-    ----------
-    limit : int, optional
-        Number of results
-
-    offset : int, optional
-        Offset between mangas, this will be used to "jump" to the next page.
-
-    title : str, optional
-        Manga title.
-
-    authors : list[str], optional
-        Manga authors (UUID).
-
-    artists : list[str], optional
-        Manga artist (UUID).
-
-    year : int, optional
-        Manga year.
-
-    included_tags : list[int], optional
-        Manga genres.
-
-    included_tags_mode : str, optional
-        Genres inclusion mode ("AND" or "OR").
-
-    excluded_tags : list[int], optional
-        Manga excluded genres.
-
-    excluded_tags_mode : str, optional
-        Excluded genres inclusion mode ("AND" or "OR")
-
-    status : list[str], optional
-        Manga status ("ongoing", "completed", "hiatus", "cancelled").
-
-    original_language : list[str], optional
-        Manga original language, in ISO 639-1 standard.
-
-    excluded_original_language : list[str], optional
-        Manga excluded original language, in ISO 639-1 standard.
-
-    available_translated_language : list[str], optional
-        Manga available translated language, in ISO 639-1 standard.
-
-    publication_demographic : list[str], optional
-        Manga demography ("shounen", "shoujo", "josei", "seinen", "none").
-
-    ids : list[str], optional
-        Manga ids (UUID).
-
-    content_rating : list[str], optional
-        Manga content rating ("none", "safe", "suggestive", "erotica",
-        "pornographic").
-
-    created_at_since : str, optional
-        Datetime string with following format: YYYY-MM-DDTHH:MM:SS
-
-    updated_at_since : str, optional
-        Datetime string with following format: YYYY-MM-DDTHH:MM:SS
-
-    order : dict[str, str], optional
-        Manga order (
-            title: "asc", "desc"
-            latestUploadedChapter: "asc", "desc"
-            followedCount: "asc", "desc"
-            createdAt: "asc", "desc"
-            updatedAt: "asc", "desc"
-            relevance: "asc", "desc"
-            year: "asc", "desc")
-
-    has_available_chapters : bool, optional
-        Manga has available chapters.
-
-    group : str, optional
-        Manga scanlation group (UUID).
-
-    Returns
-    -------
-    dict
-        Dictionary with all manga results.
-
-    Example
-    -------
-        >>> search_manga(title="Kumo", offset=20, order={"updatedAt": "asc"})
-
-    Tags list
-    ---------
-    0 = Action,
-    1 = Adaptation,
-    2 = Adventure,
-    3 = Aliens,
-    4 = Animals,
-    5 = Anthology,
-    6 = Award Winning,
-    7 = Boy's Love,
-    8 = Comedy,
-    9 = Cooking,
-    10 = Crime,
-    11 = Crossdressing,
-    12 = Delinquents,
-    13 = Demons,
-    14 = Doujinshi,
-    15 = Drama,
-    16 = Fan Colored,
-    17 = Fantasy,
-    18 = 4-Koma,
-    19 = Full Color,
-    20 = Genderswap,
-    21 = Ghosts,
-    22 = Girl's Love,
-    23 = Gore,
-    24 = Gyaru,
-    25 = Harem,
-    26 = Historical,
-    27 = Horror,
-    28 = Incest,
-    29 = Isekai,
-    30 = Loli,
-    31 = Long Strip,
-    32 = Mafia,
-    33 = Magic,
-    34 = Magical Girls,
-    35 = Martial Arts,
-    36 = Mecha,
-    37 = Medical,
-    38 = Military,
-    39 = Monster Girls,
-    40 = Monsters,
-    41 = Music,
-    42 = Mystery,
-    43 = Ninja,
-    44 = Office Workers,
-    45 = Official Colored,
-    46 = Oneshot,
-    47 = Philosophical,
-    48 = Police,
-    49 = Post-Apocalyptic,
-    50 = Psychological,
-    51 = Reincarnation,
-    52 = Reverse Harem,
-    53 = Romance,
-    54 = Samurai,
-    55 = School Life,
-    56 = Sci-Fi,
-    57 = Sexual Violence,
-    58 = Shota,
-    59 = Slice of Life,
-    60 = Sports,
-    61 = Superhero,
-    62 = Supernatural,
-    63 = Survival,
-    64 = Thriller,
-    65 = Time Travel,
-    66 = Tragedy,
-    67 = Traditional Games,
-    68 = User Created,
-    69 = Vampires,
-    70 = Video Games,
-    71 = Villainess,
-    72 = Virtual Reality,
-    73 = Web Comic,
-    74 = Wuxia,
-    75 = Zombies,
-    """
-    # TODO: Status code handler
-
-    # Included and excluded tags "translator"
-    for i, included_tag in enumerate(included_tags):
-        included_tags[i] = TAGS[included_tag]
-    for i, excluded_tag in enumerate(excluded_tags):
-        excluded_tags[i] = TAGS[excluded_tag]
-
-    # Query strings
-    payload = {
-        "limit": limit,
-        "offset": offset,
-        "title": title,
-        "authors[]": authors,
-        "artists[]": artists,
-        "year": year,
-        "includedTags[]": included_tags,
-        "includedTagsMode": included_tags_mode,
-        "excludedTags[]": excluded_tags,
-        "excludedTagsMode": excluded_tags_mode,
-        "status[]": status,
-        "originalLanguage[]": original_language,
-        "excludedOriginalLanguage[]": excluded_original_language,
-        "availableTranslatedLanguage[]": available_translated_language,
-        "publicationDemographic[]": publication_demographic,
-        "ids[]": ids,
-        "contentRating[]": content_rating,
-        "createdAtSince": created_at_since,
-        "updatedAtSince": updated_at_since,
-        ("order" if order is None else f"order[{list(order.keys())[0]}]"):
-        (order if order is None else order[list(order.keys())[0]]),
-        "hasAvailableChapters": "true" if has_available_chapters else "false",
-        "group": group,
-        "includes[]": ["cover_art"]
-    }
-
-    data = []  # To store searches
-
-    # Prepare requests
-    session = Session()
-    response = Request("GET", BASE_URL + "/manga", params=payload).prepare()
-    logger.debug(f"Requesting search at {response.url}")
-
-    response = session.send(response)  # Make request
-    results = response.json()["data"]
-
-    logger.debug(f"Total results: {response.json()['total']}\n")
-
-    for result in results:
-        attributes = result["attributes"]
-        relationships = result["relationships"]
-
-        title = attributes["title"][list(attributes["title"].keys())[0]]
-        link = result["id"]
-
-        # Get manga cover
+        logger.debug("Getting manga cover...")
         cover = [i for i in relationships if i["type"] == "cover_art"][0]
         cover = cover["attributes"]["fileName"]
-        cover = f"{COVERS_URL}/{link}/{cover}.256.jpg"
+        cover = f"{COVERS_URL}/{uuid}/{cover}.512.jpg"
 
-        logger.debug(f"Title {title}")
-        logger.debug(f"Link {link}")
-        logger.debug(f"Cover {cover}\n")
+        logger.debug("Getting manga genres...")
+        genres = [genre["attributes"]["name"][list(genre["attributes"]
+                  ["name"].keys())[0]] for genre in attrs["tags"]]  # First tag
 
-        data.append({
+        logger.debug("Getting manga status...")
+        status = attrs["status"]
+
+        logger.debug("Getting manga author...")
+        author = [i for i in relationships if i["type"] == "author"][0]
+        author = author["attributes"]["name"]
+
+        logger.debug("Getting manga chapters...")
+        chapters_data = self.get_chapters_data(uuid)
+
+        data = {
             "title": title,
-            "link": link,
-            "cover": cover
-        })
+            "author": author,
+            "description": description,
+            "cover": cover,
+            "genres": genres,
+            "status": status,
+            "chapters_data": chapters_data
+        }
 
-    logger.debug("Done. Returning data...")
-    return data
+        logger.debug("Done. Returning data...\n")
+        return data
+
+    @classmethod
+    def get_chapters_data(self, uuid: str, offset: int = 0) -> dict:
+        """ Get chapters data. This function is used by get_manga_data function.
+
+        Parameters
+        ----------
+        uuid : str
+            The manga UUID.
+        offset : int (optional)
+            The offset to get the chapters.
+
+        Returns
+        -------
+        dict
+            Dictionary with all chapters data.
+        """
+        # TODO: Status code handler
+        date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
+        api_chapters = f"{BASE_URL}/manga/{uuid}/feed"
+        payload = {
+            "limit": 500,
+            "offset": offset,
+            "order[chapter]": "asc",
+            "translatedLanguage[]": LANG,
+            "includes[]": ["scanlation_group", "user"]
+            }
+
+        chapters = []
+
+        # Prepare requests
+        session = Session()
+        response = Request("GET", api_chapters, params=payload).prepare()
+        logger.debug(f"Requesting chapters data at {response.url}")
+
+        response = session.send(response)
+        total = response.json()["total"]
+        results = response.json()["data"]
+
+        logger.debug("Collecting chapters data...\n")
+
+        # Here, we get all the attributes
+        for result in results:
+            attrs = result["attributes"]
+            relation = result["relationships"]
+
+            name = f"Ch.{attrs['chapter']} - {attrs['title']}"
+            date = re.match(date_pattern, attrs["publishAt"]).group()
+            date = time.strptime(date, "%Y-%m-%d")
+            date = time.strftime("%d/%m/%Y", date)
+
+            # Scanlation group
+            scanlations = [i for i in relation if
+                           i["type"] == "scanlation_group"]
+            scanlations_list = []
+            for scanlation in scanlations:
+                scanlations_list.append(scanlation["attributes"]["name"])
+            scanlation = " | ".join(scanlations_list)
+
+            # If not scanlation group, we get the user
+            if not any(scanlations_list):
+                users = [i for i in relation if i["type"] == "user"]
+                users_list = []
+                for user in users:
+                    users_list.append(user["attributes"]["username"])
+                scanlation = " | ".join(users_list)
+
+            chapter_id = result["id"]
+            chapters.append({
+                "name": name,
+                "date": date.split("/"),
+                "link": chapter_id,
+                "scanlation": scanlation
+            })
+
+            logger.debug(f"Name: {name}|Date: {date}|Scanlation: {scanlation}")
+
+        data = {"total": total, "chapters": chapters}
+
+        # If there are more chapters, we get them too
+        if total > 500 and offset + 500 < total:
+            data["chapters"].update(self.get_chapters_data(uuid,
+                                    offset + 500)["chapters"])
+
+        logger.debug(f"Done. Returning data... (offset: {offset})")
+        return data
+
+    @classmethod
+    def get_chapter_images(self, uuid: str) -> list:
+        """ Get chapter images.
+
+        Parameters
+        ----------
+        uuid : str
+            The chapter UUID.
+
+        Returns
+        -------
+        list
+            A list with all images links.
+
+        Example
+        -------
+            >>> get_chapter_images("da63389a-3d60-4634-8652-47a52e35eacc")
+        """
+        # TODO: Status code handler
+
+        api_at_home = f"{BASE_URL}/at-home/server/{uuid}"
+        images = []
+
+        # Requests
+        logger.debug(f"Requesting chapter data at {api_at_home}")
+        response = requests.get(api_at_home).json()
+        base_url = response["baseUrl"]
+        attributes = response["chapter"]
+
+        # Necessary data to make URLs
+        logger.debug("Getting chapter hash...")
+        hash = attributes["hash"]
+        logger.debug("Getting chapter images name...")
+        logger.debug(f"Quality mode is \"{QUALITY_MODE}\"")
+        names = attributes["data" if QUALITY_MODE == "data" else "dataSaver"]
+
+        # Making images URLs
+        logger.debug("Making images URLs...\n")
+        for i, name in enumerate(names):
+            image_url = f"{base_url}/{QUALITY_MODE}/{hash}/{name}"
+            images.append(image_url)
+            logger.debug(f"IMAGE {i}: {image_url}\n")
+
+        logger.debug("Done. Returning data...")
+
+        return images
+
+    @classmethod
+    def search_manga(
+        self,
+        limit: int = 25,
+        offset: int = None,
+        title: str = None,
+        authors: list[str] = None,
+        artists: list[str] = None,
+        year: int = None,
+        included_tags: list[str] = [],
+        included_tags_mode: str = None,
+        excluded_tags: list[str] = [],
+        excluded_tags_mode: str = None,
+        status: list[str] = None,
+        original_language: list[str] = None,
+        excluded_original_language: list[str] = None,
+        available_translated_language: list[str] = LANG,
+        publication_demographic: list[str] = None,
+        ids: list[str] = None,
+        content_rating: list[str] = None,
+        created_at_since: str = None,
+        updated_at_since: str = None,
+        order: dict[str, str] = None,
+        has_available_chapters: bool = True,
+        group: str = None
+    ) -> dict:
+        """ Search manga, with advanced parameters.
+        See: https://api.mangadex.org/swagger.html#/Manga/get-search-manga
+
+        Parameters
+        ----------
+        limit : int, optional
+            Number of results
+
+        offset : int, optional
+            Offset between mangas, this will be used to "jump" to the next page
+
+        title : str, optional
+            Manga title.
+
+        authors : list[str], optional
+            Manga authors (UUID).
+
+        artists : list[str], optional
+            Manga artist (UUID).
+
+        year : int, optional
+            Manga year.
+
+        included_tags : list[int], optional
+            Manga genres.
+
+        included_tags_mode : str, optional
+            Genres inclusion mode ("AND" or "OR").
+
+        excluded_tags : list[int], optional
+            Manga excluded genres.
+
+        excluded_tags_mode : str, optional
+            Excluded genres inclusion mode ("AND" or "OR")
+
+        status : list[str], optional
+            Manga status ("ongoing", "completed", "hiatus", "cancelled").
+
+        original_language : list[str], optional
+            Manga original language, in ISO 639-1 standard.
+
+        excluded_original_language : list[str], optional
+            Manga excluded original language, in ISO 639-1 standard.
+
+        available_translated_language : list[str], optional
+            Manga available translated language, in ISO 639-1 standard.
+
+        publication_demographic : list[str], optional
+            Manga demography ("shounen", "shoujo", "josei", "seinen", "none").
+
+        ids : list[str], optional
+            Manga ids (UUID).
+
+        content_rating : list[str], optional
+            Manga content rating ("none", "safe", "suggestive", "erotica",
+            "pornographic").
+
+        created_at_since : str, optional
+            Datetime string with following format: YYYY-MM-DDTHH:MM:SS
+
+        updated_at_since : str, optional
+            Datetime string with following format: YYYY-MM-DDTHH:MM:SS
+
+        order : dict[str, str], optional
+            Manga order (
+                title: "asc", "desc"
+                latestUploadedChapter: "asc", "desc"
+                followedCount: "asc", "desc"
+                createdAt: "asc", "desc"
+                updatedAt: "asc", "desc"
+                relevance: "asc", "desc"
+                year: "asc", "desc")
+
+        has_available_chapters : bool, optional
+            Manga has available chapters.
+
+        group : str, optional
+            Manga scanlation group (UUID).
+
+        Returns
+        -------
+        dict
+            Dictionary with all manga results.
+
+        Example
+        -------
+            >>> search_manga(title="Kumo", order={"updatedAt": "asc"})
+
+        Tags list
+        ---------
+        0 = Action,
+        1 = Adaptation,
+        2 = Adventure,
+        3 = Aliens,
+        4 = Animals,
+        5 = Anthology,
+        6 = Award Winning,
+        7 = Boy's Love,
+        8 = Comedy,
+        9 = Cooking,
+        10 = Crime,
+        11 = Crossdressing,
+        12 = Delinquents,
+        13 = Demons,
+        14 = Doujinshi,
+        15 = Drama,
+        16 = Fan Colored,
+        17 = Fantasy,
+        18 = 4-Koma,
+        19 = Full Color,
+        20 = Genderswap,
+        21 = Ghosts,
+        22 = Girl's Love,
+        23 = Gore,
+        24 = Gyaru,
+        25 = Harem,
+        26 = Historical,
+        27 = Horror,
+        28 = Incest,
+        29 = Isekai,
+        30 = Loli,
+        31 = Long Strip,
+        32 = Mafia,
+        33 = Magic,
+        34 = Magical Girls,
+        35 = Martial Arts,
+        36 = Mecha,
+        37 = Medical,
+        38 = Military,
+        39 = Monster Girls,
+        40 = Monsters,
+        41 = Music,
+        42 = Mystery,
+        43 = Ninja,
+        44 = Office Workers,
+        45 = Official Colored,
+        46 = Oneshot,
+        47 = Philosophical,
+        48 = Police,
+        49 = Post-Apocalyptic,
+        50 = Psychological,
+        51 = Reincarnation,
+        52 = Reverse Harem,
+        53 = Romance,
+        54 = Samurai,
+        55 = School Life,
+        56 = Sci-Fi,
+        57 = Sexual Violence,
+        58 = Shota,
+        59 = Slice of Life,
+        60 = Sports,
+        61 = Superhero,
+        62 = Supernatural,
+        63 = Survival,
+        64 = Thriller,
+        65 = Time Travel,
+        66 = Tragedy,
+        67 = Traditional Games,
+        68 = User Created,
+        69 = Vampires,
+        70 = Video Games,
+        71 = Villainess,
+        72 = Virtual Reality,
+        73 = Web Comic,
+        74 = Wuxia,
+        75 = Zombies,
+        """
+        # TODO: Status code handler
+        # Included and excluded tags "translator"
+        for i, included_tag in enumerate(included_tags):
+            included_tags[i] = TAGS[included_tag]
+        for i, excluded_tag in enumerate(excluded_tags):
+            excluded_tags[i] = TAGS[excluded_tag]
+
+        # Query strings
+        payload = {
+            "limit": limit,
+            "offset": offset,
+            "title": title,
+            "authors[]": authors,
+            "artists[]": artists,
+            "year": year,
+            "includedTags[]": included_tags,
+            "includedTagsMode": included_tags_mode,
+            "excludedTags[]": excluded_tags,
+            "excludedTagsMode": excluded_tags_mode,
+            "status[]": status,
+            "originalLanguage[]": original_language,
+            "excludedOriginalLanguage[]": excluded_original_language,
+            "availableTranslatedLanguage[]": available_translated_language,
+            "publicationDemographic[]": publication_demographic,
+            "ids[]": ids,
+            "contentRating[]": content_rating,
+            "createdAtSince": created_at_since,
+            "updatedAtSince": updated_at_since,
+            ("order" if order is None else f"order[{list(order.keys())[0]}]"):
+            (order if order is None else order[list(order.keys())[0]]),
+            "hasAvailableChapters": "true" if has_available_chapters else
+                                    "false",
+            "group": group,
+            "includes[]": ["cover_art"]
+        }
+
+        data = []  # To store searches
+
+        # Prepare requests
+        session = Session()
+        response = Request("GET", BASE_URL + "/manga",
+                           params=payload).prepare()
+        logger.debug(f"Requesting search at {response.url}")
+
+        response = session.send(response)  # Make request
+        results = response.json()["data"]
+
+        logger.debug(f"Total results: {response.json()['total']}\n")
+
+        for result in results:
+            attributes = result["attributes"]
+            relationships = result["relationships"]
+
+            title = attributes["title"][list(attributes["title"].keys())[0]]
+            link = result["id"]
+
+            # Get manga cover
+            cover = [i for i in relationships if i["type"] == "cover_art"][0]
+            cover = cover["attributes"]["fileName"]
+            cover = f"{COVERS_URL}/{link}/{cover}.256.jpg"
+
+            logger.debug(f"Title {title}")
+            logger.debug(f"Link {link}")
+            logger.debug(f"Cover {cover}\n")
+
+            data.append({
+                "title": title,
+                "link": link,
+                "cover": cover
+            })
+
+        logger.debug("Done. Returning data...")
+        return data
