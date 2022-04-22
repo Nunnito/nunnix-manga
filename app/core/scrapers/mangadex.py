@@ -268,7 +268,7 @@ class Mangadex:
 
         # If there are more chapters, we get them too
         if total > 500 and offset + 500 < total:
-            data["chapters"].update(self.get_chapters_data(uuid,
+            data["chapters"].extend(self.get_chapters_data(uuid,
                                     offset + 500)["chapters"])
 
         logger.debug(f"Done. Returning data... (offset: {offset})")
