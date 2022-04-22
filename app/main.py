@@ -6,6 +6,7 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtGui import QGuiApplication, QIcon
 
 from core.utils import qml_utils
+from core.types import Scraper
 
 # Set init variables
 application = QGuiApplication(sys.argv)
@@ -26,8 +27,10 @@ def main():
     # Load variables to QML
     icon_engine = qml_utils.Icon()
     theme_engine = qml_utils.Theme()
+    scraper_engine = Scraper()
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
+    context.setContextProperty("Scraper", scraper_engine)
 
     # Set application properties
     application.aboutToQuit.connect(before_close)
