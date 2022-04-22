@@ -8,27 +8,28 @@ from bs4 import BeautifulSoup
 from core.utils.logger import logger
 
 
-BASE_URL = "https://mangakatana.com"
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)',
-    'Referer': "http://mangakatana.com/"}
-MONTHS = {
-    "Jan": "01",
-    "Feb": "02",
-    "Mar": "03",
-    "Apr": "04",
-    "May": "05",
-    "Jun": "06",
-    "Jul": "07",
-    "Aug": "08",
-    "Sep": "09",
-    "Oct": "10",
-    "Nov": "11",
-    "Dec": "12"
-}
-
-
 class Mangakatana:
+    NAME = "MangaKatana"
+
+    BASE_URL = "https://mangakatana.com"
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)',
+        'Referer': "http://mangakatana.com/"}
+    MONTHS = {
+        "Jan": "01",
+        "Feb": "02",
+        "Mar": "03",
+        "Apr": "04",
+        "May": "05",
+        "Jun": "06",
+        "Jul": "07",
+        "Aug": "08",
+        "Sep": "09",
+        "Oct": "10",
+        "Nov": "11",
+        "Dec": "12"
+    }
+
     @classmethod
     def get_manga_data(self, url: str) -> dict:
         """ Get manga data.
@@ -71,7 +72,7 @@ class Mangakatana:
         """
         # TODO: Status code handler
         logger.debug(f"Requesting manga data at {url}")
-        response = requests.get(url, headers=HEADERS)
+        response = requests.get(url, headers=self.HEADERS)
         soup = BeautifulSoup(response.text, "lxml")
 
         # Collects all manga attributes.
@@ -113,7 +114,8 @@ class Mangakatana:
 
             # Replace the month name with the corresponding number
             date = chapter.find("div", {"class": "update_time"}).text.strip()
-            date = [date.replace(m, MONTHS[m]) for m in MONTHS if m in date][0]
+            date = [date.replace(m, self.MONTHS[m]) for m in self.MONTHS
+                    if m in date][0]
             date = time.strptime(date, "%m-%d-%Y")
             date = time.strftime("%d-%m-%Y", date)
 
@@ -164,7 +166,7 @@ class Mangakatana:
         """
         # TODO: Status code handler
         logger.debug(f"Requesting chapters data at {url}")
-        response = requests.get(url, headers=HEADERS)
+        response = requests.get(url, headers=self.HEADERS)
 
         images = re.findall(r"var ytaw=\[('.+'),\]", response.text)[0]
         images = images.replace("'", "").split(",")
@@ -247,12 +249,12 @@ class Mangakatana:
 
         # If title is not none, search only the title.
         if title is not None:
-            url = f"{BASE_URL}/page/{page}?search={title}"
+            url = f"{self.BASE_URL}/page/{page}?search={title}"
         elif author is not None:
-            url = f"{BASE_URL}/page/{page}?search={author}"
+            url = f"{self.BASE_URL}/page/{page}?search={author}"
             url += "&search_by=author""shounen"
         else:
-            url = f"{BASE_URL}/manga/page/{page}"
+            url = f"{self.BASE_URL}/manga/page/{page}"
 
         # Parameters
         payload = {
