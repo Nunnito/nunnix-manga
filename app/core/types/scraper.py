@@ -30,9 +30,9 @@ class Scraper(QObject):
 
         return results
 
-    @pyqtProperty(QVariant)
+    @pyqtProperty(str)
     def scraper(self) -> object:
-        return self._scraper
+        return self._scraper.NAME
 
     @scraper.setter
     def scraper(self, scraper: str) -> None:
