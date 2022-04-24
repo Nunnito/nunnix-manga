@@ -1,17 +1,29 @@
+import asyncio
 import sys
-from os import environ
+
 from pathlib import Path
+from os import environ
+import warnings
 
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtGui import QGuiApplication, QIcon
+from aiohttp import ClientSession
+from qasync import QEventLoop
 
 from core.utils import qml_utils
 from core.types import Scraper
 
 # Set init variables
 application = QGuiApplication(sys.argv)
+loop = QEventLoop(application)
+asyncio.set_event_loop(loop)
 engine = QQmlApplicationEngine()
 context = engine.rootContext()
+
+# Create session and suppress its warning
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    session = ClientSession(loop=loop)
 
 
 def before_close():
@@ -27,7 +39,7 @@ def main():
     # Load variables to QML
     icon_engine = qml_utils.Icon()
     theme_engine = qml_utils.Theme()
-    scraper_engine = Scraper()
+    scraper_engine = Scraper(session)
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
     context.setContextProperty("Scraper", scraper_engine)
@@ -38,7 +50,9 @@ def main():
 
     # Load QML file and execute it
     engine.load(str(Path(__file__).parent / "ui" / "main.qml"))
-    sys.exit(application.exec_())
+    with loop:
+        loop.run_forever()
+        loop.create_task(session.close())
 
 
 if __name__ == "__main__":
