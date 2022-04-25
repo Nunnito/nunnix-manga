@@ -1,17 +1,22 @@
-from PyQt5.QtCore import QObject, QVariant, pyqtSlot, pyqtProperty
+from PyQt5.QtCore import QObject, QVariant, pyqtProperty
+from aiohttp import ClientSession
+from qasync import asyncSlot
 
 
 class Chapter(QObject):
     """ Chapter type to be used in Manga class """
-    def __init__(self, scraper, name: str, date: list[str, str, str],
-                 link: str, scanlation: str, parent) -> None:
+    def __init__(self, scraper, session: ClientSession, name: str,
+                 date: list[str, str, str], link: str, scanlation: str,
+                 parent) -> None:
         super(Chapter, self).__init__(parent)
 
         self._scraper = scraper
+        self._session = session
         self._name = name
         self._date = date
         self._link = link
         self._scanlation = scanlation
+        self._parent = parent
 
     @pyqtProperty(str)
     def scraper(self) -> str:
@@ -33,10 +38,12 @@ class Chapter(QObject):
     def scanlation(self) -> str:
         return self._scanlation
 
-    @pyqtSlot(result=list)
-    def get_images(self) -> list[str]:
+    @asyncSlot()
+    async def get_images(self) -> None:
         """ Get images from chapter """
-        return self._scraper.get_chapter_images(self._link)
+        images = await self._scraper.get_chapter_images(self._session,
+                                                        self._link)
+        self._parent._parent._signals_handler.chapterImages.emit(images)
 
 
 class ChaptersData(QObject):
@@ -58,12 +65,14 @@ class ChaptersData(QObject):
 
 class Manga(QObject):
     """ Manga type to get all manga data """
-    def __init__(self, scraper, title: str, author: str, description: str,
-                 cover: str, genres: list[str], status: str, link: str,
-                 chapters_data: ChaptersData, parent) -> None:
+    def __init__(self, scraper, session: ClientSession, title: str,
+                 author: str, description: str, cover: str, genres: list[str],
+                 status: str, link: str, chapters_data: ChaptersData,
+                 parent) -> None:
         super(Manga, self).__init__(parent)
 
         self._scraper = scraper
+        self._session = session
         self._title = title
         self._author = author
         self._description = description
@@ -72,6 +81,7 @@ class Manga(QObject):
         self._status = status
         self._link = link
         self._chapters_data = chapters_data
+        self._parent = parent
 
     @pyqtProperty(str)
     def scraper(self) -> str:
@@ -112,13 +122,16 @@ class Manga(QObject):
 
 class MangaSearch(QObject):
     """ Manga search type """
-    def __init__(self, scraper, title: str, link: str, cover: str, parent):
+    def __init__(self, scraper, session: ClientSession, title: str,
+                 link: str, cover: str, parent):
         super(MangaSearch, self).__init__(parent)
 
         self._scraper = scraper
+        self._session = session
         self._title = title
         self._link = link
         self._cover = cover
+        self._parent = parent
 
     @pyqtProperty(str)
     def scraper(self) -> str:
@@ -136,10 +149,10 @@ class MangaSearch(QObject):
     def cover(self) -> str:
         return self._cover
 
-    @pyqtSlot(result=QVariant)
-    def get_data(self) -> Manga:
+    @asyncSlot()
+    async def get_data(self) -> None:
         """ Get manga data """
-        data = self._scraper.get_manga_data(self._link)
+        data = await self._scraper.get_manga_data(self._session, self._link)
 
         title = data["title"]
         author = data["author"]
@@ -152,6 +165,7 @@ class MangaSearch(QObject):
             chapters.append(
                 Chapter(
                     self._scraper,
+                    self._session,
                     chapter["name"],
                     chapter["date"],
                     chapter["link"],
@@ -164,8 +178,8 @@ class MangaSearch(QObject):
 
         manga = Manga(
             self._scraper,
+            self._session,
             title, author, description, cover, genres, status, self._link,
             chapters_data, self
         )
-
-        return QVariant(manga)
+        self._parent._signals_handler.mangaData.emit(manga)

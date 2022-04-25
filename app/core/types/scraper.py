@@ -1,34 +1,41 @@
 import os
-from PyQt5.QtCore import QObject, QVariant, QJsonValue, pyqtSlot, pyqtProperty
+
 from importlib import import_module
 from pathlib import Path
 
+from PyQt5.QtCore import QObject, QJsonValue, pyqtProperty
+from aiohttp import ClientSession
+from qasync import asyncSlot
+
+from core.types import MangaSearch, SignalHandler
 from core import scrapers
-from core.types import MangaSearch
 
 
-class Scraper(QObject):
-    def __init__(self, parent=None) -> None:
+class Scraper(SignalHandler, QObject):
+    def __init__(self, session: ClientSession, signals_handler: SignalHandler,
+                 parent=None) -> None:
         super(Scraper, self).__init__(parent)
 
         self._scrapers_list = self.get_scrapers()
         self._scraper = self._scrapers_list[0]
+        self._session = session
+        self._signals_handler = signals_handler
 
     # Get as input a dict with all parameters to search
-    @pyqtSlot(QJsonValue, result=QVariant)
-    def search_manga(self, params: QJsonValue) -> list[MangaSearch]:
+    @asyncSlot(QJsonValue)
+    async def search_manga(self, params: QJsonValue):
         params = params.toVariant()
-        data = self._scraper.search_manga(**params)
+        data = await self._scraper.search_manga(self._session, **params)
 
         results = []
         for result in data:
             title = result["title"]
             link = result["link"]
             cover = result["cover"]
-            results.append(MangaSearch(self._scraper, title, link, cover,
-                                       self))
+            results.append(MangaSearch(self._scraper, self._session,
+                                       title, link, cover, self))
 
-        return results
+        self._signals_handler.mangaSearch.emit(results)
 
     @pyqtProperty(str)
     def scraper(self) -> object:
