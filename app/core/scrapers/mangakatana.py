@@ -1,8 +1,7 @@
-import requests
 import time
 import re
 
-from requests import Request, Session
+from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 
 from core.utils.logger import logger
@@ -31,7 +30,7 @@ class Mangakatana:
     }
 
     @classmethod
-    def get_manga_data(self, url: str) -> dict:
+    async def get_manga_data(self, session: ClientSession, url: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -71,9 +70,11 @@ class Mangakatana:
         }
         """
         # TODO: Status code handler
-        logger.debug(f"Requesting manga data at {url}")
-        response = requests.get(url, headers=self.HEADERS)
-        soup = BeautifulSoup(response.text, "lxml")
+        # Prepare requests
+        logger.debug("Requesting manga data...")
+        async with session.get(url, headers=self.HEADERS) as response:
+            logger.debug(f"Requested manga data at {response.url}")
+            soup = BeautifulSoup(await response.text(), "lxml")
 
         # Collects all manga attributes.
         logger.debug("Getting manga title...")
@@ -147,7 +148,8 @@ class Mangakatana:
         return data
 
     @classmethod
-    def get_chapter_images(self, url: str) -> list:
+    async def get_chapter_images(self, session: ClientSession,
+                                 url: str) -> list:
         """ Get chapter images.
 
         Parameters
@@ -165,19 +167,21 @@ class Mangakatana:
             >>> get_chapter_images("https://mangakatana.com/manga/baki/c50")
         """
         # TODO: Status code handler
-        logger.debug(f"Requesting chapters data at {url}")
-        response = requests.get(url, headers=self.HEADERS)
+        # Prepare requests
+        logger.debug("Requesting chapters data...")
+        async with session.get(url, headers=self.HEADERS) as response:
+            logger.debug(f"Requested chapters data at {response.url}")
+            images = re.findall(r"var ytaw=\[('.+'),\]", await response.text())
 
-        images = re.findall(r"var ytaw=\[('.+'),\]", response.text)[0]
-        images = images.replace("'", "").split(",")
+        images = images[0].replace("'", "").split(",")
         logger.debug("\n\nIMAGE: " + "\n\nIMAGE: ".join(images))
 
         logger.debug("\nDone. Returning data...\n")
         return images
 
     @classmethod
-    def search_manga(
-        self,
+    async def search_manga(
+        self, session: ClientSession,
         title: str = None,
         author: str = None,
         order: str = "latest",
@@ -266,15 +270,15 @@ class Mangakatana:
             "genres": "_".join(genres),
             "exclude_genres": "_".join(exclude_genres)
         }
+        payload = {k: v for k, v in payload.items() if v is not None}
 
         # Prepare requests
-        session = Session()
-        response = Request("GET", url, params=payload
-                           if title is None and author is None else None)
-        logger.debug(f"Requesting search at {response.prepare().url}")
-
-        response = session.send(response.prepare())
-        soup = BeautifulSoup(response.text, "lxml")
+        logger.debug("Requesting search...")
+        async with session.get(url, params=payload
+                               if title is None and author is None else None,
+                               headers=self.HEADERS) as response:
+            logger.debug(f"Requested search at {response.url}")
+            soup = BeautifulSoup(await response.text(), "lxml")
 
         # If there is only a single result
         if not soup.find(id="book_list"):

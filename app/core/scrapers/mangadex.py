@@ -1,8 +1,7 @@
-import requests
 import time
 import re
 
-from requests import Request, Session
+from aiohttp import ClientSession
 
 from core.utils.logger import logger
 
@@ -94,7 +93,7 @@ class Mangadex:
     }
 
     @classmethod
-    def get_manga_data(self, uuid: str) -> dict:
+    async def get_manga_data(self, session: ClientSession, uuid: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -138,13 +137,11 @@ class Mangadex:
         api_manga = f"{self.BASE_URL}/manga/{uuid}"
 
         # Prepare requests
-        session = Session()
-        response = Request("GET", api_manga, params=payload).prepare()
-        logger.debug(f"Requesting manga data at {response.url}")
-
-        response = session.send(response)
-        attrs = response.json()["data"]["attributes"]
-        relationships = response.json()["data"]["relationships"]
+        logger.debug("Requesting manga data...")
+        async with session.get(api_manga, params=payload) as response:
+            logger.debug(f"Requested manga data at {response.url}")
+            attrs = (await response.json())["data"]["attributes"]
+            relationships = (await response.json())["data"]["relationships"]
 
         # Collects all manga attributes.
         logger.debug("Getting manga title...")
@@ -173,7 +170,7 @@ class Mangadex:
         author = author["attributes"]["name"]
 
         logger.debug("Getting manga chapters...")
-        chapters_data = self.get_chapters_data(uuid)
+        chapters_data = await self.get_chapters_data(session, uuid)
 
         data = {
             "title": title,
@@ -189,7 +186,8 @@ class Mangadex:
         return data
 
     @classmethod
-    def get_chapters_data(self, uuid: str, offset: int = 0) -> dict:
+    async def get_chapters_data(self, session: ClientSession, uuid: str,
+                                offset: int = 0) -> dict:
         """ Get chapters data. This function is used by get_manga_data function.
 
         Parameters
@@ -218,13 +216,11 @@ class Mangadex:
         chapters = []
 
         # Prepare requests
-        session = Session()
-        response = Request("GET", api_chapters, params=payload).prepare()
-        logger.debug(f"Requesting chapters data at {response.url}")
-
-        response = session.send(response)
-        total = response.json()["total"]
-        results = response.json()["data"]
+        logger.debug("Requesting chapters data...")
+        async with session.get(api_chapters, params=payload) as response:
+            logger.debug(f"Requested chapters data at {response.url}")
+            total = (await response.json())["total"]
+            results = (await response.json())["data"]
 
         logger.debug("Collecting chapters data...\n")
 
@@ -268,14 +264,15 @@ class Mangadex:
 
         # If there are more chapters, we get them too
         if total > 500 and offset + 500 < total:
-            data["chapters"].extend(self.get_chapters_data(uuid,
+            data["chapters"].extend(self.get_chapters_data(session, uuid,
                                     offset + 500)["chapters"])
 
         logger.debug(f"Done. Returning data... (offset: {offset})")
         return data
 
     @classmethod
-    def get_chapter_images(self, uuid: str) -> list:
+    async def get_chapter_images(self, session: ClientSession,
+                                 uuid: str) -> list:
         """ Get chapter images.
 
         Parameters
@@ -297,11 +294,12 @@ class Mangadex:
         api_at_home = f"{self.BASE_URL}/at-home/server/{uuid}"
         images = []
 
-        # Requests
-        logger.debug(f"Requesting chapter data at {api_at_home}")
-        response = requests.get(api_at_home).json()
-        base_url = response["baseUrl"]
-        attributes = response["chapter"]
+        # Prepare requests
+        logger.debug("Requesting chapters data...")
+        async with session.get(api_at_home) as response:
+            logger.debug(f"Requested chapters data at {response.url}")
+            base_url = (await response.json())["baseUrl"]
+            attributes = (await response.json())["chapter"]
 
         # Necessary data to make URLs
         logger.debug("Getting chapter hash...")
@@ -323,8 +321,8 @@ class Mangadex:
         return images
 
     @classmethod
-    def search_manga(
-        self,
+    async def search_manga(
+        self, session: ClientSession,
         limit: int = 25,
         offset: int = None,
         title: str = None,
@@ -550,19 +548,17 @@ class Mangadex:
             "group": group,
             "includes[]": ["cover_art"]
         }
+        payload = {k: v for k, v in payload.items() if v is not None}
 
         data = []  # To store searches
 
         # Prepare requests
-        session = Session()
-        response = Request("GET", self.BASE_URL + "/manga",
-                           params=payload).prepare()
-        logger.debug(f"Requesting search at {response.url}")
-
-        response = session.send(response)  # Make request
-        results = response.json()["data"]
-
-        logger.debug(f"Total results: {response.json()['total']}\n")
+        logger.debug("Requesting search...")
+        async with session.get(self.BASE_URL + "/manga",
+                               params=payload) as response:
+            logger.debug(f"Requested search at {response.url}")
+            results = (await response.json())["data"]
+            logger.debug(f"Total result: {(await response.json())['total']}\n")
 
         for result in results:
             attributes = result["attributes"]
