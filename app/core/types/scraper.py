@@ -11,10 +11,10 @@ from core.types import MangaSearch, SignalHandler
 from core import scrapers
 
 
-class Scraper(SignalHandler, QObject):
+class Explorer(SignalHandler, QObject):
     def __init__(self, session: ClientSession, signals_handler: SignalHandler,
                  parent=None) -> None:
-        super(Scraper, self).__init__(parent)
+        super(Explorer, self).__init__(parent)
 
         self._scrapers_list = self.get_scrapers()
         self._scraper = self._scrapers_list[0]
