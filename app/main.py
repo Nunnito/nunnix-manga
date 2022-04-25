@@ -11,7 +11,7 @@ from aiohttp import ClientSession
 from qasync import QEventLoop
 
 from core.utils import qml_utils
-from core.types import Scraper
+from core.types import Scraper, SignalHandler
 
 # Set init variables
 application = QGuiApplication(sys.argv)
@@ -39,10 +39,12 @@ def main():
     # Load variables to QML
     icon_engine = qml_utils.Icon()
     theme_engine = qml_utils.Theme()
-    scraper_engine = Scraper(session)
+    signals_engine = SignalHandler()
+    scraper_engine = Scraper(session, signals_engine)
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
     context.setContextProperty("Scraper", scraper_engine)
+    context.setContextProperty("SignalHandler", signals_engine)
 
     # Set application properties
     application.aboutToQuit.connect(before_close)
