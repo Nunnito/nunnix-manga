@@ -1,7 +1,7 @@
 from pathlib import Path
 from PyQt5.QtCore import QObject, QVariant, pyqtSlot
 
-from core.utils import settings
+from core.utils.python_utils import Paths
 
 
 class Icon(QObject):
@@ -30,7 +30,7 @@ class Theme(QObject):
         Returns:
             str: Current theme
         """
-        theme = settings.get_theme_file_content()
+        theme = Paths.get_theme_file_content()
         dark_theme = qobject_to_dict(dark)
         dark_theme.update(theme)
         theme = dark_theme
