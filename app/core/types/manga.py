@@ -22,19 +22,19 @@ class Chapter(QObject):
     def scraper(self) -> str:
         return self._scraper.NAME
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def name(self) -> str:
         return self._name
 
-    @pyqtProperty(list)
+    @pyqtProperty(list, constant=True)
     def date(self) -> list:
         return self._date
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def link(self) -> str:
         return self._link
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def scanlation(self) -> str:
         return self._scanlation
 
@@ -54,11 +54,11 @@ class ChaptersData(QObject):
         self._total = total
         self._chapters = chapters
 
-    @pyqtProperty(int)
+    @pyqtProperty(int, constant=True)
     def total(self) -> int:
         return self._total
 
-    @pyqtProperty(QVariant)
+    @pyqtProperty(QVariant, constant=True)
     def chapters(self) -> list[Chapter]:
         return self._chapters
 
@@ -87,35 +87,35 @@ class Manga(QObject):
     def scraper(self) -> str:
         return self._scraper.NAME
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def title(self) -> str:
         return self._title
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def author(self) -> str:
         return self._author
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def description(self) -> str:
         return self._description
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def cover(self) -> str:
         return self._cover
 
-    @pyqtProperty(list)
+    @pyqtProperty(list, constant=True)
     def genres(self) -> list[str]:
         return self._genres
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def status(self) -> str:
         return self._status
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def link(self) -> str:
         return self._link
 
-    @pyqtProperty(QVariant)
+    @pyqtProperty(QVariant, constant=True)
     def chapters_data(self) -> ChaptersData:
         return self._chapters_data
 
@@ -137,15 +137,15 @@ class MangaSearch(QObject):
     def scraper(self) -> str:
         return self._scraper.NAME
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def title(self) -> str:
         return self._title
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def link(self) -> str:
         return self._link
 
-    @pyqtProperty(str)
+    @pyqtProperty(str, constant=True)
     def cover(self) -> str:
         return self._cover
 
