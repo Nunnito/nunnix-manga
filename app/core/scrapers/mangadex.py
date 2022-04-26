@@ -344,7 +344,8 @@ class Mangadex:
         updated_at_since: str = None,
         order: dict[str, str] = None,
         has_available_chapters: bool = True,
-        group: str = None
+        group: str = None,
+        page: int = 0
     ) -> dict:
         """ Search manga, with advanced parameters.
         See: https://api.mangadex.org/swagger.html#/Manga/get-search-manga
@@ -523,7 +524,7 @@ class Mangadex:
         # Query strings
         payload = {
             "limit": limit,
-            "offset": offset,
+            "offset": limit * page,
             "title": title,
             "authors[]": authors,
             "artists[]": artists,
