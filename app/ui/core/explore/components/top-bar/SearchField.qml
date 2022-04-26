@@ -11,4 +11,10 @@ C.TextField {
     Layout.rightMargin: 20
 
     placeholderText: qsTr("Search")
+
+    onAccepted: {
+        var query = text == "" ? {} : {"title": text}
+        Explorer.scraper = Explorer.scrapers_list[1]
+        Explorer.search_manga(query)
+    }
 }
