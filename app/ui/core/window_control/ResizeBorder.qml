@@ -26,7 +26,6 @@ Item {
     // DragHandler to allow native resize
     DragHandler {
         id: resizeHandler
-        grabPermissions: TapHandler.TakeOverForbidden
         target: null
 
         onActiveChanged: if (active) {
