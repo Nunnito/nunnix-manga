@@ -8,7 +8,7 @@ class Icon(QObject):
     """This class will be used in QML for simple access to icons"""
 
     @pyqtSlot(str, result=str)
-    def get_icon(self, icon: str) -> str:
+    def get_icon(self, icon: str, uri: bool = True) -> str:
         """Get icon absolute path
 
         Args:
@@ -17,7 +17,11 @@ class Icon(QObject):
         Returns:
             str: Icon absolute path (even if it doesn't exist)
         """
-        return str(Path(__file__).parents[2] / "resources" / "icons" / icon)
+        if uri:
+            return (Path(__file__).parents[2]/"resources"/"icons" /
+                    icon).as_uri()
+        else:
+            return str(Path(__file__).parents[2]/"resources"/"icons"/icon)
 
 
 class Theme(QObject):

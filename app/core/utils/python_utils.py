@@ -20,6 +20,7 @@ class Paths:
                            "config.json")
 
         if not config_path.exists():
+            config_path.parent.mkdir(parents=True, exist_ok=True)
             config_path.touch()
 
         return str(config_path)
@@ -34,6 +35,7 @@ class Paths:
                           "theme.json")
 
         if not theme_path.exists():
+            theme_path.parent.mkdir(parents=True, exist_ok=True)
             theme_path.write_text("{}")
 
         return str(theme_path)

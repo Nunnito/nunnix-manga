@@ -48,7 +48,7 @@ def main():
 
     # Set application properties
     application.aboutToQuit.connect(before_close)
-    application.setWindowIcon(QIcon(icon_engine.get_icon("app.svg")))
+    application.setWindowIcon(QIcon(icon_engine.get_icon("app.svg", False)))
 
     # Load QML file and execute it
     engine.load(str(Path(__file__).parent / "ui" / "main.qml"))
