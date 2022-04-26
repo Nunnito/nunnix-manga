@@ -86,4 +86,7 @@ QtObject {
     property string textfieldDecorationActive: "#645474"
     // Textfield decoration hover color
     property string textfieldDecorationHover: "#EDEDD0"
+
+    // Busy indicator color
+    property string busyIndicator: "#907FA4"
 }
