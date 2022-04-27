@@ -13,7 +13,8 @@ MouseArea {
     height: parent.height
 
     onWheel: {
-        var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y : wheel.angleDelta.y / 4
+        var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y :
+                                                        wheel.angleDelta.y / 4
         if (parent.atYEnd || parent.atYBeginning) {
             contentYAnimation.stop()
         }
@@ -26,12 +27,9 @@ MouseArea {
             toContentY = parent.contentY - mouseMove
         }
 
-        if (mouseMove == wheel.angleDelta.y) {
-            contentYAnimation.duration = 500
-        }
-        else {
-            contentYAnimation.duration = 250
-        }
+        let touchpadDuration = Math.round(Math.abs(parent.contentY - toContentY))
+        contentYAnimation.duration = wheel.angleDelta.y % 120 == 0 ? 500 :
+                                                                     touchpadDuration
         contentYAnimation.start()
     }
 
