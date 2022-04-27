@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import "../../../components" as C
 import "../../../utils" as U
 
@@ -28,6 +29,13 @@ GridView {
     populate: Transition {
         OpacityAnimator {from: 0; to: 1; duration: 500}
     }
+    add: Transition {
+        OpacityAnimator {from: 0; to: 1; duration: 500}
+    }
+    remove: Transition {
+        OpacityAnimator {from: 1; to: 0; duration: 250}
+    }
+
 
     // Appears in a new search.
     C.BusyIndicator {
