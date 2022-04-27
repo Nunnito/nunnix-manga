@@ -1,5 +1,6 @@
 import QtQuick 2.15
 
+// TODO: Several improvements, redo the whole thing
 MouseArea {
     property bool useContentX: false
 
@@ -33,8 +34,13 @@ MouseArea {
                 toContentY = -parent.topMargin
             }
         }
+        if (mouseMove == wheel.angleDelta.y) {
+            contentYAnimation.duration = 500
+        }
+        else {
+            contentYAnimation.duration = 250
+        }
         contentYAnimation.start()
-        print(mouseMove, wheel.angleDelta.y)
     }
 
     PropertyAnimation {
@@ -44,6 +50,5 @@ MouseArea {
         easing.type: Easing.OutQuad
         target: parent
         to: toContentY
-        duration: 250
     }
 }
