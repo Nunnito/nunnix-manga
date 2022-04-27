@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, QVariant, pyqtProperty
+from PyQt5.QtCore import QObject, QVariant, QJsonValue, pyqtProperty
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
@@ -148,6 +148,15 @@ class MangaSearch(QObject):
     @pyqtProperty(str, constant=True)
     def cover(self) -> str:
         return self._cover
+
+    @pyqtProperty(QJsonValue, constant=True)
+    def jsonObject(self) -> dict:
+        jsonObject = {
+            "title": self._title,
+            "link": self._link,
+            "cover": self._cover
+        }
+        return jsonObject
 
     @asyncSlot()
     async def get_data(self) -> None:
