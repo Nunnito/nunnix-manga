@@ -57,7 +57,7 @@ C.Button {
 
             // Gradient.
             gradient: Gradient {
-                GradientStop { position: 0.8; color: "#00000000"}
+                GradientStop { position: 0.6; color: "#00000000"}
                 GradientStop { position: 0.9; color: "#CC000000"}
                 GradientStop { position: 1.0; color: "#121212"}
             }
