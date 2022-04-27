@@ -42,6 +42,7 @@ GridView {
         id: busyIndicator
         x: (parent.width - (width + parent.x * 2)) / 2
         y: (parent.height - height - 100) / 2
+        z: -1
 
         running: parent.count == 0
     }
