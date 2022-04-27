@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtGraphicalEffects 1.15
 
 import "../../../components" as C
 
@@ -16,7 +15,16 @@ C.Button {
         mipmap: true
         source: cover  // Manga cover from ListModel
         fillMode: Image.PreserveAspectCrop  // Crop the image
-        visible: false
+        opacity: 0
+
+        OpacityAnimator {
+            id: opacityAnimator
+            target: mangaCover
+            duration: 250
+            easing.type: Easing.InQuart
+            from: 0
+            to: 1
+        }
 
         // If the image is loaded, run the animation
 		onStatusChanged: {
@@ -53,31 +61,6 @@ C.Button {
                 GradientStop { position: 0.9; color: "#CC000000"}
                 GradientStop { position: 1.0; color: "#121212"}
             }
-        }
-    }
-
-    OpacityMask {
-        id: coverMask
-        width: parent.width
-        height: parent.height
-        maskSource: mask
-        source: mangaCover
-        opacity: 0
-
-        Rectangle {
-            id: mask
-            anchors.fill: parent
-            visible: false
-            radius: 4
-        }
-
-        OpacityAnimator {
-            id: opacityAnimator
-            target: coverMask
-            duration: 250
-            easing.type: Easing.InQuart
-            from: 0
-            to: 1
         }
     }
 
