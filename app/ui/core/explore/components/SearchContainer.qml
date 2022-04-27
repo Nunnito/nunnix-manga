@@ -36,6 +36,12 @@ GridView {
         OpacityAnimator {from: 1; to: 0; duration: 250}
     }
 
+    footer: C.BusyIndicator {
+        width: busyIndicator.x * 2 + 15
+        running: explorer.grid.count > 0
+        z: -1
+    }
+
     ScrollBar.vertical: C.ScrollBar {
         x: size >= 1 ? 0 : parent.width - (parent.x + width)
     }
@@ -56,6 +62,12 @@ GridView {
 
     // When end is reached, load more.
     onAtYEndChanged: {
+        if (atYEnd && count > 0) {  // If we're at the end and there are items
+            parent.searchParams["page"]++  // Increment the page
+            Explorer.search_manga(parent.searchParams)
+        }
+    }
+    onCountChanged: {
         if (atYEnd && count > 0) {  // If we're at the end and there are items
             parent.searchParams["page"]++  // Increment the page
             Explorer.search_manga(parent.searchParams)
