@@ -9,7 +9,8 @@ MouseArea {
     id: mouseArea
 
     z: -1
-    anchors.fill: parent
+    width: parent.width
+    height: parent.height
 
     onWheel: {
         var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y : wheel.angleDelta.y / 4

@@ -37,7 +37,9 @@ GridView {
         running: parent.count == 0
     }
 
-    U.WheelArea {}
+    U.WheelArea {
+        width: parent.width - parent.x
+    }
 
     // When end is reached, load more.
     onAtYEndChanged: {
