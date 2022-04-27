@@ -36,6 +36,9 @@ GridView {
         OpacityAnimator {from: 1; to: 0; duration: 250}
     }
 
+    ScrollBar.vertical: C.ScrollBar {
+        x: size >= 1 ? 0 : parent.width - (parent.x + width)
+    }
 
     // Appears in a new search.
     C.BusyIndicator {
