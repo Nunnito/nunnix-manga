@@ -524,7 +524,7 @@ class Mangadex:
         # Query strings
         payload = {
             "limit": limit,
-            "offset": limit * page,
+            "offset": limit * (page - 1),
             "title": title,
             "authors[]": authors,
             "artists[]": artists,
