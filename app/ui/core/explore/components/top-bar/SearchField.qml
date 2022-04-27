@@ -13,9 +13,9 @@ C.TextField {
     placeholderText: qsTr("Search")
 
     onAccepted: {
-        var query = text == "" ? {} : {"title": text}
-        Explorer.scraper = Explorer.scrapers_list[1]
-        Explorer.search_manga(query)
-        explorer.grid.model = null
+        explorer.searchModel.clear()  // Clear search results
+        explorer.searchParams["page"] = 1  // Reset page to 1
+        explorer.searchParams["title"] = text  // Set search text as title
+        Explorer.search_manga(explorer.searchParams)
     }
 }

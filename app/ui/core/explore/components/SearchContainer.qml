@@ -15,6 +15,7 @@ GridView {
     interactive: false
     delegate: ContentTile {}
     clip: true
+    model: searchModel  // searchModel, from parent
 
     rightMargin: 20
     leftMargin: 20
@@ -37,4 +38,12 @@ GridView {
     }
 
     U.WheelArea {}
+
+    // When end is reached, load more.
+    onAtYEndChanged: {
+        if (atYEnd && count > 0) {  // If we're at the end and there are items
+            parent.searchParams["page"]++  // Increment the page
+            Explorer.search_manga(parent.searchParams)
+        }
+    }
 }
