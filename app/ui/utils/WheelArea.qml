@@ -14,27 +14,18 @@ MouseArea {
 
     onWheel: {
         var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y : wheel.angleDelta.y / 4
+        if (parent.atYEnd || parent.atYBeginning) {
+            contentYAnimation.stop()
+        }
 
         if (contentYAnimation.running) {
             contentYAnimation.stop()
             toContentY -= mouseMove
-            if (toContentY > (parent.contentHeight - parent.height) + parent.bottomMargin ){
-                toContentY = (parent.contentHeight - parent.height) + parent.bottomMargin
-            }
-            else if (toContentY < -parent.topMargin) {
-                toContentY = -parent.topMargin
-            }
-
         }
         else {
             toContentY = parent.contentY - mouseMove
-            if (toContentY > (parent.contentHeight - parent.height) + parent.bottomMargin ){
-                toContentY = (parent.contentHeight - parent.height) + parent.bottomMargin
-            }
-            else if (toContentY < -parent.topMargin) {
-                toContentY = -parent.topMargin
-            }
         }
+
         if (mouseMove == wheel.angleDelta.y) {
             contentYAnimation.duration = 500
         }

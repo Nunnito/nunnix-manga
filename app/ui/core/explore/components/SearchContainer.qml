@@ -14,6 +14,7 @@ GridView {
     
     interactive: false
     delegate: ContentTile {}
+    boundsMovement: GridView.StopAtBounds
     clip: true
     model: searchModel  // searchModel, from parent
 
