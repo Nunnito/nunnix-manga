@@ -89,4 +89,13 @@ QtObject {
 
     // Busy indicator color
     property string busyIndicator: "#B39DDB"
+
+    // Scrollbar background
+    property string scrollbarBg: "#881F1F1F"
+    // Scrollbar item background
+    property string scrollbarItemBg: "#222222"
+    // Scrollbar item background with mouse over
+    property string scrollbarItemBgOver: "#2f2f2f"
+    // Scrollbar item background with mouse clicked
+    property string scrollbarItemBgClick: "#3a3a3a"
 }
