@@ -13,7 +13,7 @@ C.Button {
         id: mangaCover
         anchors.fill: parent
         mipmap: true
-        source: modelData.cover
+        source: cover  // Manga cover from ListModel
         fillMode: Image.PreserveAspectCrop  // Crop the image
         opacity: 0
 
@@ -49,7 +49,7 @@ C.Button {
 
                 width: mangaSearchButton.width
 
-                text: modelData.title
+                text: title  // Manga title from ListModel
                 font.pixelSize: 14
                 elide: Text.ElideMiddle
 
