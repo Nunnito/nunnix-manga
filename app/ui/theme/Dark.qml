@@ -23,7 +23,7 @@ QtObject {
 
 
     // Sidebar background
-    property string sidebarBg: "#1D1D1D"
+    property string sidebarBg: "#1F1F1F"
     // Sidebar button background (when is selected)
     property string sidebarButtonBg: "#2C2C2C"
     // Sidebar button icon color
@@ -55,9 +55,9 @@ QtObject {
 
 
     // Topbar background
-    property string topBarBg: "#1F1F1F"
+    property string topBarBg: "#1D1D1D"
     // Topbar button background
-    property string topBarButtonBg: "#1F1F1F"
+    property string topBarButtonBg: "#1D1D1D"
     // Topbar button icon color
     property string topBarButtonFg: "#ededed"
     // Topbar button background with mouse over (ripple color in #AARRGGBB)
