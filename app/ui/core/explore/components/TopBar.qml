@@ -12,6 +12,6 @@ C.TopBar {
 
         SearchField {}
         SearchButton {}
-        MenuButton {}
+        AdvancedSearchButton {}
     }
 }

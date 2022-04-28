@@ -13,7 +13,7 @@ C.RoundButton {
     colorBgClick: theme.topBarButtonBgClick
     colorFgClick: theme.topBarButtonFgClick
 
-    icon.source: Icon.get_icon("menu.svg")
+    icon.source: Icon.get_icon("filter-list.svg")
 
     onClicked: theme = theme == Dark ? Light : Dark  // Only for testing
 }
