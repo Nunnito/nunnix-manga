@@ -8,6 +8,8 @@ C.Button {
     width: 140
     height: 210
 
+    C.ToolTip {visible: hovered; label: title}
+
     // Manga image
     Image {
         id: mangaCover
@@ -71,32 +73,5 @@ C.Button {
 	    running: mangaCover.status != 1  // Run if image is not loaded.
 	}
 
-	MouseArea {
-		id: mouseArea
-
-		// Manga tile tooltip. Appears when the mouse is over it for 1000 ms.
-		ToolTip {
-			id: tooltip
-			visible: parent.containsMouse
-
-			delay: 1000
-			timeout: 5000
-
-			C.Label {
-				id: tooltipLabel
-
-				text: label.text
-				font.pixelSize: 14
-			}
-			background: Rectangle {
-				color: theme.controlBg
-                radius: 2
-			}
-		}
-		hoverEnabled: true
-		onPressed: mouse.accepted = false
-
-		anchors.fill: parent
-		cursorShape: Qt.PointingHandCursor
-	}
+    C.CursorShape {cursorShape: Qt.PointingHandCursor}
 }
