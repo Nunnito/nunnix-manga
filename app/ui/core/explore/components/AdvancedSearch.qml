@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 
 Pane {
+    property int _width: 300
     property alias openAnim: openAnim
     property alias closeAnim: closeAnim
     property bool open: width > 0
@@ -25,7 +26,7 @@ Pane {
         target: item
         properties: "width"
         duration: 500
-        to: 300
+        to: _width
         easing.type: Easing.OutQuint
     }
     PropertyAnimation {

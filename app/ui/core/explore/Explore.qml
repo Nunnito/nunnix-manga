@@ -19,7 +19,7 @@ SplitView {
         id: searchColumn
 
         SplitView.fillWidth: true
-        SplitView.minimumWidth: parent.width - 300  // 300 is the advanced search width
+        SplitView.minimumWidth: parent.width - advancedSearch._width
         SplitView.preferredWidth: parent.width
         
         TopBar {id: topBar}
