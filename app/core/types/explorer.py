@@ -20,6 +20,7 @@ class Explorer(SignalHandler, QObject):
         self._scraper = self._scrapers_list[0]
         self._session = session
         self._signals_handler = signals_handler
+        self._controls = self._scraper.advanced_search_controls()
 
     # Get as input a dict with all parameters to search
     @asyncSlot(QJsonValue)
@@ -68,3 +69,7 @@ class Explorer(SignalHandler, QObject):
                     classes.append(class_obj)
 
         return classes
+
+    @pyqtProperty(list, constant=True)
+    def advanced_search(self) -> list:
+        return self._controls
