@@ -14,5 +14,16 @@ C.RoundButton {
 
     icon.source: Icon.get_icon("filter-list.svg")
 
-    onClicked: explorer.advancedSearch.open()
+    onClicked: {
+        if (!explorer.advancedSearch.open) {
+            explorer.advancedSearch.openAnim.start()
+            explorer.grid.width = Qt.binding(function() {
+                return explorer.searchColumn.SplitView.minimumWidth
+                })
+        }
+        else {
+            explorer.advancedSearch.closeAnim.start()
+            explorer.grid.width = Qt.binding(function() {return explorer.width})
+        }
+    }
 }
