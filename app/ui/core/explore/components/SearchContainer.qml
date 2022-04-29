@@ -12,11 +12,11 @@ GridView {
     height: parent.height - topBar.height
     cellWidth: 160
     cellHeight: 250
+    z: -1
     
     interactive: false
     delegate: ContentTile {}
     boundsMovement: GridView.StopAtBounds
-    clip: true
     model: searchModel  // searchModel, from parent
 
     rightMargin: 20
