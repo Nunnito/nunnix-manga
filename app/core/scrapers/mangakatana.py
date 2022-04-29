@@ -1,5 +1,6 @@
 import time
 import re
+import asyncio
 
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
@@ -278,7 +279,11 @@ class Mangakatana:
                                if title is None and author is None else None,
                                headers=self.HEADERS) as response:
             logger.debug(f"Requested search at {response.url}")
-            soup = BeautifulSoup(await response.text(), "lxml")
+
+            # Run in a separate thread to avoid being blocked by bs4
+            loop = asyncio.get_event_loop()
+            soup = await loop.run_in_executor(None, BeautifulSoup,
+                                              await response.text(), "lxml")
 
         # If there is only a single result
         if not soup.find(id="book_list"):
