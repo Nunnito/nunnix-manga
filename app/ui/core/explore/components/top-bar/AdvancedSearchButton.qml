@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "../../../../components" as C
-import "../../../../theme"  // Only for testing, will be removed in the future
 
 
 C.RoundButton {
@@ -15,5 +14,5 @@ C.RoundButton {
 
     icon.source: Icon.get_icon("filter-list.svg")
 
-    onClicked: theme = theme == Dark ? Light : Dark  // Only for testing
+    onClicked: explorer.advancedSearch.open()
 }
