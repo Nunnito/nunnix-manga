@@ -43,6 +43,9 @@ import QtQuick.Controls.Material.impl 2.15
 
 T.TextField {
     id: control
+    property bool outlined: false
+    property var currentRectColor: control.activeFocus ? decorationActiveColor
+                        : (control.hovered ? decorationHoverColor : decorationInactiveColor)
 
     implicitWidth: implicitBackgroundWidth + leftInset + rightInset
                    || Math.max(contentWidth, placeholder.implicitWidth) + leftPadding + rightPadding
@@ -50,8 +53,9 @@ T.TextField {
                              contentHeight + topPadding + bottomPadding,
                              placeholder.implicitHeight + topPadding + bottomPadding)
 
-    topPadding: 8
-    bottomPadding: 16
+    topPadding: outlined ? 20 : 8
+    bottomPadding: outlined ? 20 : 16
+    leftPadding: outlined ? 8 : 0
 
     property string cursorColor: theme.textfieldCursor
     property string decorationActiveColor: theme.textfieldDecorationActive
@@ -81,15 +85,23 @@ T.TextField {
         visible: !control.length && !control.preeditText && (!control.activeFocus || control.horizontalAlignment !== Qt.AlignHCenter)
     }
 
-    background: Rectangle {
-        y: control.height - height - control.bottomPadding + 8
+    background: Control {
+        y: control.height - height - control.bottomPadding + (outlined ? control.topPadding / 2 : 8)
         implicitWidth: 120
-        height: control.activeFocus || control.hovered ? 2 : 1
-        color: control.activeFocus ? decorationActiveColor
-                                   : (control.hovered ? decorationHoverColor : decorationInactiveColor)
+        height: outlined ? control.height - (control.bottomPadding) :
+                           control.activeFocus || control.hovered ? 2 : 1
+        background: Rectangle {
+            border.width: outlined ? control.activeFocus ? 2 : 1 : 0
+            radius: outlined ? 3 : 0
+            color: outlined ? "transparent" : currentRectColor
+            border.color: outlined ? currentRectColor : "transparent"
 
-        Behavior on color {
-            ColorAnimation {duration: 250; easing.type: Easing.OutQuad}
+            Behavior on color {
+                ColorAnimation {duration: 250; easing.type: Easing.OutQuad}
+            }
+            Behavior on border.color {
+                ColorAnimation {duration: 250; easing.type: Easing.OutQuad}
+            }
         }
     }
 }
