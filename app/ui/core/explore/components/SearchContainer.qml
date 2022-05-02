@@ -43,6 +43,7 @@ GridView {
     }
 
     ScrollBar.vertical: C.ScrollBar {
+        visible: explorer.advancedSearch.width == 300 || explorer.advancedSearch.width == 0
         x: size >= 1 ? 0 : parent.width - (parent.x + width)
     }
 

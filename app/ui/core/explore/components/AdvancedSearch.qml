@@ -75,6 +75,7 @@ Pane {
     C.ScrollBar {
         id: vsbar
         scrollBarItemBg: theme.advancedSearchScrollbarItemBg
+        visible: advancedSearch.width == 300
 
         hoverEnabled: true
         active: hovered || pressed
