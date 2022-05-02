@@ -7,7 +7,7 @@ QtObject {
     // Text and icon color (control)
     property string windowFg: "#EDEDD0"
     // Accent color
-    property string accent: "#645474"
+    property string windowAccent: "#645474"
 
 
     // Default control background
@@ -20,6 +20,8 @@ QtObject {
     property string controlBgClick: "#907FA4"
     // Default control icon color with mouse clicked
     property string controlFgClick: "#EDEDD0"
+    // Default control background dialog color
+    property string controlBgDialog: "#907FA4"
 
 
     // Sidebar background
@@ -98,4 +100,22 @@ QtObject {
     property string scrollbarItemBgOver: "#907FA4"
     // Scrollbar item background with mouse clicked
     property string scrollbarItemBgClick: "#645474"
+
+    // Separator color
+    property string separator: "#5a5a5a"
+
+    // Advanced search background
+    property string advancedSearchBg: "#907FA4"
+    // Advanced search separator color
+    property string advancedSearchSeparator: "#5a5a5a"
+
+    // Checkbox partiallly checked color (red pastel)
+    property string checkboxPartial: "#626262"
+
+    // Combo box decoration inactive color
+    property string comboBoxDecorationInactive: "#5a5a5a"
+    // Combo box decoration active color
+    property string comboBoxDecorationActive: "#645474"
+    // Combo box decoration hover color
+    property string comboBoxDecorationHover: "#EDEDD0"
 }

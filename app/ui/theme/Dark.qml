@@ -11,15 +11,17 @@ QtObject {
 
 
     // Default control background
-    property string controlBg: "#1d1d1d"
+    property string controlBg: "#282828"
     // Default control background with mouse over (ripple color in #AARRGGBB)
-    property string controlBgOver: "#aa282828"
+    property string controlBgOver: "#aa2c2c2c"
     // Default control icon color with mouse over
     property string controlFgOver: "#ededed"
     // Default control background with mouse clicked
     property string controlBgClick: "#212121"
     // Default control icon color with mouse clicked
     property string controlFgClick: "#ededed"
+    // Default control background dialog color
+    property string controlBgDialog: "#282828"
 
 
     // Sidebar background
@@ -98,4 +100,24 @@ QtObject {
     property string scrollbarItemBgOver: "#2f2f2f"
     // Scrollbar item background with mouse clicked
     property string scrollbarItemBgClick: "#3a3a3a"
+
+    // Separator color
+    property string separator: "#626262"
+
+    // Advanced search background
+    property string advancedSearchBg: "#1F1F1F"
+    // Advanced search separator color
+    property string advancedSearchSeparator: "#626262"
+
+    // Checkbox partiallly checked color (red pastel)
+    property string checkboxPartial: "#626262"
+
+    // Combo box decoration inactive color
+    property string comboBoxDecorationInactive: "#626262"
+    // Combo box decoration active color
+    property string comboBoxDecorationActive: "#B39DDB"
+    // Combo box decoration hover color
+    property string comboBoxDecorationHover: "#ededed"
+    // Combobox item background with mouse over (ripple color in #AARRGGBB)
+    property string comboBoxItemBgOver: "#aa3c3c3c"
 }
