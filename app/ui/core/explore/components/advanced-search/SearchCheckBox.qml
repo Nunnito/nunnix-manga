@@ -76,7 +76,12 @@ Column {
                     }
                 }
                 else {
-                    return searchCheckBox.parameter
+                    if (checkState == Qt.Checked) {
+                        return searchCheckBox.parameter
+                    }
+                    else {
+                        return null
+                    }   
                 }
             }
 
