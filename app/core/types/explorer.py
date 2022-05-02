@@ -5,7 +5,7 @@ from functools import wraps
 from pathlib import Path
 
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
-from PyQt5 import QtQuick
+from PyQt5 import QtQuick, QtQml
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
@@ -93,12 +93,24 @@ class Explorer(SignalHandler, QObject):
                         # checked parameters list
                         if delegate.property("parameter") == checked_param:
                             value = delegate.property("value")
-                            parameters[checked_param].append(value)
+                            # If value is a list, append all values to params
+                            if type(value) == QtQml.QJSValue:
+                                values = value.toVariant()
+                                for value in values:
+                                    parameters[checked_param].append(value)
+                            else:
+                                parameters[checked_param].append(value)
                         # If the delegate is unchecked, add the parameter to
                         # the unchecked parameters list
                         elif delegate.property("parameter") == unchecked_param:
                             value = delegate.property("value")
-                            parameters[unchecked_param].append(value)
+                            # If value is a list, append all values to params
+                            if type(value) == QtQml.QJSValue:
+                                values = value.toVariant()
+                                for value in values:
+                                    parameters[unchecked_param].append(value)
+                            else:
+                                parameters[unchecked_param].append(value)
 
                 elif component.objectName() == "checkBox":
                     param = component.property("parameter")
@@ -112,7 +124,13 @@ class Explorer(SignalHandler, QObject):
                         # checked parameters list
                         if delegate.property("parameter") == param:
                             value = delegate.property("value")
-                            parameters[param].append(value)
+                            # If value is a list, append all values to params
+                            if type(value) == QtQml.QJSValue:
+                                values = value.toVariant()
+                                for value in values:
+                                    parameters[param].append(value)
+                            else:
+                                parameters[param].append(value)
 
             parameters["page"] = page  # Add the page to the parameters dict
             data = await self._scraper.search_manga(self._session,
