@@ -4,7 +4,7 @@ import "../../../../components" as C
 
 Column {
     property string parameter: modelData.parameter
-    property var value: textField.text
+    property var value
 
     objectName: "textField"
 
@@ -23,5 +23,13 @@ Column {
         outlined: true
         width: parent.width
         placeholderText: modelData.name
+    }
+
+    // This connection is to just change value property when button is clicked
+    Connections {
+        target: advancedSearchButtons.searchButton
+        function onClicked() {
+            value = textField.text
+        }
     }
 }

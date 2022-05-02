@@ -5,6 +5,8 @@ import "../../../../components" as C
 
 // This is the bottom bar that displays "SEARCH" and "RESET" buttons
 Pane {
+    property alias searchButton: searchButton
+
     width: parent.width + advancedSearch.leftPadding * 2
     height: 48 + (advancedSearch.leftPadding / 2)
 
@@ -22,6 +24,8 @@ Pane {
         x: advancedSearch.leftPadding - 10
         
         C.Button {
+            id: searchButton
+
             highlighted: true
             width: parent.width / 2 - spacing
             colorBgOver: theme.advancedSearchSearchButtonBgOver
