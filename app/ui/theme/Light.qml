@@ -110,6 +110,10 @@ QtObject {
     property string advancedSearchSeparator: "#5a5a5a"
     // Advanced search scrollbar item background
     property string advancedSearchScrollbarItemBg: "#907FA4"
+    // Advanced search search button background over (ripple color in #AARRGGBB)
+    property string advancedSearchSearchButtonBgOver: "#22111111"
+    // Advanced search search background 2
+    property string advancedSearchSearchBg2: "#907FA4"
 
     // Checkbox partiallly checked color (red pastel)
     property string checkboxPartial: "#626262"
