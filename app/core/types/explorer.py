@@ -4,6 +4,7 @@ from importlib import import_module
 from pathlib import Path
 
 from PyQt5.QtCore import QObject, pyqtProperty
+from PyQt5 import QtQuick
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
@@ -22,17 +23,78 @@ class Explorer(SignalHandler, QObject):
         self._signals_handler = signals_handler
         self._controls = self._scraper.advanced_search_controls()
 
-    # Get as input a dict with all parameters to search
+    # Get as input the search type, search root and page index
     @asyncSlot(str, QObject, int)
     async def search_manga(self, search_type: str, search_root: QObject,
                            page: int):
-        # params = params.toVariant()
+        """
+        Search for manga using the given search type and search root.
+
+        Posibles search types are: empty, to search for all manga; title, to
+        search for a manga by title; advanced, to search for a manga by
+        advanced search.
+        """
+
+        # If the search type is empty, do a search empty search
         if search_type == "empty":
             data = await self._scraper.search_manga(self._session, page=page)
+        # If the search type is title, do a search by title
         elif search_type == "title":
-            title = search_root.property("text")
+            title = search_root.property("searchText")
             data = await self._scraper.search_manga(self._session,
                                                     title=title, page=page)
+        # If the search type is advanced, do a search by advanced search
+        elif search_type == "advanced":
+            parameters = {}
+            components = search_root.property("contentItem").childItems()
+            one_iter = ["textField", "comboBox", "slider"]
+
+            # Loop through the search controls (textfield, combobox, slider...)
+            for component in components:
+                if component.objectName() in one_iter:
+                    param = component.property("parameter")
+                    value = component.property("value")
+                    parameters[param] = value  # Add the parameter to the dict
+
+                elif component.objectName() == "tristate-checkBox":
+                    checked_param = component.property("checkedParameter")
+                    unchecked_param = component.property("uncheckedParameter")
+                    parameters[checked_param] = []
+                    parameters[unchecked_param] = []
+
+                    list_view = component.childItems()[1]
+                    delegates = list_view.property("contentItem").childItems()
+
+                    # Loop through the list view check delegates
+                    for delegate in delegates:
+                        # If the delegate is checked, add the parameter to the
+                        # checked parameters list
+                        if delegate.property("parameter") == checked_param:
+                            value = delegate.property("value")
+                            parameters[checked_param].append(value)
+                        # If the delegate is unchecked, add the parameter to
+                        # the unchecked parameters list
+                        elif delegate.property("parameter") == unchecked_param:
+                            value = delegate.property("value")
+                            parameters[unchecked_param].append(value)
+
+                elif component.objectName() == "checkBox":
+                    param = component.property("parameter")
+                    parameters[param] = []
+
+                    list_view = component.childItems()[1]
+                    delegates = list_view.property("contentItem").childItems()
+
+                    for delegate in delegates:
+                        # If the delegate is checked, add the parameter to the
+                        # checked parameters list
+                        if delegate.property("parameter") == param:
+                            value = delegate.property("value")
+                            parameters[param].append(value)
+
+            parameters["page"] = page  # Add the page to the parameters dict
+            data = await self._scraper.search_manga(self._session,
+                                                    **parameters)
 
         results = []
         for result in data:
