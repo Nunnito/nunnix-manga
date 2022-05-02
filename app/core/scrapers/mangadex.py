@@ -550,6 +550,7 @@ class Mangadex:
             "includes[]": ["cover_art"]
         }
         payload = {k: v for k, v in payload.items() if v is not None}
+        payload = {k: v for k, v in payload.items() if v != ""}
 
         data = []  # To store searches
 
@@ -585,3 +586,171 @@ class Mangadex:
 
         logger.debug("Done. Returning data...")
         return data
+
+    @classmethod
+    def advanced_search_controls(self) -> dict:
+        title = {
+            "name": "Title",
+            "type": "textfield",
+            "parameter": "title",
+        }
+        year = {
+            "name": "Year",
+            "type": "textfield",
+            "parameter": "year",
+            "validator": {
+                "type": "int",
+                "min": 1814,
+                "max": time.localtime().tm_year
+            }
+        }
+        included_tags_mode = {
+            "name": "Included tags mode",
+            "type": "combobox",
+            "parameter": "included_tags_mode",
+            "content": [
+                {"name": "AND", "parameter": "AND"},
+                {"name": "OR", "parameter": "OR"}
+            ]
+        }
+        excluded_tags_mode = {
+            "name": "Excluded tags mode",
+            "type": "combobox",
+            "parameter": "excluded_tags_mode",
+            "content": [
+                {"name": "AND", "parameter": "AND"},
+                {"name": "OR", "parameter": "OR"}
+            ]
+        }
+        original_language = {
+            "name": "Original language",
+            "type": "checkbox",
+            "parameter": "original_language",
+            "content": [
+                {"name": "Japanese", "parameter": "ja"},
+                {"name": "Chinese", "parameter": ["zh", "zh-hk"]},
+                {"name": "Korean", "parameter": "ko"}
+            ]
+        }
+        status = {
+            "name": "Status",
+            "type": "checkbox",
+            "parameter": "status",
+            "content": [
+                {"name": "Ongoing", "parameter": "ongoing"},
+                {"name": "Completed", "parameter": "completed"},
+                {"name": "Hiatus", "parameter": "hiatus"},
+                {"name": "Cancelled", "parameter": "cancelled"}
+            ]
+        }
+        publication_demographic = {
+            "name": "Publication demographic",
+            "type": "checkbox",
+            "parameter": "publication_demographic",
+            "content": [
+                {"name": "Shounen", "parameter": "shounen"},
+                {"name": "Shoujo", "parameter": "shoujo"},
+                {"name": "Seinen", "parameter": "seinen"},
+                {"name": "Josei", "parameter": "josei"},
+                {"name": "None", "parameter": "none"}
+            ]
+        }
+        content_rating = {
+            "name": "Content rating",
+            "type": "checkbox",
+            "parameter": "content_rating",
+            "content": [
+                {"name": "Safe", "parameter": "safe"},
+                {"name": "Suggestive", "parameter": "suggestive"},
+                {"name": "Erotica", "parameter": "erotica"},
+                {"name": "Pornographic", "parameter": "pornographic"},
+            ]
+        }
+        genres = {
+            "name": "Genres",
+            "type": "tristate-checkbox",
+            "checked_parameter": "included_tags",
+            "unchecked_parameter": "excluded_tags",
+            "content": [
+                {"name": "Action", "parameter": 0},
+                {"name": "Adaptation", "parameter": 1},
+                {"name": "Adventure", "parameter": 2},
+                {"name": "Aliens", "parameter": 3},
+                {"name": "Animals", "parameter": 4},
+                {"name": "Anthology", "parameter": 5},
+                {"name": "Award Winning", "parameter": 6},
+                {"name": "Boy's Love", "parameter": 7},
+                {"name": "Comedy", "parameter": 8},
+                {"name": "Cooking", "parameter": 9},
+                {"name": "Crime", "parameter": 10},
+                {"name": "Crossdressing", "parameter": 11},
+                {"name": "Delinquents", "parameter": 12},
+                {"name": "Demons", "parameter": 13},
+                {"name": "Doujinshi", "parameter": 14},
+                {"name": "Drama", "parameter": 15},
+                {"name": "Fan Colored", "parameter": 16},
+                {"name": "Fantasy", "parameter": 17},
+                {"name": "4-Koma", "parameter": 18},
+                {"name": "Full Color", "parameter": 19},
+                {"name": "Genderswap", "parameter": 20},
+                {"name": "Ghosts", "parameter": 21},
+                {"name": "Girl's Love", "parameter": 22},
+                {"name": "Gore", "parameter": 23},
+                {"name": "Gyaru", "parameter": 24},
+                {"name": "Harem", "parameter": 25},
+                {"name": "Historical", "parameter": 26},
+                {"name": "Horror", "parameter": 27},
+                {"name": "Incest", "parameter": 28},
+                {"name": "Isekai", "parameter": 29},
+                {"name": "Loli", "parameter": 30},
+                {"name": "Long Strip", "parameter": 31},
+                {"name": "Mafia", "parameter": 32},
+                {"name": "Magic", "parameter": 33},
+                {"name": "Magical Girls", "parameter": 34},
+                {"name": "Martial Arts", "parameter": 35},
+                {"name": "Mecha", "parameter": 36},
+                {"name": "Medical", "parameter": 37},
+                {"name": "Military", "parameter": 38},
+                {"name": "Monster Girls", "parameter": 39},
+                {"name": "Monsters", "parameter": 40},
+                {"name": "Music", "parameter": 41},
+                {"name": "Mystery", "parameter": 42},
+                {"name": "Ninja", "parameter": 43},
+                {"name": "Office Workers", "parameter": 44},
+                {"name": "Official Colored", "parameter": 45},
+                {"name": "Oneshot", "parameter": 46},
+                {"name": "Philosophical", "parameter": 47},
+                {"name": "Police", "parameter": 48},
+                {"name": "Post-Apocalyptic", "parameter": 49},
+                {"name": "Psychological", "parameter": 50},
+                {"name": "Reincarnation", "parameter": 51},
+                {"name": "Reverse Harem", "parameter": 52},
+                {"name": "Romance", "parameter": 53},
+                {"name": "Samurai", "parameter": 54},
+                {"name": "School Life", "parameter": 55},
+                {"name": "Sci-Fi", "parameter": 56},
+                {"name": "Sexual Violence", "parameter": 57},
+                {"name": "Shota", "parameter": 58},
+                {"name": "Slice of Life", "parameter": 59},
+                {"name": "Sports", "parameter": 60},
+                {"name": "Superhero", "parameter": 61},
+                {"name": "Supernatural", "parameter": 62},
+                {"name": "Survival", "parameter": 63},
+                {"name": "Thriller", "parameter": 64},
+                {"name": "Time Travel", "parameter": 65},
+                {"name": "Tragedy", "parameter": 66},
+                {"name": "Traditional Games", "parameter": 67},
+                {"name": "User Created", "parameter": 68},
+                {"name": "Vampires", "parameter": 69},
+                {"name": "Video Games", "parameter": 70},
+                {"name": "Villainess", "parameter": 71},
+                {"name": "Virtual Reality", "parameter": 72},
+                {"name": "Web Comic", "parameter": 73},
+                {"name": "Wuxia", "parameter": 74},
+                {"name": "Zombies", "parameter": 75}
+            ]
+        }
+
+        return [title, year, included_tags_mode, excluded_tags_mode, status,
+                publication_demographic, content_rating, original_language,
+                genres]
