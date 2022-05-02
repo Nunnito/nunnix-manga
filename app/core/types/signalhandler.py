@@ -1,9 +1,9 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, QVariant, pyqtSignal
 from core.types import Manga
 
 
 class SignalHandler(QObject):
     """ Signal handler to emit signals """
-    mangaSearch = pyqtSignal(list)
+    mangaSearch = pyqtSignal(QVariant)
     mangaData = pyqtSignal(Manga)
-    chapterImages = pyqtSignal(list)
+    chapterImages = pyqtSignal(QVariant)
