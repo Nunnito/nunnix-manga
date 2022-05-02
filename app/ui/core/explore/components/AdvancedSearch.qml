@@ -13,6 +13,8 @@ Pane {
     property alias closeAnim: closeAnim
     property bool open: width > 0
 
+    id: advancedSearch
+
     x: parent.width - width
     padding: 20
 
@@ -56,6 +58,7 @@ Pane {
             interactive: false
             boundsMovement: GridView.StopAtBounds
             U.WheelArea {}  // Custom scroll system
+            cacheBuffer: count > 0 ? contentHeight: 0
         }
     }
 

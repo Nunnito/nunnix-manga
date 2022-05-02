@@ -49,6 +49,7 @@ Column {
         model: modelData.content
         delegate: itemDelegate
         visible: height > 0
+        cacheBuffer: count > 0 ? contentHeight: 0
     }
 
     Component {
