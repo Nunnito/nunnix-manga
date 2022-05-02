@@ -66,6 +66,8 @@ Pane {
 
     C.ScrollBar {
         id: vsbar
+        scrollBarItemBg: theme.advancedSearchScrollbarItemBg
+
         hoverEnabled: true
         active: hovered || pressed
         orientation: Qt.Vertical
