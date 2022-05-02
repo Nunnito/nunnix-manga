@@ -1,6 +1,7 @@
 import os
 
 from importlib import import_module
+from functools import wraps
 from pathlib import Path
 
 from PyQt5.QtCore import QObject, pyqtProperty
@@ -10,6 +11,26 @@ from qasync import asyncSlot
 
 from core.types import MangaSearch, SignalHandler
 from core import scrapers
+QtQuick
+
+
+def set_searching(qasync_func):
+    @wraps(qasync_func)
+    def wrapper(func):
+        @wraps(func)
+        async def wrapped(self, *args, **kwargs):
+            # If the search is already running, don't run it again
+            if self._searching:
+                return
+            # Set the search to running
+            try:
+                self._searching = True
+                await func(self, *args, **kwargs)  # Run the function
+            # Finally, set the search to not running
+            finally:
+                self._searching = False
+        return qasync_func(wrapped)
+    return wrapper
 
 
 class Explorer(SignalHandler, QObject):
@@ -22,9 +43,10 @@ class Explorer(SignalHandler, QObject):
         self._session = session
         self._signals_handler = signals_handler
         self._controls = self._scraper.advanced_search_controls()
+        self._searching = False
 
     # Get as input the search type, search root and page index
-    @asyncSlot(str, QObject, int)
+    @set_searching(asyncSlot(str, QObject, int))  # Decorator to set searching
     async def search_manga(self, search_type: str, search_root: QObject,
                            page: int):
         """
