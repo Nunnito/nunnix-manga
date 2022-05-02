@@ -13,6 +13,7 @@ C.RoundButton {
     colorFgClick: theme.topBarButtonFgClick
 
     icon.source: Icon.get_icon("filter-list.svg")
+    visible: Explorer.advanced_search ? true : false
 
     onClicked: {
         if (!explorer.advancedSearch.open) {

@@ -4,7 +4,7 @@ from importlib import import_module
 from functools import wraps
 from pathlib import Path
 
-from PyQt5.QtCore import QObject, pyqtProperty
+from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from PyQt5 import QtQuick
 from aiohttp import ClientSession
 from qasync import asyncSlot
@@ -160,6 +160,6 @@ class Explorer(SignalHandler, QObject):
 
         return classes
 
-    @pyqtProperty(list, constant=True)
+    @pyqtProperty(QVariant, constant=True)
     def advanced_search(self) -> list:
         return self._controls
