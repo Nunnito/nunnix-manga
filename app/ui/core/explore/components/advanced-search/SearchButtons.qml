@@ -18,8 +18,8 @@ Pane {
         width: listView.width
         anchors.verticalCenter: parent.verticalCenter
 
-        spacing: 5
-        x: advancedSearch.leftPadding
+        spacing: 10
+        x: advancedSearch.leftPadding - 10
         
         C.Button {
             highlighted: true
@@ -40,10 +40,15 @@ Pane {
         }
 
         C.Button {
-            width: parent.width / 2 - parent.spacing
+            width: parent.width / 2 - spacing
             text: qsTr("RESET")
             flat: true
             highlighted: true
+
+            onClicked: {
+                listView.model = null
+                listView.model = Explorer.advanced_search
+            }
         }
     }
 }
