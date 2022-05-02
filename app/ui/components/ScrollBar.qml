@@ -41,6 +41,12 @@ import QtQuick.Controls.Material 2.15
 T.ScrollBar {
     id: control
 
+    // Added properties
+    property string scrollBarBg: theme. scrollbarBg
+    property string scrollBarItemBg: theme.scrollbarItemBg
+    property string scrollBarItemBgOver: theme.scrollbarItemBgOver
+    property string scrollBarItemBgClick: theme.scrollbarItemBgClick
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset,
@@ -54,15 +60,15 @@ T.ScrollBar {
         implicitWidth: control.interactive ? 13 : 4
         implicitHeight: control.interactive ? 13 : 4
 
-        color: control.pressed ? theme.scrollbarItemBgClick :
-               control.interactive && control.hovered ? theme.scrollbarItemBgOver : theme.scrollbarItemBg
+        color: control.pressed ? scrollBarItemBgClick :
+               control.interactive && control.hovered ? scrollBarItemBgOver : scrollBarItemBg
         opacity: 0.0
     }
 
     background: Rectangle {
         implicitWidth: control.interactive ? 16 : 4
         implicitHeight: control.interactive ? 16 : 4
-        color: theme.scrollbarBg
+        color: scrollBarBg
         opacity: 0.0
         visible: control.interactive
     }
