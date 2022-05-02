@@ -59,7 +59,23 @@ Pane {
             boundsMovement: GridView.StopAtBounds
             U.WheelArea {}  // Custom scroll system
             cacheBuffer: count > 0 ? contentHeight: 0
+
+            contentY: vsbar.position * contentHeight
         }
+    }
+
+    C.ScrollBar {
+        id: vsbar
+        hoverEnabled: true
+        active: hovered || pressed
+        orientation: Qt.Vertical
+
+        height: parent.height
+        x: parent.width + 4
+        y: advancedSearch.padding
+
+        size: ((listView.height - (listView.bottomMargin)) / (listView.contentHeight))
+        position: listView.count > 0 ? (listView.contentY) / (listView.contentHeight) : 0
     }
 
     DelegateChooser {
