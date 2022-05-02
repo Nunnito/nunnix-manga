@@ -64,14 +64,18 @@ GridView {
     // When end is reached, load more.
     onAtYEndChanged: {
         if (atYEnd && count > 0) {  // If we're at the end and there are items
-            explorer.searchParams["page"]++  // Increment the page
-            Explorer.search_manga(explorer.searchParams)
+            explorer.currentPage++  // Increment the page
+            Explorer.search_manga(explorer.searchType,
+                                  explorer.topBar.searchField,
+                                  explorer.currentPage)
         }
     }
     onCountChanged: {
         if (atYEnd && count > 0) {  // If we're at the end and there are items
-            explorer.searchParams["page"]++  // Increment the page
-            Explorer.search_manga(explorer.searchParams)
+            explorer.currentPage++  // Increment the page
+            Explorer.search_manga(explorer.searchType,
+                                  explorer.topBar.searchField,
+                                  explorer.currentPage)
         }
     }
 }

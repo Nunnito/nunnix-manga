@@ -7,9 +7,12 @@ SplitView {
     property string name: "explore"
     property alias searchColumn: searchColumn
     property alias grid: grid
+    property alias topBar: topBar
     property alias searchModel: searchModel
     property alias advancedSearch: advancedSearch
-    property var searchParams: ({})  // Search params in JSON format
+
+    property int currentPage: 1  // Set to 1 to start with the first page 
+    property string searchType
 
     id: explorer
     clip: true
@@ -43,7 +46,7 @@ SplitView {
 
     // When the component is created
     Component.onCompleted: {
-        searchParams["page"] = 1  // Set the page to 1
-        Explorer.search_manga(searchParams)
+        searchType = "empty"
+        Explorer.search_manga(searchType, topBar.searchField, currentPage)
     }
 }

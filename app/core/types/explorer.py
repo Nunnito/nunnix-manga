@@ -3,7 +3,7 @@ import os
 from importlib import import_module
 from pathlib import Path
 
-from PyQt5.QtCore import QObject, QJsonValue, pyqtProperty
+from PyQt5.QtCore import QObject, pyqtProperty
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
@@ -23,10 +23,16 @@ class Explorer(SignalHandler, QObject):
         self._controls = self._scraper.advanced_search_controls()
 
     # Get as input a dict with all parameters to search
-    @asyncSlot(QJsonValue)
-    async def search_manga(self, params: QJsonValue):
-        params = params.toVariant()
-        data = await self._scraper.search_manga(self._session, **params)
+    @asyncSlot(str, QObject, int)
+    async def search_manga(self, search_type: str, search_root: QObject,
+                           page: int):
+        # params = params.toVariant()
+        if search_type == "empty":
+            data = await self._scraper.search_manga(self._session, page=page)
+        elif search_type == "title":
+            title = search_root.property("text")
+            data = await self._scraper.search_manga(self._session,
+                                                    title=title, page=page)
 
         results = []
         for result in data:
