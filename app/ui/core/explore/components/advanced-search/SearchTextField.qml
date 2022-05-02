@@ -23,6 +23,14 @@ Column {
         outlined: true
         width: parent.width
         placeholderText: modelData.name
+
+        validator: modelData.validator ? intValid : null
+
+        IntValidator{
+            id: intValid
+            bottom: modelData.validator ? modelData.validator.min : 0
+            top: modelData.validator ? modelData.validator.max : 0
+        }
     }
 
     // This connection is to just change value property when button is clicked
