@@ -32,6 +32,16 @@ Pane {
             font.bold: true
             font.pixelSize: 14
             anchors.horizontalCenter: parent.horizontalCenter
+            z: 1
+
+            // Background to cover their siblings
+            background: Rectangle {
+                width: parent.parent.width
+                height: 48  // Topbar height
+                x: -(width - parent.width) / 2
+                y: -20
+                color: theme.advancedSearchBg
+            }
         }
         // Here will be the advanced search
         ListView {
