@@ -11,6 +11,7 @@ Pane {
     property int _width: 300
     property alias openAnim: openAnim
     property alias closeAnim: closeAnim
+    property alias controls: listView
     property bool open: width > 0
 
     id: advancedSearch

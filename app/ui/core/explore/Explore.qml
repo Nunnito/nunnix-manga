@@ -13,6 +13,15 @@ SplitView {
 
     property int currentPage: 1  // Set to 1 to start with the first page 
     property string searchType
+    property var searchRoot: {
+        if (searchType == "empty" || searchType == "title") {
+            return topBar.searchField
+        }
+        else if (searchType == "advanced") {
+            print(advancedSearch.controls)
+            return advancedSearch.controls
+        }
+    }
 
     id: explorer
     clip: true
@@ -47,6 +56,6 @@ SplitView {
     // When the component is created
     Component.onCompleted: {
         searchType = "empty"
-        Explorer.search_manga(searchType, topBar.searchField, currentPage)
+        Explorer.search_manga(searchType, searchRoot, currentPage)
     }
 }

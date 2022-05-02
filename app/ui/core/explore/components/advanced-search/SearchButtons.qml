@@ -37,6 +37,13 @@ Pane {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
+            onClicked: {
+                explorer.searchModel.clear()  // Clear search results
+                explorer.currentPage = 1  // Reset page to 1
+                explorer.searchType = "advanced"
+                Explorer.search_manga(explorer.searchType, explorer.searchRoot,
+                                      explorer.currentPage)
+            }
         }
 
         C.Button {

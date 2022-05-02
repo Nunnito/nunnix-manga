@@ -21,6 +21,7 @@ C.TextField {
         explorer.searchType = text ? "title" : "empty"
 
         // Do search
-        Explorer.search_manga(explorer.searchType, this, explorer.currentPage)
+        Explorer.search_manga(explorer.searchType, explorer.searchRoot,
+                              explorer.currentPage)
     }
 }

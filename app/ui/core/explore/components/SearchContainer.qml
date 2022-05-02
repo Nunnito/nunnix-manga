@@ -66,7 +66,7 @@ GridView {
         if (atYEnd && count > 0) {  // If we're at the end and there are items
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
-                                  explorer.topBar.searchField,
+                                  explorer.searchRoot,
                                   explorer.currentPage)
         }
     }
@@ -74,7 +74,7 @@ GridView {
         if (atYEnd && count > 0) {  // If we're at the end and there are items
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
-                                  explorer.topBar.searchField,
+                                  explorer.searchRoot,
                                   explorer.currentPage)
         }
     }
