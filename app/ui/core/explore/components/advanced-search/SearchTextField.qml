@@ -23,6 +23,15 @@ Column {
         outlined: true
         width: parent.width
         placeholderText: modelData.name
+
+        onAccepted: {
+            value = textField.text
+            explorer.searchModel.clear()  // Clear search results
+            explorer.currentPage = 1  // Reset page to 1
+            explorer.searchType = "advanced"
+            Explorer.search_manga(explorer.searchType, explorer.searchRoot,
+                                  explorer.currentPage)
+        }
     }
 
     // This connection is to just change value property when button is clicked
