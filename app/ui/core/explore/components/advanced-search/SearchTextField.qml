@@ -5,6 +5,9 @@ import "../../../../components" as C
 Column {
     property string parameter: modelData.parameter
     property var value: textField.text
+
+    objectName: "textField"
+
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding

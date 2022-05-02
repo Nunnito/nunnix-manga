@@ -6,6 +6,8 @@ Column {
     property string parameter: modelData.parameter
     property var value: comboBox.currentValue
 
+    objectName: "comboBox"
+
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding

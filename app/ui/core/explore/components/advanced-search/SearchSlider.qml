@@ -5,6 +5,8 @@ Column {
     property string parameter: modelData.parameter
     property int value: slider.value
 
+    objectName: "slider"
+
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding

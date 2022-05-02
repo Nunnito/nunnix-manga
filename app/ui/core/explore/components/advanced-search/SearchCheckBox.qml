@@ -11,6 +11,7 @@ Column {
     property var uncheckedParameter: modelData.unchecked_parameter
 
     id: searchCheckBox
+    objectName: "checkBox"
 
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding
