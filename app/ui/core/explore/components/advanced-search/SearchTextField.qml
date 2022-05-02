@@ -3,6 +3,8 @@ import QtQuick.Controls 2.15
 import "../../../../components" as C
 
 Column {
+    property string parameter: modelData.parameter
+    property var value: textField.text
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding
@@ -13,6 +15,8 @@ Column {
         wrapMode: Text.WordWrap
     }
     C.TextField {
+        id: textField
+
         outlined: true
         width: parent.width
         placeholderText: modelData.name

@@ -3,6 +3,9 @@ import QtQuick.Controls 2.15
 import "../../../../components" as C
 
 Column {
+    property string parameter: modelData.parameter
+    property var value: comboBox.currentValue
+
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding
@@ -13,10 +16,14 @@ Column {
         wrapMode: Text.WordWrap
     }
     C.ComboBox {
-        textRole: "name"
-        model: modelData.content
+        id: comboBox
+
         flat: true
         outlined: true
         width: parent.width
+
+        model: modelData.content
+        textRole: "name"
+        valueRole: "parameter"
     }
 }

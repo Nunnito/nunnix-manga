@@ -6,11 +6,17 @@ import "../../../../utils" as U
 
 Column {
     property bool tristate: modelData.type == "tristate-checkbox"
+    property var parameter: modelData.parameter
+    property var checkedParameter: modelData.checked_parameter
+    property var uncheckedParameter: modelData.unchecked_parameter
+
     id: searchCheckBox
+
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding
     width: listView.width
     spacing: 6
+
     Row {
         id: rowLayout
         width: parent.width
@@ -55,6 +61,24 @@ Column {
     Component {
         id: itemDelegate
         C.CheckDelegate {
+            property var value: modelData.parameter
+            property string parameter: {
+                if (tristate) {
+                    if (checkState == Qt.Checked) {
+                        return searchCheckBox.checkedParameter
+                    }
+                    else if (checkState == Qt.PartiallyChecked) {
+                        return searchCheckBox.uncheckedParameter
+                    }
+                    else {
+                        return null
+                    }
+                }
+                else {
+                    return searchCheckBox.modelData.parameter
+                }
+            }
+
             text: modelData.name
             width: listView.width
             tristate: searchCheckBox.tristate
