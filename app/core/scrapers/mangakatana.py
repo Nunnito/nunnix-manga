@@ -276,7 +276,7 @@ class Mangakatana:
         # Prepare requests
         logger.debug("Requesting search...")
         async with session.get(url, params=payload
-                               if title is None and author is None else None,
+                               if title == "" and author == "" else None,
                                headers=self.HEADERS) as response:
             logger.debug(f"Requested search at {response.url}")
 
