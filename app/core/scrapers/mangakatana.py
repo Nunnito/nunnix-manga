@@ -257,7 +257,7 @@ class Mangakatana:
             url = f"{self.BASE_URL}/page/{page}?search={title}"
         elif author != "":
             url = f"{self.BASE_URL}/page/{page}?search={author}"
-            url += "&search_by=author""shounen"
+            url += "&search_by=author"
         else:
             url = f"{self.BASE_URL}/manga/page/{page}"
 
