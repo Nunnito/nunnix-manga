@@ -189,7 +189,7 @@ class Mangakatana:
         include_mode: str = "and",
         status: str = None,
         chapters: int = 1,
-        genres: list = [],
+        include_genres: list = [],
         exclude_genres: list = [],
         page: int = 1
     ) -> dict:
@@ -218,7 +218,7 @@ class Mangakatana:
         chapters : string, optional
             Minimum chapters numbers.
 
-        genres : list, optional
+        include_genres : list, optional
             Genres name.
 
         exclude_genres : list, optional
@@ -268,8 +268,8 @@ class Mangakatana:
             "include_mode": include_mode,
             "status": status,
             "chapters": chapters,
-            "genres": "_".join(genres),
-            "exclude_genres": "_".join(exclude_genres)
+            "include": "_".join(include_genres),
+            "exclude": "_".join(exclude_genres)
         }
         payload = {k: v for k, v in payload.items() if v is not None}
 
@@ -320,3 +320,136 @@ class Mangakatana:
 
         logger.debug("Done. Returning data...\n")
         return data
+
+    @classmethod
+    def advanced_search_controls(self) -> dict:
+        """ Return advanced search controls.
+
+        Returns
+        -------
+        dict
+            Dictionary with all advanced search controls.
+        """
+
+        label_1 = {
+            "type": "label",
+            "content": "NOTE: Title and author are mutually exclusive!",
+            "bold": True,
+        }
+        title = {
+            "name": "Title",
+            "type": "textfield",
+            "parameter": "title",
+        }
+        author = {
+            "name": "Author",
+            "type": "textfield",
+            "parameter": "author",
+        }
+        label_2 = {
+            "type": "label",
+            "content": ("NOTE: These sections will be ignored if the title " +
+                        "and author are not empty."),
+            "bold": True,
+            "topPadding": 20,
+        }
+        order = {
+            "name": "Sort by",
+            "type": "combobox",
+            "parameter": "sort_by",
+            "content": [
+                {"name": "Latest update", "parameter": "latest"},
+                {"name": "New manga", "parameter": "new"},
+                {"name": "Alphabetically", "parameter": "az"},
+                {"name": "Number of chapters", "parameter": "numc"}
+            ],
+        }
+        include_mode = {
+            "name": "Genre Inclusion mode:",
+            "type": "combobox",
+            "parameter": "include_mode",
+            "content": [
+                {"name": "AND (All Selected Genres)", "parameter": "and"},
+                {"name": "OR (Any Selected Genres)", "parameter": "or"}
+            ]
+        }
+        status = {
+            "name": "Status",
+            "type": "combobox",
+            "parameter": "status",
+            "content": [
+                {"name": "See all", "parameter": None},
+                {"name": "Ongoing", "parameter": 1},
+                {"name": "Completed", "parameter": 2},
+                {"name": "Cancelled", "parameter": 0}
+            ]
+        }
+        chapters = {
+            "name": "Minimum chapters",
+            "type": "slider",
+            "parameter": "chapters",
+            "from": 0,
+            "to": 500,
+            "stepSize": 20,
+        }
+        genres = {
+            "name": "Genres",
+            "type": "tristate-checkbox",
+            "checked_parameter": "include",
+            "unchecked_parameter": "exclude",
+            "content": [
+                {"name": "4-Koma", "parameter": "4-koma"},
+                {"name": "Action", "parameter": "action"},
+                {"name": "Adult", "parameter": "adult"},
+                {"name": "Adventure", "parameter": "adventure"},
+                {"name": "Artbook", "parameter": "artbook"},
+                {"name": "Award-winning", "parameter": "award-winning"},
+                {"name": "Yuri", "parameter": "yuri"},
+                {"name": "Comedy", "parameter": "comedy"},
+                {"name": "Cooking", "parameter": "cooking"},
+                {"name": "Doujinshi", "parameter": "doujinshi"},
+                {"name": "Drama", "parameter": "drama"},
+                {"name": "Ecchi", "parameter": "ecchi"},
+                {"name": "Fantasy", "parameter": "fantasy"},
+                {"name": "Gender bender", "parameter": "gender-bender"},
+                {"name": "Gore", "parameter": "gore"},
+                {"name": "Harem", "parameter": "harem"},
+                {"name": "Historical", "parameter": "historical"},
+                {"name": "Horror", "parameter": "horror"},
+                {"name": "Isekai", "parameter": "isekai"},
+                {"name": "Josei", "parameter": "josei"},
+                {"name": "Loli", "parameter": "loli"},
+                {"name": "Manhua", "parameter": "manhua"},
+                {"name": "Manhwa", "parameter": "manhwa"},
+                {"name": "Martial arts", "parameter": "martial-arts"},
+                {"name": "Mecha", "parameter": "mecha"},
+                {"name": "Medical", "parameter": "medical"},
+                {"name": "Webtoon", "parameter": "webtoon"},
+                {"name": "Doujinshi", "parameter": "doujinshi"},
+                {"name": "One shot", "parameter": "one-shot"},
+                {"name": "Overpowered mc", "parameter": "overpowered-mc"},
+                {"name": "Psychological", "parameter": "psychological"},
+                {"name": "Reincarnation", "parameter": "reincarnation"},
+                {"name": "Romance", "parameter": "romance"},
+                {"name": "School life", "parameter": "school-life"},
+                {"name": "Sci fi", "parameter": "sci-fi"},
+                {"name": "Seinen", "parameter": "seinen"},
+                {"name": "Sexual violence", "parameter": "sexual-violence"},
+                {"name": "Tragedy", "parameter": "tragedy"},
+                {"name": "Shoujo", "parameter": "shoujo"},
+                {"name": "Shoujo ai", "parameter": "shoujo-ai"},
+                {"name": "Shounen", "parameter": "shounen"},
+                {"name": "Shounen ai", "parameter": "shounen-ai"},
+                {"name": "Slice of life", "parameter": "slice-of-life"},
+                {"name": "Mystery", "parameter": "mystery"},
+                {"name": "Sports", "parameter": "sports"},
+                {"name": "Super power", "parameter": "super-power"},
+                {"name": "Supernatural", "parameter": "supernatural"},
+                {"name": "Survival", "parameter": "survival"},
+                {"name": "Time travel", "parameter": "time-travel"},
+                {"name": "Music", "parameter": "music"}
+            ],
+        }
+
+        return [label_1, title, author, label_2, order, include_mode, status,
+                chapters, genres]
