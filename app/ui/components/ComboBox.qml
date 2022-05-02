@@ -42,6 +42,7 @@ import QtQuick.Templates 2.15 as T
 import QtQuick.Controls.Material 2.15
 import QtQuick.Controls.Material.impl 2.15
 import "." as C
+import "../utils" as U
 
 T.ComboBox {
     id: control
@@ -201,6 +202,10 @@ T.ComboBox {
             highlightMoveDuration: 0
 
             T.ScrollIndicator.vertical: ScrollIndicator { }
+
+            interactive: false
+            boundsMovement: GridView.StopAtBounds
+            U.WheelArea {}  // Custom scroll system
         }
 
         background: Rectangle {
