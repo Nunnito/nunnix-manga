@@ -59,8 +59,8 @@ T.ComboBox {
                              implicitContentHeight + topPadding + bottomPadding,
                              implicitIndicatorHeight + topPadding + bottomPadding)
 
-    topInset: outlined ? 3 : 6
-    bottomInset: outlined ? 3 : 6
+    topInset: outlined ? 4 : 6
+    bottomInset: outlined ? 4 : 6
 
     leftPadding: padding + (!control.mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
     rightPadding: padding + (control.mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
