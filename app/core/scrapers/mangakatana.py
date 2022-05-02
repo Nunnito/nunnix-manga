@@ -183,8 +183,8 @@ class Mangakatana:
     @classmethod
     async def search_manga(
         self, session: ClientSession,
-        title: str = None,
-        author: str = None,
+        title: str = "",
+        author: str = "",
         order: str = "latest",
         include_mode: str = "and",
         status: str = None,
@@ -253,9 +253,9 @@ class Mangakatana:
         data = []
 
         # If title is not none, search only the title.
-        if title is not None:
+        if title != "":
             url = f"{self.BASE_URL}/page/{page}?search={title}"
-        elif author is not None:
+        elif author != "":
             url = f"{self.BASE_URL}/page/{page}?search={author}"
             url += "&search_by=author""shounen"
         else:
@@ -356,7 +356,7 @@ class Mangakatana:
         order = {
             "name": "Sort by",
             "type": "combobox",
-            "parameter": "sort_by",
+            "parameter": "order",
             "content": [
                 {"name": "Latest update", "parameter": "latest"},
                 {"name": "New manga", "parameter": "new"},
