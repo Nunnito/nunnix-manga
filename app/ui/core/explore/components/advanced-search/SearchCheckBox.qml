@@ -63,27 +63,7 @@ Column {
         id: itemDelegate
         C.CheckDelegate {
             property var value: modelData.parameter
-            property string parameter: {
-                if (tristate) {
-                    if (checkState == Qt.Checked) {
-                        return searchCheckBox.checkedParameter
-                    }
-                    else if (checkState == Qt.PartiallyChecked) {
-                        return searchCheckBox.uncheckedParameter
-                    }
-                    else {
-                        return null
-                    }
-                }
-                else {
-                    if (checkState == Qt.Checked) {
-                        return searchCheckBox.parameter
-                    }
-                    else {
-                        return null
-                    }   
-                }
-            }
+            property string parameter
 
             text: modelData.name
             width: listView.width
@@ -98,6 +78,32 @@ Column {
                 }
                 else {
                     return Qt.Unchecked
+                }
+            }
+
+            // This connection is to just change value property when button is clicked
+            Connections {
+                target: advancedSearchButtons.searchButton
+                function onClicked() {
+                    if (tristate) {
+                        if (checkState == Qt.Checked) {
+                            parameter = searchCheckBox.checkedParameter
+                        }
+                        else if (checkState == Qt.PartiallyChecked) {
+                            parameter = searchCheckBox.uncheckedParameter
+                        }
+                        else {
+                            parameter = null
+                        }
+                    }
+                    else {
+                        if (checkState == Qt.Checked) {
+                            parameter = searchCheckBox.parameter
+                        }
+                        else {
+                            parameter = null
+                        }   
+                    }
                 }
             }
         }

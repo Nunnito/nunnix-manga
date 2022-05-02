@@ -3,7 +3,7 @@ import "../../../../components" as C
 
 Column {
     property string parameter: modelData.parameter
-    property int value: slider.value
+    property int value
 
     objectName: "slider"
 
@@ -30,6 +30,14 @@ Column {
             text: slider.value
             font.bold: true
             anchors.verticalCenter: slider.verticalCenter
+        }
+    }
+
+    // This connection is to just change value property when button is clicked
+    Connections {
+        target: advancedSearchButtons.searchButton
+        function onClicked() {
+            value = slider.value
         }
     }
 }

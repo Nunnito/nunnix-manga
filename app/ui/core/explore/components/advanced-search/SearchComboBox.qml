@@ -4,7 +4,7 @@ import "../../../../components" as C
 
 Column {
     property string parameter: modelData.parameter
-    property var value: comboBox.currentValue
+    property var value
 
     objectName: "comboBox"
 
@@ -27,5 +27,13 @@ Column {
         model: modelData.content
         textRole: "name"
         valueRole: "parameter"
+    }
+
+    // This connection is to just change value property when button is clicked
+    Connections {
+        target: advancedSearchButtons.searchButton
+        function onClicked() {
+            value = comboBox.currentValue
+        }
     }
 }
