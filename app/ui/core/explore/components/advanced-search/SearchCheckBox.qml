@@ -76,7 +76,7 @@ Column {
                     }
                 }
                 else {
-                    return searchCheckBox.modelData.parameter
+                    return searchCheckBox.parameter
                 }
             }
 
