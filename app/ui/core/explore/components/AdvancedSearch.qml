@@ -55,6 +55,7 @@ Pane {
         DelegateChoice {roleValue: "textfield"; SearchTextField {}}
         DelegateChoice {roleValue: "combobox"; SearchComboBox {}}
         DelegateChoice {roleValue: "slider"; SearchSlider {}}
+        DelegateChoice {roleValue: "checkbox"; SearchCheckBox {tristate: false}}
         DelegateChoice {roleValue: "tristate-checkbox"; SearchCheckBox {}}
         DelegateChoice {roleValue: "separator"; SearchSeparator {}}
         DelegateChoice {roleValue: "label"; SearchLabel {}}
