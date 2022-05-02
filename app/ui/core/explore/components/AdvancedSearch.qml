@@ -16,16 +16,20 @@ Pane {
     id: advancedSearch
 
     x: parent.width - width
-    padding: 20
+
+    leftPadding: 20
+    rightPadding: 20
+    topPadding: 15  // To center search label
+    bottomPadding: 20
 
     Material.background: theme.advancedSearchBg
     SplitView.minimumWidth: item.width  // To animate the pane
     SplitView.preferredWidth: 0  // Initially hidden
 
     Column {
-        width: _width - 40
+        width: _width - advancedSearch.leftPadding * 2
         height: parent.height
-        spacing: 55
+        spacing: 59
 
         C.Label {
             width: contentWidth
@@ -37,32 +41,36 @@ Pane {
             z: 1
 
             // Background to cover their siblings
-            background: Rectangle {
-                width: parent.parent.width
+            background: Pane {
+                width: parent.parent.width + advancedSearch.leftPadding * 2
                 height: 48  // Topbar height
                 x: -(width - parent.width) / 2
-                y: -20
-                color: theme.advancedSearchBg
+                y: -advancedSearch.topPadding
+                Material.elevation: 1
+                Material.background: theme.advancedSearchSearchBg2
             }
         }
         // Here will be the advanced search
         ListView {
             id: listView
-            bottomMargin: parent.spacing + 20
+            bottomMargin: parent.spacing + advancedSearch.leftPadding
             width: parent.width
-            height: parent.height
+            height: parent.height - advancedSearchButtons.height - advancedSearch.leftPadding
             visible: width > 0
-            spacing: 10
+            spacing: 5
             model: Explorer.advanced_search
             delegate: chooser
             interactive: false
             boundsMovement: GridView.StopAtBounds
             U.WheelArea {}  // Custom scroll system
             cacheBuffer: count > 0 ? contentHeight: 0
+            displayMarginBeginning: bottomMargin
 
             contentY: vsbar.position * contentHeight
         }
     }
+
+    SearchButtons {id: advancedSearchButtons}
 
     C.ScrollBar {
         id: vsbar
@@ -72,9 +80,9 @@ Pane {
         active: hovered || pressed
         orientation: Qt.Vertical
 
-        height: parent.height
+        height: listView.height + 5
         x: parent.width + 4
-        y: advancedSearch.padding
+        y: advancedSearch.leftPadding + advancedSearch.topPadding -1
 
         size: ((listView.height - (listView.bottomMargin)) / (listView.contentHeight))
         position: listView.count > 0 ? (listView.contentY) / (listView.contentHeight) : 0
