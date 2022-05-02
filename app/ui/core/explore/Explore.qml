@@ -18,7 +18,6 @@ SplitView {
             return topBar.searchField
         }
         else if (searchType == "advanced") {
-            print(advancedSearch.controls)
             return advancedSearch.controls
         }
     }
