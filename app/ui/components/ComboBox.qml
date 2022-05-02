@@ -41,6 +41,7 @@ import QtQuick.Controls.impl 2.15
 import QtQuick.Templates 2.15 as T
 import QtQuick.Controls.Material 2.15
 import QtQuick.Controls.Material.impl 2.15
+import "." as C
 
 T.ComboBox {
     id: control
@@ -48,10 +49,16 @@ T.ComboBox {
     property var currentRectColor: control.activeFocus ? decorationActiveColor
                         : (control.hovered ? decorationHoverColor : decorationInactiveColor)
 
-    // TODO: Use custom combo box color instead of text field color
-    property string decorationActiveColor: theme.textfieldDecorationActive
-    property string decorationInactiveColor: theme.textfieldDecorationInactive
-    property string decorationHoverColor: theme.textfieldDecorationHover
+    property string decorationActiveColor: theme.comboBoxDecorationActive
+    property string decorationInactiveColor: theme.comboBoxDecorationInactive
+    property string decorationHoverColor: theme.comboBoxDecorationHover
+
+    // Added properties
+    property string colorBg: theme.controlBg
+    property string colorFg: Material.foreground
+    property string colorBgOver: theme.controlBgOver
+    property string colorFgOver: theme.controlFgOver
+    property string colorBgDialog: theme.controlBgDialog
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
@@ -91,7 +98,7 @@ T.ComboBox {
         }
     }
 
-    delegate: MenuItem {
+    delegate: C.MenuItem {
         width: ListView.view.width
         text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
         Material.foreground: control.currentIndex === index ? ListView.view.contentItem.Material.accent : ListView.view.contentItem.Material.foreground
@@ -102,7 +109,7 @@ T.ComboBox {
     indicator: ColorImage {
         x: control.mirrored ? control.padding : control.width - width - control.padding
         y: control.topPadding + (control.availableHeight - height) / 2
-        color: control.enabled ? control.Material.foreground : control.Material.hintTextColor
+        color: control.enabled ? colorFg : control.Material.hintTextColor
         source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/Material/images/drop-indicator.png"
     }
 
@@ -121,7 +128,7 @@ T.ComboBox {
         selectByMouse: control.selectTextByMouse
 
         font: control.font
-        color: control.enabled ? control.Material.foreground : control.Material.hintTextColor
+        color: control.enabled ? colorFg : control.Material.hintTextColor
         selectionColor: control.Material.accentColor
         selectedTextColor: control.Material.primaryHighlightedTextColor
         verticalAlignment: Text.AlignVCenter
@@ -158,7 +165,7 @@ T.ComboBox {
             pressed: control.pressed
             anchor: control.editable && control.indicator ? control.indicator : control
             active: control.pressed || control.visualFocus || control.hovered
-            color: theme.controlBgOver
+            color: colorBgOver
         }
     }
 
@@ -198,7 +205,7 @@ T.ComboBox {
 
         background: Rectangle {
             radius: 2
-            color: theme.controlBgDialog
+            color: colorBgDialog
 
             layer.enabled: control.enabled
             layer.effect: ElevationEffect {
