@@ -108,6 +108,8 @@ QtObject {
     property string advancedSearchBg: "#907FA4"
     // Advanced search separator color
     property string advancedSearchSeparator: "#5a5a5a"
+    // Advanced search scrollbar item background
+    property string advancedSearchScrollbarItemBg: "#907FA4"
 
     // Checkbox partiallly checked color (red pastel)
     property string checkboxPartial: "#626262"
@@ -118,4 +120,6 @@ QtObject {
     property string comboBoxDecorationActive: "#645474"
     // Combo box decoration hover color
     property string comboBoxDecorationHover: "#EDEDD0"
+    // Combobox item background with mouse over (ripple color in #AARRGGBB)
+    property string comboBoxItemBgOver: "#aa3c3c3c"
 }
