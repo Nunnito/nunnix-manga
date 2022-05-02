@@ -395,8 +395,8 @@ class Mangakatana:
         genres = {
             "name": "Genres",
             "type": "tristate-checkbox",
-            "checked_parameter": "include",
-            "unchecked_parameter": "exclude",
+            "checked_parameter": "include_genres",
+            "unchecked_parameter": "exclude_genres",
             "content": [
                 {"name": "4-Koma", "parameter": "4-koma"},
                 {"name": "Action", "parameter": "action"},
