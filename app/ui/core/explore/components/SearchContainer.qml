@@ -9,7 +9,7 @@ GridView {
     property int columns: Math.floor((width - (rightMargin + leftMargin)) / 160)
     
     width: parent.width
-    height: parent.height - topBar.height
+    height: parent.height - topBar.height - statusBar.height
     cellWidth: 160
     cellHeight: 250
     z: -1

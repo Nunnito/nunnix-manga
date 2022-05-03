@@ -36,6 +36,7 @@ SplitView {
         TopBar {id: topBar}
         SearchContainer {id: grid}
         ListModel {id: searchModel}
+        StatusBar {id: statusBar}
     }
 
     // Right side container for advanced search
