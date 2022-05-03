@@ -37,6 +37,7 @@
 import QtQuick 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Controls.Material.impl 2.12
+import "../utils" as U
 
 Rectangle {
     id: indicatorItem
@@ -93,6 +94,8 @@ Rectangle {
                (ascDescMode && (indicatorItem.checkState === Qt.Checked ||
                 indicatorItem.checkState === Qt.PartiallyChecked)) ? 1 : 0
         Behavior on scale { NumberAnimation { duration: 100 } }
+
+        U.ChangeColor {color: ascDescMode ? theme.windowAccent : theme.windowFg}
     }
 
     Rectangle {
