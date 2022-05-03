@@ -42,7 +42,6 @@ class Explorer(SignalHandler, QObject):
         self._scrapers_list = self.get_scrapers()
         self._scraper = self._scrapers_list[0]
         self._signals_handler = signals_handler
-        self._controls = self._scraper.advanced_search_controls()
         self._searching = False
 
     # Get as input the search type, search root and page index
@@ -179,4 +178,4 @@ class Explorer(SignalHandler, QObject):
 
     @pyqtProperty(QVariant, constant=True)
     def advanced_search(self) -> list:
-        return self._controls
+        return self._scraper.advanced_search_controls()
