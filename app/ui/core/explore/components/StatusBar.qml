@@ -25,6 +25,21 @@ C.TopBar {
 
             topInset: 0
             bottomInset: 0
+
+            onActivated: {
+                if (Explorer.scraper == currentText) {
+                    return
+                }
+                explorer.searchModel.clear()  // Clear search results
+                explorer.currentPage = 1  // Reset page to 1
+                explorer.searchType = "empty"  // Reset search type to empty
+                
+                Explorer.scraper = currentText  // Set scraper
+                // Set new advanced search controls
+                explorer.advancedSearch.controls.model = Explorer.advanced_search
+                Explorer.search_manga(explorer.searchType, explorer.searchRoot,
+                                    explorer.currentPage)  // Do search
+            }
         }
     }
 }
