@@ -749,7 +749,28 @@ class Mangadex:
                 {"name": "Zombies", "parameter": 75}
             ]
         }
+        order = {
+            "name": "Order",
+            "type": "ascDescMap",
+            "parameter": "order",
+            "asc_parameter": "asc",
+            "desc_parameter": "desc",
+            "default_param": {
+                "name": "latestUploadedChapter",
+                "parameter": "desc"
+            },
+            "content": [
+                {"name": "Alphabetic", "parameter": "title"},
+                {"name": "Chapter uploaded date",
+                 "parameter": "latestUploadedChapter"},
+                {"name": "Number of follows", "parameter": "followedCount"},
+                {"name": "Created date", "parameter": "createdAt"},
+                {"name": "Updated date", "parameter": "updatedAt"},
+                {"name": "Popularity", "parameter": "relevance"},
+                {"name": "Year", "parameter": "year"},
+            ]
+        }
 
         return [title, year, included_tags_mode, excluded_tags_mode, status,
                 publication_demographic, content_rating, original_language,
-                genres]
+                genres, order]
