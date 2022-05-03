@@ -7,7 +7,9 @@ from core.utils.logger import logger
 
 
 class Mangadex:
-    def __init__(self):
+    def __init__(self, session: ClientSession):
+        self.session = session  # Aiohttp session
+
         self.NAME = "MangaDex"  # Used for GUI
 
         self.LANG = "en"  # Used to get manga by language
@@ -93,7 +95,7 @@ class Mangadex:
             75: "631ef465-9aba-4afb-b0fc-ea10efe274a8"
         }
 
-    async def get_manga_data(self, session: ClientSession, uuid: str) -> dict:
+    async def get_manga_data(self, uuid: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -138,7 +140,7 @@ class Mangadex:
 
         # Prepare requests
         logger.debug("Requesting manga data...")
-        async with session.get(api_manga, params=payload) as response:
+        async with self.session.get(api_manga, params=payload) as response:
             logger.debug(f"Requested manga data at {response.url}")
             attrs = (await response.json())["data"]["attributes"]
             relationships = (await response.json())["data"]["relationships"]
@@ -170,7 +172,7 @@ class Mangadex:
         author = author["attributes"]["name"]
 
         logger.debug("Getting manga chapters...")
-        chapters_data = await self.get_chapters_data(session, uuid)
+        chapters_data = await self.get_chapters_data(uuid)
 
         data = {
             "title": title,
@@ -185,7 +187,7 @@ class Mangadex:
         logger.debug("Done. Returning data...\n")
         return data
 
-    async def get_chapters_data(self, session: ClientSession, uuid: str,
+    async def get_chapters_data(self, uuid: str,
                                 offset: int = 0) -> dict:
         """ Get chapters data. This function is used by get_manga_data function.
 
@@ -216,7 +218,7 @@ class Mangadex:
 
         # Prepare requests
         logger.debug("Requesting chapters data...")
-        async with session.get(api_chapters, params=payload) as response:
+        async with self.session.get(api_chapters, params=payload) as response:
             logger.debug(f"Requested chapters data at {response.url}")
             total = (await response.json())["total"]
             results = (await response.json())["data"]
@@ -263,14 +265,13 @@ class Mangadex:
 
         # If there are more chapters, we get them too
         if total > 500 and offset + 500 < total:
-            data["chapters"].extend(self.get_chapters_data(session, uuid,
+            data["chapters"].extend(self.get_chapters_data(uuid,
                                     offset + 500)["chapters"])
 
         logger.debug(f"Done. Returning data... (offset: {offset})")
         return data
 
-    async def get_chapter_images(self, session: ClientSession,
-                                 uuid: str) -> list:
+    async def get_chapter_images(self, uuid: str) -> list:
         """ Get chapter images.
 
         Parameters
@@ -294,7 +295,7 @@ class Mangadex:
 
         # Prepare requests
         logger.debug("Requesting chapters data...")
-        async with session.get(api_at_home) as response:
+        async with self.session.get(api_at_home) as response:
             logger.debug(f"Requested chapters data at {response.url}")
             base_url = (await response.json())["baseUrl"]
             attributes = (await response.json())["chapter"]
@@ -319,7 +320,7 @@ class Mangadex:
         return images
 
     async def search_manga(
-        self, session: ClientSession,
+        self,
         limit: int = 25,
         offset: int = None,
         title: str = None,
@@ -518,7 +519,7 @@ class Mangadex:
         for i, excluded_tag in enumerate(excluded_tags):
             excluded_tags[i] = self.TAGS[excluded_tag]
 
-        available_translated_language = self.LANG
+        available_translated_language = self.LANG  # Set to LANG
 
         # Query strings
         payload = {
@@ -555,8 +556,8 @@ class Mangadex:
 
         # Prepare requests
         logger.debug("Requesting search...")
-        async with session.get(self.BASE_URL + "/manga",
-                               params=payload) as response:
+        async with self.session.get(self.BASE_URL + "/manga",
+                                    params=payload) as response:
             logger.debug(f"Requested search at {response.url}")
             results = (await response.json())["data"]
             logger.debug(f"Total result: {(await response.json())['total']}\n")
