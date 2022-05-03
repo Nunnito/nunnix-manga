@@ -43,7 +43,8 @@ Rectangle {
     implicitWidth: 18
     implicitHeight: 18
     color: "transparent"
-    border.color: !control.enabled ? control.Material.hintTextColor
+    border.color: ascDescMode ? "transparent" 
+        : !control.enabled ? control.Material.hintTextColor
         : checkState == Qt.PartiallyChecked && boolTristate ? checkBoxPartially
         : checkState !== Qt.Unchecked ? control.Material.accentColor
         : control.Material.secondaryTextColor
@@ -55,6 +56,7 @@ Rectangle {
     property int checkState: control.checkState
     property bool boolTristate: false
     property string checkBoxPartially: theme.checkboxPartial
+    property bool ascDescMode: false
 
     Behavior on border.width {
         NumberAnimation {
@@ -75,12 +77,21 @@ Rectangle {
         id: checkImage
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
-        width: 14
-        height: 14
-        source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/Material/images/check.png"
+        width: ascDescMode ? 18 : 14
+        height: ascDescMode ? 18 : 14
+        source: {
+            if (ascDescMode) {
+                return Icon.get_icon("arrow_upward.svg")
+            }
+            else {
+                return "qrc:/qt-project.org/imports/QtQuick/Controls.2/Material/images/check.png"
+            }
+        }
         fillMode: Image.PreserveAspectFit
 
-        scale: indicatorItem.checkState === Qt.Checked ? 1 : 0
+        scale: indicatorItem.checkState === Qt.Checked ||
+               (ascDescMode && (indicatorItem.checkState === Qt.Checked ||
+                indicatorItem.checkState === Qt.PartiallyChecked)) ? 1 : 0
         Behavior on scale { NumberAnimation { duration: 100 } }
     }
 
@@ -90,7 +101,8 @@ Rectangle {
         width: 12
         height: 3
 
-        scale: indicatorItem.checkState == Qt.PartiallyChecked && !boolTristate ? 1 : 0
+        scale: indicatorItem.checkState == Qt.PartiallyChecked &&
+               !boolTristate && !ascDescMode ? 1 : 0
         Behavior on scale { NumberAnimation { duration: 100 } }
     }
     Image {
@@ -133,5 +145,22 @@ Rectangle {
                 duration: 120
             }
         }
+    }
+
+    RotationAnimator {
+        target: checkImage
+        from: 0
+        to: 180
+        duration: 100
+        easing.type: Easing.InQuart
+        running: ascDescMode && indicatorItem.state == "partiallychecked"
+    }
+    RotationAnimator {
+        target: checkImage
+        from: 180
+        to: 0
+        duration: 100
+        easing.type: Easing.InQuart
+        running: ascDescMode && indicatorItem.state == "checked"
     }
 }

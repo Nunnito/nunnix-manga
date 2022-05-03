@@ -65,6 +65,7 @@ Column {
             property string parameter
 
             ButtonGroup.group: buttonsGroup
+            ascDescMode: true
 
             text: modelData.name
             width: listView.width

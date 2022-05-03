@@ -45,6 +45,7 @@ import "." as C
 T.CheckDelegate {
     id: control
     property bool boolTristate: false
+    property bool ascDescMode: false
 
     // Added properties
     property string colorBg: theme.controlBg
@@ -72,6 +73,7 @@ T.CheckDelegate {
         y: control.topPadding + (control.availableHeight - height) / 2
         control: control
         boolTristate: parent.boolTristate
+        ascDescMode: parent.ascDescMode
     }
 
     contentItem: IconLabel {
