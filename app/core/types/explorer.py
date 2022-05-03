@@ -38,9 +38,9 @@ class Explorer(SignalHandler, QObject):
                  parent=None) -> None:
         super(Explorer, self).__init__(parent)
 
+        self._session = session
         self._scrapers_list = self.get_scrapers()
         self._scraper = self._scrapers_list[0]
-        self._session = session
         self._signals_handler = signals_handler
         self._controls = self._scraper.advanced_search_controls()
         self._searching = False
@@ -59,12 +59,11 @@ class Explorer(SignalHandler, QObject):
 
         # If the search type is empty, do a search empty search
         if search_type == "empty":
-            data = await self._scraper.search_manga(self._session, page=page)
+            data = await self._scraper.search_manga(page=page)
         # If the search type is title, do a search by title
         elif search_type == "title":
             title = search_root.property("searchText")
-            data = await self._scraper.search_manga(self._session,
-                                                    title=title, page=page)
+            data = await self._scraper.search_manga(title=title, page=page)
         # If the search type is advanced, do a search by advanced search
         elif search_type == "advanced":
             parameters = {}
@@ -133,16 +132,16 @@ class Explorer(SignalHandler, QObject):
                                 parameters[param].append(value)
 
             parameters["page"] = page  # Add the page to the parameters dict
-            data = await self._scraper.search_manga(self._session,
-                                                    **parameters)
+            data = await self._scraper.search_manga(**parameters)
 
         results = []
         for result in data:
             title = result["title"]
             link = result["link"]
             cover = result["cover"]
-            results.append(MangaSearch(self._scraper, self._session,
-                                       title, link, cover, self))
+
+            results.append(MangaSearch(self._scraper, title, link, cover,
+                                       self))
 
         self._signals_handler.mangaSearch.emit(results)
 
@@ -174,7 +173,7 @@ class Explorer(SignalHandler, QObject):
             for attr in dir(module):
                 class_obj = getattr(module, attr)
                 if hasattr(class_obj, "get_manga_data"):
-                    classes.append(class_obj)
+                    classes.append(class_obj(self._session))
 
         return classes
 

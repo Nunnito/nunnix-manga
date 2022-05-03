@@ -9,29 +9,31 @@ from core.utils.logger import logger
 
 
 class Mangakatana:
-    NAME = "MangaKatana"
+    def __init__(self, session: ClientSession):
+        self.session = session
 
-    BASE_URL = "https://mangakatana.com"
-    HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)',
-        'Referer': "http://mangakatana.com/"}
-    MONTHS = {
-        "Jan": "01",
-        "Feb": "02",
-        "Mar": "03",
-        "Apr": "04",
-        "May": "05",
-        "Jun": "06",
-        "Jul": "07",
-        "Aug": "08",
-        "Sep": "09",
-        "Oct": "10",
-        "Nov": "11",
-        "Dec": "12"
-    }
+        self.NAME = "MangaKatana"
 
-    @classmethod
-    async def get_manga_data(self, session: ClientSession, url: str) -> dict:
+        self.BASE_URL = "https://mangakatana.com"
+        self.HEADERS = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)',
+            'Referer': "http://mangakatana.com/"}
+        self.MONTHS = {
+            "Jan": "01",
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12"
+        }
+
+    async def get_manga_data(self, url: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -73,7 +75,7 @@ class Mangakatana:
         # TODO: Status code handler
         # Prepare requests
         logger.debug("Requesting manga data...")
-        async with session.get(url, headers=self.HEADERS) as response:
+        async with self.session.get(url, headers=self.HEADERS) as response:
             logger.debug(f"Requested manga data at {response.url}")
             soup = BeautifulSoup(await response.text(), "lxml")
 
@@ -148,9 +150,7 @@ class Mangakatana:
         logger.debug("Done. Returning data...\n")
         return data
 
-    @classmethod
-    async def get_chapter_images(self, session: ClientSession,
-                                 url: str) -> list:
+    async def get_chapter_images(self, url: str) -> list:
         """ Get chapter images.
 
         Parameters
@@ -170,7 +170,7 @@ class Mangakatana:
         # TODO: Status code handler
         # Prepare requests
         logger.debug("Requesting chapters data...")
-        async with session.get(url, headers=self.HEADERS) as response:
+        async with self.session.get(url, headers=self.HEADERS) as response:
             logger.debug(f"Requested chapters data at {response.url}")
             images = re.findall(r"var ytaw=\[('.+'),\]", await response.text())
 
@@ -180,9 +180,8 @@ class Mangakatana:
         logger.debug("\nDone. Returning data...\n")
         return images
 
-    @classmethod
     async def search_manga(
-        self, session: ClientSession,
+        self,
         title: str = "",
         author: str = "",
         order: str = "latest",
@@ -275,9 +274,9 @@ class Mangakatana:
 
         # Prepare requests
         logger.debug("Requesting search...")
-        async with session.get(url, params=payload
-                               if title == "" and author == "" else None,
-                               headers=self.HEADERS) as response:
+        async with self.session.get(url, params=payload
+                                    if title == "" and author == "" else None,
+                                    headers=self.HEADERS) as response:
             logger.debug(f"Requested search at {response.url}")
 
             # Run in a separate thread to avoid being blocked by bs4
@@ -321,7 +320,6 @@ class Mangakatana:
         logger.debug("Done. Returning data...\n")
         return data
 
-    @classmethod
     def advanced_search_controls(self) -> dict:
         """ Return advanced search controls.
 

@@ -1,17 +1,14 @@
 from PyQt5.QtCore import QObject, QVariant, QJsonValue, pyqtProperty
-from aiohttp import ClientSession
 from qasync import asyncSlot
 
 
 class Chapter(QObject):
     """ Chapter type to be used in Manga class """
-    def __init__(self, scraper, session: ClientSession, name: str,
-                 date: list[str, str, str], link: str, scanlation: str,
-                 parent) -> None:
+    def __init__(self, scraper, name: str, date: list[str, str, str],
+                 link: str, scanlation: str, parent) -> None:
         super(Chapter, self).__init__(parent)
 
         self._scraper = scraper
-        self._session = session
         self._name = name
         self._date = date
         self._link = link
@@ -41,8 +38,7 @@ class Chapter(QObject):
     @asyncSlot()
     async def get_images(self) -> None:
         """ Get images from chapter """
-        images = await self._scraper.get_chapter_images(self._session,
-                                                        self._link)
+        images = await self._scraper.get_chapter_images(self._link)
         self._parent._parent._signals_handler.chapterImages.emit(images)
 
 
@@ -65,14 +61,12 @@ class ChaptersData(QObject):
 
 class Manga(QObject):
     """ Manga type to get all manga data """
-    def __init__(self, scraper, session: ClientSession, title: str,
-                 author: str, description: str, cover: str, genres: list[str],
-                 status: str, link: str, chapters_data: ChaptersData,
-                 parent) -> None:
+    def __init__(self, scraper, title: str, author: str, description: str,
+                 cover: str, genres: list[str], status: str, link: str,
+                 chapters_data: ChaptersData, parent) -> None:
         super(Manga, self).__init__(parent)
 
         self._scraper = scraper
-        self._session = session
         self._title = title
         self._author = author
         self._description = description
@@ -122,12 +116,10 @@ class Manga(QObject):
 
 class MangaSearch(QObject):
     """ Manga search type """
-    def __init__(self, scraper, session: ClientSession, title: str,
-                 link: str, cover: str, parent):
+    def __init__(self, scraper, title: str, link: str, cover: str, parent):
         super(MangaSearch, self).__init__(parent)
 
         self._scraper = scraper
-        self._session = session
         self._title = title
         self._link = link
         self._cover = cover
@@ -161,7 +153,7 @@ class MangaSearch(QObject):
     @asyncSlot()
     async def get_data(self) -> None:
         """ Get manga data """
-        data = await self._scraper.get_manga_data(self._session, self._link)
+        data = await self._scraper.get_manga_data(self._link)
 
         title = data["title"]
         author = data["author"]
@@ -174,7 +166,6 @@ class MangaSearch(QObject):
             chapters.append(
                 Chapter(
                     self._scraper,
-                    self._session,
                     chapter["name"],
                     chapter["date"],
                     chapter["link"],
@@ -187,7 +178,6 @@ class MangaSearch(QObject):
 
         manga = Manga(
             self._scraper,
-            self._session,
             title, author, description, cover, genres, status, self._link,
             chapters_data, self
         )
