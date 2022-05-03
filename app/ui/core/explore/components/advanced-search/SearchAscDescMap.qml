@@ -5,9 +5,11 @@ import "../../../../components" as C
 import "../../../../utils" as U
 
 Column {
+    property var parameter: modelData.parameter
     property var ascParameter: modelData.asc_parameter
     property var descParameter: modelData.desc_parameter
-    property var defaultParam: modelData.default
+    property var defaultParamName: modelData.default_param.name
+    property var defaultParamValue: modelData.default_param.parameter
 
     id: ascDesc
     objectName: "ascDescMap"
@@ -63,6 +65,7 @@ Column {
         C.CheckDelegate {
             property var value: modelData.parameter
             property string parameter
+            property string subParameter
 
             ButtonGroup.group: buttonsGroup
             ascDescMode: true
@@ -85,8 +88,13 @@ Column {
             }
 
             Component.onCompleted: {
-                if (value == ascDesc.defaultParam) {
-                    checked = true
+                if (value == ascDesc.defaultParamName) {
+                    if (ascDesc.defaultParamValue == ascDesc.ascParameter) {
+                        checkState = Qt.Checked
+                    }
+                    else if (ascDesc.defaultParamValue == ascDesc.descParameter) {
+                        checkState = Qt.PartiallyChecked
+                    }
                 }
             }
 
@@ -95,13 +103,16 @@ Column {
                 target: advancedSearchButtons.searchButton
                 function onClicked() {
                     if (checkState == Qt.Checked) {
-                        parameter = ascDesc.ascParameter
+                        parameter = ascDesc.parameter
+                        subParameter = ascDesc.ascParameter
                     }
                     else if (checkState == Qt.PartiallyChecked) {
-                        parameter = ascDesc.descParameter
+                        parameter = ascDesc.parameter
+                        subParameter = ascDesc.descParameter
                     }
                     else {
                         parameter = null
+                        subParameter = null
                     }
                 }
             }
