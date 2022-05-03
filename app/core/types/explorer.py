@@ -129,6 +129,29 @@ class Explorer(SignalHandler, QObject):
                             else:
                                 parameters[param].append(value)
 
+                elif component.objectName() == "ascDescMap":
+                    param = component.property("parameter")  # URL parameter
+                    # Values parameter of the dictionary
+                    asc_param = component.property("ascParameter")
+                    desc_param = component.property("descParameter")
+                    parameters[param] = {}  # Create the dictionary
+
+                    list_view = component.childItems()[1]
+                    delegates = list_view.property("contentItem").childItems()
+
+                    for delegate in delegates:
+                        # If the delegate is checked, add the parameter to the
+                        # checked parameters list
+                        if delegate.property("parameter") == param:
+                            # Key parameter of the dictionary
+                            value = delegate.property("value")
+                            # If the checkbox is ascendent
+                            if delegate.property("subParameter") == asc_param:
+                                parameters[param][value] = asc_param
+                            # If the checkbox is descendent
+                            else:
+                                parameters[param][value] = desc_param
+
             parameters["page"] = page  # Add the page to the parameters dict
             data = await self._scraper.search_manga(**parameters)
 
