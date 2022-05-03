@@ -1,6 +1,6 @@
 import os
 
-from importlib import import_module
+from importlib import import_module, reload
 from functools import wraps
 from pathlib import Path
 
@@ -158,7 +158,7 @@ class Explorer(SignalHandler, QObject):
     @pyqtProperty(list, constant=True)
     def scrapers_list(self) -> list:
         scrapers_list = []
-        for scraper in self._scrapers_list:
+        for scraper in self.get_scrapers():
             scrapers_list.append(scraper.NAME)
 
         return scrapers_list
@@ -167,7 +167,7 @@ class Explorer(SignalHandler, QObject):
         classes = []
         for file in Path(scrapers.__path__[0]).glob("*.py"):
             name = os.path.splitext(os.path.basename(file))[0]
-            module = import_module(f"{scrapers.__name__}.{name}")
+            module = reload(import_module(f"{scrapers.__name__}.{name}"))
 
             for attr in dir(module):
                 class_obj = getattr(module, attr)
