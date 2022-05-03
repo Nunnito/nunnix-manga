@@ -156,7 +156,7 @@ class Explorer(SignalHandler, QObject):
                 self._scraper = class_obj
                 break
 
-    @pyqtProperty(list)
+    @pyqtProperty(list, constant=True)
     def scrapers_list(self) -> list:
         scrapers_list = []
         for scraper in self._scrapers_list:
