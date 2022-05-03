@@ -39,8 +39,7 @@ class Explorer(SignalHandler, QObject):
         super(Explorer, self).__init__(parent)
 
         self._session = session
-        self._scrapers_list = self.get_scrapers()
-        self._scraper = self._scrapers_list[0]
+        self._scraper = self.get_scrapers()[0]
         self._signals_handler = signals_handler
         self._searching = False
 
@@ -150,7 +149,7 @@ class Explorer(SignalHandler, QObject):
 
     @scraper.setter
     def scraper(self, scraper: str) -> None:
-        for class_obj in self._scrapers_list:
+        for class_obj in self.get_scrapers():
             if class_obj.NAME == scraper:
                 self._scraper = class_obj
                 break
