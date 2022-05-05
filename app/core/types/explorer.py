@@ -54,17 +54,17 @@ class Explorer(SignalHandler, QObject):
         search for a manga by title; advanced, to search for a manga by
         advanced search.
         """
+        parameters = {}
 
-        # If the search type is empty, do a search empty search
+        # If the search type is empty, do a empty search
         if search_type == "empty":
-            data = await self._scraper.search_manga(page=page)
+            pass
         # If the search type is title, do a search by title
         elif search_type == "title":
             title = search_root.property("searchText")
-            data = await self._scraper.search_manga(title=title, page=page)
+            parameters["title"] = title
         # If the search type is advanced, do a search by advanced search
         elif search_type == "advanced":
-            parameters = {}
             components = search_root.property("contentItem").childItems()
             one_iter = ["textField", "comboBox", "slider"]
 
@@ -152,8 +152,8 @@ class Explorer(SignalHandler, QObject):
                             else:
                                 parameters[param][value] = desc_param
 
-            parameters["page"] = page  # Add the page to the parameters dict
-            data = await self._scraper.search_manga(**parameters)
+        parameters["page"] = page  # Add the page to the parameters dict
+        data = await self._scraper.search_manga(**parameters)
 
         results = []
         for result in data:
