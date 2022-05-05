@@ -7,6 +7,8 @@ import "../../../utils" as U
 GridView {
     property int spacing: 20
     property int columns: Math.floor((width - (rightMargin + leftMargin)) / 160)
+
+    id: gridView
     
     width: parent.width
     height: parent.height - topBar.height - statusBar.height
@@ -36,7 +38,9 @@ GridView {
         OpacityAnimator {from: 1; to: 0; duration: 250}
     }
 
-    footer: explorer.endOfResults ? endOfResultsLabel : moreResultsBusyIndicator 
+    footer: explorer.endOfResults ? endOfResultsLabel 
+            : explorer.connectionError || explorer.timeOutError ? connectionErrorFooter
+            : moreResultsBusyIndicator 
 
     ScrollBar.vertical: C.ScrollBar {
         visible: explorer.advancedSearch.width == 300 || explorer.advancedSearch.width == 0
@@ -50,8 +54,9 @@ GridView {
         y: (parent.height - height) / 2
         z: -1
 
-        running: parent.count == 0 && !noResults && !endOfResults &&
-                 !connectionError && !timeOutError && !unknownError
+        running: parent.count == 0 && !explorer.noResults &&
+                 !explorer.endOfResults && !explorer.connectionError &&
+                 !explorer.timeOutError && !explorer.unknownError
     }
 
     // Appears if there are no results.
@@ -59,12 +64,42 @@ GridView {
         id: noResultsLabel
         text: qsTr("No results found")
         font.bold: true
-        font.pixelSize: 21
+        font.pixelSize: 18
         visible: explorer.noResults
 
         x: (parent.width - (width + parent.x * 2)) / 2
         y: (parent.height - height) / 2
         z: -1
+    }
+
+    // Appears if there are a connection or timeout error.
+    Column {
+        id: connectionErrorLabel
+        width: parent.width
+        y: (gridView.height - height) / 2
+        visible: (explorer.connectionError || explorer.timeOutError) && gridView.count == 0
+
+        C.Label {
+            text: explorer.connectionError ? qsTr("Connection error")
+                                           : qsTr("Time out error")
+            font.bold: true
+            font.pixelSize: 18
+            x: (gridView.width - (width + gridView.x * 2)) / 2
+        }
+        Column {
+            C.RoundButton {
+                text: qsTr("Retry")
+                flat: true
+                icon.source: Icon.get_icon("refresh.svg")
+                width: height * 2
+                height: icon.height * 3
+                display: AbstractButton.TextUnderIcon
+                x: (gridView.width - (width + gridView.x * 2)) / 2
+
+                onClicked: Explorer.search_manga(explorer.searchType, explorer,
+                                                 explorer.currentPage)
+            }
+        }
     }
 
     // Appears when no more results are found (footer).
@@ -93,6 +128,40 @@ GridView {
         }
     }
 
+    // Appears if there are a connection or timeout error (footer).
+    Component {
+        id: connectionErrorFooter
+        Column {
+            width: gridView.width
+            y: (gridView.height - height) / 2
+            visible: (explorer.connectionError || explorer.timeOutError)
+                     && explorer.grid.count > 0
+
+            C.Label {
+                text: explorer.connectionError ? qsTr("Connection error")
+                                               : qsTr("Time out error")
+                font.bold: true
+                font.pixelSize: 18
+                x: (gridView.width - (width + gridView.x * 2)) / 2
+            }
+            Column {
+                C.RoundButton {
+                    text: qsTr("Retry")
+                    flat: true
+                    icon.source: Icon.get_icon("refresh.svg")
+                    width: height * 2
+                    height: icon.height * 3
+                    display: AbstractButton.TextUnderIcon
+                    x: (gridView.width - (width + gridView.x * 2)) / 2
+
+                    onClicked: Explorer.search_manga(explorer.searchType,
+                                                     explorer,
+                                                     explorer.currentPage)
+                }
+            }
+        }
+    }
+
     // Custom mouse wheel event.
     U.WheelArea {
         width: parent.width - parent.x
@@ -101,7 +170,7 @@ GridView {
     // When end is reached, load more.
     onAtYEndChanged: {
         // If we're at the end and there are items to load, load more.
-        if (atYEnd && count > 0 && !endOfResults) {
+        if (atYEnd && count > 0 && !explorer.endOfResults) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
@@ -110,7 +179,7 @@ GridView {
     }
     onCountChanged: {
         // If we're at the end and there are items to load, load more.
-        if (atYEnd && count > 0 && !endOfResults) {
+        if (atYEnd && count > 0 && !explorer.endOfResults) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
