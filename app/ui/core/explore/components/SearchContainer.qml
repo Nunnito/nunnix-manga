@@ -36,11 +36,7 @@ GridView {
         OpacityAnimator {from: 1; to: 0; duration: 250}
     }
 
-    footer: C.BusyIndicator {
-        width: busyIndicator.x * 2 + 15
-        running: explorer.grid.count > 0 && !explorer.endOfResults
-        z: -1
-    }
+    footer: explorer.endOfResults ? endOfResultsLabel : moreResultsBusyIndicator 
 
     ScrollBar.vertical: C.ScrollBar {
         visible: explorer.advancedSearch.width == 300 || explorer.advancedSearch.width == 0
@@ -51,19 +47,61 @@ GridView {
     C.BusyIndicator {
         id: busyIndicator
         x: (parent.width - (width + parent.x * 2)) / 2
-        y: (parent.height - height - 100) / 2
+        y: (parent.height - height) / 2
         z: -1
 
-        running: parent.count == 0
+        running: parent.count == 0 && !noResults && !endOfResults &&
+                 !connectionError && !timeOutError && !unknownError
     }
 
+    // Appears if there are no results.
+    C.Label {
+        id: noResultsLabel
+        text: qsTr("No results found")
+        font.bold: true
+        font.pixelSize: 21
+        visible: explorer.noResults
+
+        x: (parent.width - (width + parent.x * 2)) / 2
+        y: (parent.height - height) / 2
+        z: -1
+    }
+
+    // Appears when no more results are found (footer).
+    Component {
+        id: endOfResultsLabel
+        C.Label {
+            text: qsTr("End of results.")
+            font.bold: true
+            font.pixelSize: 14
+
+            width: (columns * cellWidth) - contentHeight
+            horizontalAlignment: Text.AlignHCenter
+            
+            visible: explorer.endOfResults
+            z: -1
+        }
+    }
+
+    // Appears when is loading more results (footer).
+    Component {
+        id: moreResultsBusyIndicator
+        C.BusyIndicator {
+            width: busyIndicator.x * 2 + 15
+            running: explorer.grid.count > 0 && !explorer.endOfResults
+            z: -1
+        }
+    }
+
+    // Custom mouse wheel event.
     U.WheelArea {
         width: parent.width - parent.x
     }
 
     // When end is reached, load more.
     onAtYEndChanged: {
-        if (atYEnd && count > 0) {  // If we're at the end and there are items
+        // If we're at the end and there are items to load, load more.
+        if (atYEnd && count > 0 && !endOfResults) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
@@ -71,7 +109,8 @@ GridView {
         }
     }
     onCountChanged: {
-        if (atYEnd && count > 0) {  // If we're at the end and there are items
+        // If we're at the end and there are items to load, load more.
+        if (atYEnd && count > 0 && !endOfResults) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
