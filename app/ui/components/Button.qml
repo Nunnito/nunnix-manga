@@ -92,7 +92,8 @@ T.Button {
 
         radius: 2
         color: !control.enabled ? control.Material.buttonDisabledColor :
-                control.highlighted ? control.Material.highlightedButtonColor : colorBg
+                control.highlighted ? control.Material.highlightedButtonColor :
+                control.flat ? "transparent" : colorBg
 
         PaddedRectangle {
             y: parent.height - 4
