@@ -95,7 +95,8 @@ T.RoundButton {
 
         radius: control.radius
         color: !control.enabled ? control.Material.buttonDisabledColor
-            : control.checked || control.highlighted ? control.Material.highlightedButtonColor : colorBg
+            : control.checked || control.highlighted ? control.Material.highlightedButtonColor :
+            control.flat ? "transparent" : colorBg
 
         Rectangle {
             id: rectHover
