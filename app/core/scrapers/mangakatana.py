@@ -8,6 +8,30 @@ from bs4 import BeautifulSoup
 from core.utils.logger import logger
 
 
+# Decorator to searcher exceptions
+def searcher_exception_handler(func):
+    async def wrapper(*args, **kwargs):
+        try:
+            return await func(*args, **kwargs)
+
+        # No results found and end of results
+        except AttributeError as e:
+            exception_info = {"is_exception": True, "exception": {}}
+            exception_info["exception"]["message"] = str(e)
+
+            if kwargs["page"] == 1:
+                logger.error("No results found")
+                exception_info["exception"]["type"] = "no_results"
+            else:
+                logger.warning("End of results")
+                exception_info["exception"]["type"] = "end_of_results"
+            logger.error(e)
+
+            return exception_info
+
+    return wrapper
+
+
 class Mangakatana:
     def __init__(self, session: ClientSession):
         self.session = session
@@ -180,6 +204,7 @@ class Mangakatana:
         logger.debug("\nDone. Returning data...\n")
         return images
 
+    @searcher_exception_handler
     async def search_manga(
         self,
         title: str = "",
