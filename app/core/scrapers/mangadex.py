@@ -6,6 +6,28 @@ from aiohttp import ClientSession
 from core.utils.logger import logger
 
 
+# Decorator to searcher exceptions
+def searcher_exception_handler(func):
+    async def wrapper(*args, **kwargs):
+        results = await func(*args, **kwargs)
+
+        # No results found and end of results
+        if results == []:
+            results = {"is_exception": True, "exception": {}}
+            results["exception"]["message"] = "n/a"
+
+            if kwargs["page"] == 1:
+                logger.error("No results found")
+                results["exception"]["type"] = "no_results"
+            else:
+                logger.warning("End of results")
+                results["exception"]["type"] = "end_of_results"
+
+        return results
+
+    return wrapper
+
+
 class Mangadex:
     def __init__(self, session: ClientSession):
         self.session = session  # Aiohttp session
@@ -319,6 +341,7 @@ class Mangadex:
 
         return images
 
+    @searcher_exception_handler
     async def search_manga(
         self,
         limit: int = 25,
