@@ -17,7 +17,7 @@ QtObject {
     // Default control icon color with mouse over
     property string controlFgOver: "#ededed"
     // Default control background with mouse clicked
-    property string controlBgClick: "#212121"
+    property string controlBgClick: "#303030"
     // Default control icon color with mouse clicked
     property string controlFgClick: "#ededed"
     // Default control background dialog color
