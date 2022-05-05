@@ -49,7 +49,7 @@ def explorer_deco(qasync_func):
                 # Other errors
                 else:
                     logger.error(e)
-                    exception_info["type"] = "unknown_error"
+                    exception_info["exception"]["type"] = "unknown_error"
 
                 # Emit the signal with the exception info
                 self._signals_handler.mangaSearch.emit(exception_info)

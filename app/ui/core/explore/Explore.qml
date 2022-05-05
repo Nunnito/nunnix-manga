@@ -16,6 +16,7 @@ SplitView {
     property bool connectionError: false
     property bool timeOutError: false
     property bool unknownError: false
+    property string errorMessage
 
     property int currentPage: 1  // Set to 1 to start with the first page 
     property string searchType
@@ -69,7 +70,7 @@ SplitView {
                 else if (mangaSearch.exception.type == "unknown_error") {
                     unknownError = true
                 }
-                
+                errorMessage = mangaSearch.exception.message
             }
             else {
                 for (var i = 0; i < mangaSearch.length; i++) {

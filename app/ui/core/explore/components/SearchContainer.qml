@@ -39,8 +39,8 @@ GridView {
     }
 
     footer: explorer.endOfResults ? endOfResultsLabel 
-            : explorer.connectionError || explorer.timeOutError ? connectionErrorFooter
-            : moreResultsBusyIndicator 
+            : explorer.connectionError || explorer.timeOutError || explorer.unknownError
+            ? connectionErrorFooter : moreResultsBusyIndicator 
 
     ScrollBar.vertical: C.ScrollBar {
         visible: explorer.advancedSearch.width == 300 || explorer.advancedSearch.width == 0
@@ -72,16 +72,18 @@ GridView {
         z: -1
     }
 
-    // Appears if there are a connection or timeout error.
+    // Appears if there are a connection, timeout error or an unknown error.
     Column {
         id: connectionErrorLabel
         width: parent.width
         y: (gridView.height - height) / 2
-        visible: (explorer.connectionError || explorer.timeOutError) && gridView.count == 0
+        visible: (explorer.connectionError || explorer.timeOutError ||
+                  explorer.unknownError) && gridView.count == 0
 
         C.Label {
             text: explorer.connectionError ? qsTr("Connection error")
-                                           : qsTr("Time out error")
+                  : explorer.timeOutError ? qsTr("Time out error")
+                  : explorer.errorMessage
             font.bold: true
             font.pixelSize: 18
             x: (gridView.width - (width + gridView.x * 2)) / 2
@@ -128,20 +130,21 @@ GridView {
         }
     }
 
-    // Appears if there are a connection or timeout error (footer).
+    // Appears if there are a connection, timeout error or an unknown error (footer).
     Component {
         id: connectionErrorFooter
         Column {
             width: gridView.width
             y: (gridView.height - height) / 2
-            visible: (explorer.connectionError || explorer.timeOutError)
-                     && explorer.grid.count > 0
+            visible: (explorer.connectionError || explorer.timeOutError
+                      || explorer.unknownError) && explorer.grid.count > 0
 
             C.Label {
                 text: explorer.connectionError ? qsTr("Connection error")
-                                               : qsTr("Time out error")
+                       : explorer.timeOutError ? qsTr("Time out error")
+                       : explorer.errorMessage
                 font.bold: true
-                font.pixelSize: 18
+                font.pixelSize: 14
                 x: (gridView.width - (width + gridView.x * 2)) / 2
             }
             Column {
@@ -170,7 +173,9 @@ GridView {
     // When end is reached, load more.
     onAtYEndChanged: {
         // If we're at the end and there are items to load, load more.
-        if (atYEnd && count > 0 && !explorer.endOfResults) {
+        if (atYEnd && count > 0 && !explorer.noResults &&
+            !explorer.endOfResults && !explorer.connectionError &&
+            !explorer.timeOutError && !explorer.unknownError) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
@@ -179,7 +184,9 @@ GridView {
     }
     onCountChanged: {
         // If we're at the end and there are items to load, load more.
-        if (atYEnd && count > 0 && !explorer.endOfResults) {
+        if (atYEnd && count > 0 && !explorer.noResults &&
+            !explorer.endOfResults && !explorer.connectionError &&
+            !explorer.timeOutError && !explorer.unknownError) {
             explorer.currentPage++  // Increment the page
             Explorer.search_manga(explorer.searchType,
                                   explorer,
