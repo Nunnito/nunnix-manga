@@ -11,6 +11,12 @@ SplitView {
     property alias searchModel: searchModel
     property alias advancedSearch: advancedSearch
 
+    property bool noResults: false
+    property bool endOfResults: false
+    property bool connectionError: false
+    property bool timeOutError: false
+    property bool unknownError: false
+
     property int currentPage: 1  // Set to 1 to start with the first page 
     property string searchType
     property var searchRoot: {
@@ -47,8 +53,34 @@ SplitView {
     Connections {
         target: SignalHandler
         function onMangaSearch(mangaSearch) {
-            for (var i = 0; i < mangaSearch.length; i++) {
-                searchModel.append(mangaSearch[i].jsonObject)
+            if (mangaSearch.is_exception) {
+                if (mangaSearch.exception.type == "no_results") {
+                    noResults = true
+                }
+                else if (mangaSearch.exception.type == "end_of_results") {
+                    endOfResults = true
+                }
+                else if (mangaSearch.exception.type == "connection_error") {
+                    connectionError = true
+                }
+                else if (mangaSearch.exception.type == "timeout_error") {
+                    timeOutError = true
+                }
+                else if (mangaSearch.exception.type == "unknown_error") {
+                    unknownError = true
+                }
+                
+            }
+            else {
+                noResults = false
+                endOfResults = false
+                connectionError = false
+                timeOutError = false
+                unknownError = false
+
+                for (var i = 0; i < mangaSearch.length; i++) {
+                    searchModel.append(mangaSearch[i].jsonObject)
+                }
             }
         }
     }

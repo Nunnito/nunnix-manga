@@ -1,4 +1,6 @@
+import asyncio
 import os
+
 
 from importlib import import_module, reload
 from functools import wraps
@@ -6,15 +8,18 @@ from pathlib import Path
 
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from PyQt5 import QtQuick, QtQml
-from aiohttp import ClientSession
 from qasync import asyncSlot
 
+from aiohttp.client_exceptions import ClientConnectorError
+from aiohttp import ClientSession
+
 from core.types import MangaSearch, SignalHandler
+from core.utils.logger import logger
 from core import scrapers
 QtQuick
 
 
-def set_searching(qasync_func):
+def explorer_deco(qasync_func):
     @wraps(qasync_func)
     def wrapper(func):
         @wraps(func)
@@ -26,6 +31,29 @@ def set_searching(qasync_func):
             try:
                 self._searching = True
                 await func(self, *args, **kwargs)  # Run the function
+
+            # If an exception is raised, do the following
+            except Exception as e:
+                exception_info = {"is_exception": True, "exception": {}}
+                exception_info["exception"]["message"] = str(e)
+
+                # Connection error
+                if isinstance(e, ClientConnectorError):
+                    logger.error("Connection error")
+                    logger.error(e)
+                    exception_info["exception"]["type"] = "connection_error"
+                # Timeout error
+                elif isinstance(e, asyncio.TimeoutError):
+                    logger.error("Timeout error")
+                    exception_info["exception"]["type"] = "timeout_error"
+                # Other errors
+                else:
+                    logger.error(e)
+                    exception_info["type"] = "unknown_error"
+
+                # Emit the signal with the exception info
+                self._signals_handler.mangaSearch.emit(exception_info)
+
             # Finally, set the search to not running
             finally:
                 self._searching = False
@@ -44,7 +72,7 @@ class Explorer(SignalHandler, QObject):
         self._searching = False
 
     # Get as input the search type, search root and page index
-    @set_searching(asyncSlot(str, QObject, int))  # Decorator to set searching
+    @explorer_deco(asyncSlot(str, QObject, int))  # Decorator to set searching
     async def search_manga(self, search_type: str, search_root: QObject,
                            page: int):
         """
@@ -155,16 +183,20 @@ class Explorer(SignalHandler, QObject):
         parameters["page"] = page  # Add the page to the parameters dict
         data = await self._scraper.search_manga(**parameters)
 
-        results = []
-        for result in data:
-            title = result["title"]
-            link = result["link"]
-            cover = result["cover"]
+        # If the data contains a dict with exceptions, emit it
+        if type(data) == dict:
+            self._signals_handler.mangaSearch.emit(data)
+        else:
+            results = []
+            for result in data:
+                title = result["title"]
+                link = result["link"]
+                cover = result["cover"]
 
-            results.append(MangaSearch(self._scraper, title, link, cover,
-                                       self))
+                results.append(MangaSearch(self._scraper, title, link, cover,
+                                           self))
 
-        self._signals_handler.mangaSearch.emit(results)
+            self._signals_handler.mangaSearch.emit(results)
 
     @pyqtProperty(str)
     def scraper(self) -> object:

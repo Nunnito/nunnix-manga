@@ -38,7 +38,7 @@ GridView {
 
     footer: C.BusyIndicator {
         width: busyIndicator.x * 2 + 15
-        running: explorer.grid.count > 0
+        running: explorer.grid.count > 0 && !explorer.endOfResults
         z: -1
     }
 
