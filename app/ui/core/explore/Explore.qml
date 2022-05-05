@@ -72,12 +72,6 @@ SplitView {
                 
             }
             else {
-                noResults = false
-                endOfResults = false
-                connectionError = false
-                timeOutError = false
-                unknownError = false
-
                 for (var i = 0; i < mangaSearch.length; i++) {
                     searchModel.append(mangaSearch[i].jsonObject)
                 }
@@ -88,6 +82,6 @@ SplitView {
     // When the component is created
     Component.onCompleted: {
         searchType = "empty"
-        Explorer.search_manga(searchType, searchRoot, currentPage)
+        Explorer.search_manga(searchType, explorer, currentPage)
     }
 }

@@ -73,16 +73,25 @@ class Explorer(SignalHandler, QObject):
 
     # Get as input the search type, search root and page index
     @explorer_deco(asyncSlot(str, QObject, int))  # Decorator to set searching
-    async def search_manga(self, search_type: str, search_root: QObject,
+    async def search_manga(self, search_type: str, explorer: QObject,
                            page: int):
         """
-        Search for manga using the given search type and search root.
+        Search for manga using the given search type and explorer QML Object.
 
         Posibles search types are: empty, to search for all manga; title, to
         search for a manga by title; advanced, to search for a manga by
         advanced search.
         """
-        parameters = {}
+        # Set exceptions variables to false
+        explorer.setProperty("noResults", False)
+        explorer.setProperty("endOfResults", False)
+        explorer.setProperty("connectionError", False)
+        explorer.setProperty("timeOutError", False)
+        explorer.setProperty("unknownError", False)
+
+        search_root = explorer.property("searchRoot")  # Get the search root
+
+        parameters = {}  # Create a dict to store the parameters
 
         # If the search type is empty, do a empty search
         if search_type == "empty":

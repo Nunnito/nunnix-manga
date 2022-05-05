@@ -45,7 +45,7 @@ Pane {
                 explorer.searchModel.clear()  // Clear search results
                 explorer.currentPage = 1  // Reset page to 1
                 explorer.searchType = "advanced"
-                Explorer.search_manga(explorer.searchType, explorer.searchRoot,
+                Explorer.search_manga(explorer.searchType, explorer,
                                       explorer.currentPage)
             }
         }
