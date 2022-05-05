@@ -7,7 +7,7 @@ import warnings
 
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtGui import QGuiApplication, QIcon
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from qasync import QEventLoop
 
 from core.utils import qml_utils
@@ -23,7 +23,8 @@ context = engine.rootContext()
 # Create session and suppress its warning
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    session = ClientSession(loop=loop)
+    # Set 60 seconds timeout for aiohttp requests
+    session = ClientSession(timeout=ClientTimeout(60))
 
 
 def before_close():
