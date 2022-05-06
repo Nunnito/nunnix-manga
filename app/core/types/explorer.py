@@ -19,7 +19,7 @@ from core import scrapers
 QtQuick
 
 
-def explorer_deco(qasync_func):
+def search_manga_deco(qasync_func):
     @wraps(qasync_func)
     def wrapper(func):
         @wraps(func)
@@ -61,6 +61,26 @@ def explorer_deco(qasync_func):
     return wrapper
 
 
+def advanced_search_deco(pyqt_property):
+    @wraps(pyqt_property)
+    def wrapper(func):
+        @wraps(func)
+        def wrapped(self, *args, **kwargs):
+            # Try to return advanced search controls
+            try:
+                return func(self, *args, **kwargs)
+            # If a exception is raised, show in the advanced search controls UI
+            except Exception as e:
+                exception_label = {
+                    "type": "label",
+                    "bold": True,
+                    "content": str(e)
+                }
+                return [exception_label]
+        return pyqt_property(wrapped)
+    return wrapper
+
+
 class Explorer(SignalHandler, QObject):
     def __init__(self, session: ClientSession, signals_handler: SignalHandler,
                  parent=None) -> None:
@@ -71,8 +91,8 @@ class Explorer(SignalHandler, QObject):
         self._signals_handler = signals_handler
         self._searching = False
 
-    # Get as input the search type, search root and page index
-    @explorer_deco(asyncSlot(str, QObject, int))  # Decorator to set searching
+    # Get as input the search type, roo explorer QML object and page index
+    @search_manga_deco(asyncSlot(str, QObject, int))
     async def search_manga(self, search_type: str, explorer: QObject,
                            page: int):
         """
@@ -239,6 +259,6 @@ class Explorer(SignalHandler, QObject):
 
         return classes
 
-    @pyqtProperty(QVariant, constant=True)
+    @advanced_search_deco(pyqtProperty(QVariant, constant=True))
     def advanced_search(self) -> list:
         return self._scraper.advanced_search_controls()
