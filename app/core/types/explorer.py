@@ -13,8 +13,8 @@ from qasync import asyncSlot
 from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp import ClientSession
 
-from core.types import MangaSearch, SignalHandler
-from core.utils.logger import logger
+from . import MangaSearch, SignalHandler
+from ..utils.logger import logger
 from core import scrapers
 QtQuick
 

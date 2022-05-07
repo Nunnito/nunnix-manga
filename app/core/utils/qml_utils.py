@@ -1,7 +1,7 @@
 from pathlib import Path
 from PyQt5.QtCore import QObject, QVariant, pyqtSlot
 
-from core.utils.python_utils import Paths
+from .python_utils import Paths
 
 
 class Icon(QObject):

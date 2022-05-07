@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, QVariant, pyqtSignal
-from core.types import Manga
+from . import Manga
 
 
 class SignalHandler(QObject):
