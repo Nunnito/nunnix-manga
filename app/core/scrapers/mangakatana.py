@@ -19,7 +19,7 @@ def searcher_exception_handler(func):
             exception_info = {"is_exception": True, "exception": {}}
             exception_info["exception"]["message"] = str(e)
 
-            if kwargs["page"] == 1:
+            if "page" in kwargs and kwargs["page"] == 1:
                 logger.error("No results found")
                 exception_info["exception"]["type"] = "no_results"
             else:
