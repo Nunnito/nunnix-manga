@@ -16,7 +16,7 @@ def searcher_exception_handler(func):
             results = {"is_exception": True, "exception": {}}
             results["exception"]["message"] = "n/a"
 
-            if kwargs["page"] == 1:
+            if "page" in kwargs and kwargs["page"] == 1:
                 logger.error("No results found")
                 results["exception"]["type"] = "no_results"
             else:
@@ -366,7 +366,7 @@ class Mangadex:
         order: dict[str, str] = None,
         has_available_chapters: bool = True,
         group: str = None,
-        page: int = 0
+        page: int = 1
     ) -> dict:
         """ Search manga, with advanced parameters.
         See: https://api.mangadex.org/swagger.html#/Manga/get-search-manga
