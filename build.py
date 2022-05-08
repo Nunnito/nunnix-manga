@@ -20,6 +20,6 @@ command = [
 
 if sys.platform == "linux":
     command.append("--linux-onefile-icon=app/resources/icons/app.svg")
-    command.append("-o Nunnix-Manga.bin")
+    command.extend(["-o", "Nunnix-Manga.bin"])
 
 Popen(command)

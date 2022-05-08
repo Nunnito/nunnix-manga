@@ -36,6 +36,7 @@ def main():
     # Set environment variables
     environ["QT_QUICK_CONTROLS_STYLE"] = "Material"
     environ["QT_QUICK_CONTROLS_MATERIAL_VARIANT"] = "Dense"
+    environ["QML_DISABLE_DISK_CACHE"] = "1"  # Disable QML disk cache
 
     # Load variables to QML
     icon_engine = qml_utils.Icon()
