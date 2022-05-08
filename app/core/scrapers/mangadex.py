@@ -274,14 +274,17 @@ class Mangadex:
                 scanlation = " | ".join(users_list)
 
             chapter_id = result["id"]
-            chapters.append({
-                "name": name,
-                "date": date.split("/"),
-                "link": chapter_id,
-                "scanlation": scanlation
-            })
 
-            logger.debug(f"Name: {name}|Date: {date}|Scanlation: {scanlation}")
+            if attrs["pages"] > 0:
+                chapters.append({
+                    "name": name,
+                    "date": date.split("/"),
+                    "link": chapter_id,
+                    "scanlation": scanlation
+                })
+
+                logger.debug(f"Name: {name}|Date: {date}|" +
+                             "Scanlation: {scanlation}")
 
         data = {"total": total, "chapters": chapters}
 
