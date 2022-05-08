@@ -15,7 +15,7 @@ from aiohttp import ClientSession
 
 from . import MangaSearch, SignalHandler
 from ..utils.logger import logger
-from core import scrapers
+from .. import scrapers
 QtQuick
 
 
