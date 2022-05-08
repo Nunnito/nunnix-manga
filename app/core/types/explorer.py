@@ -261,4 +261,4 @@ class Explorer(SignalHandler, QObject):
 
     @advanced_search_deco(pyqtProperty(QVariant, constant=True))
     def advanced_search(self) -> list:
-        return self._scraper.advanced_search_controls()
+        return self._scraper.get_advanced_search_controls()

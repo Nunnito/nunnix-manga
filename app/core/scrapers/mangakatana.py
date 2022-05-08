@@ -345,7 +345,7 @@ class Mangakatana:
         logger.debug("Done. Returning data...\n")
         return data
 
-    def advanced_search_controls(self) -> dict:
+    def get_advanced_search_controls(self) -> dict | None:
         """ Return advanced search controls.
 
         Returns

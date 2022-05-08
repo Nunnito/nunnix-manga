@@ -613,7 +613,7 @@ class Mangadex:
         logger.debug("Done. Returning data...")
         return data
 
-    def advanced_search_controls(self) -> dict:
+    def get_advanced_search_controls(self) -> dict | None:
         title = {
             "name": "Title",
             "type": "textfield",
