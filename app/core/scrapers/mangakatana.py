@@ -84,7 +84,7 @@ class Mangakatana:
             "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
             "status": "completed" | "ongoing" | "hiatus" | "cancelled",
             "chapters_data": {
-                "total": "100",
+                "total": 100,
                 "chapters": [
                     {
                         "name": "Ch.1 - Chapter 1",
@@ -130,7 +130,7 @@ class Mangakatana:
 
         logger.debug("Getting manga chapters...")
         total_chapters = soup.find("div", {"class": "uk-width-medium-1-4"})
-        total_chapters = re.search(r"\d+", total_chapters.text).group()
+        total_chapters = int(re.search(r"\d+", total_chapters.text).group())
         chapters_data = soup.find("div", {"class": "chapters"}).find_all("tr")
         chapters = []
 

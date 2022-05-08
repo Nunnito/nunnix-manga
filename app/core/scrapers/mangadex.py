@@ -144,7 +144,7 @@ class Mangadex:
             "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
             "status": "completed" | "ongoing" | "hiatus" | "cancelled",
             "chapters_data": {
-                "total": "100",
+                "total": 100,
                 "chapters": [
                     {
                         "name": "Ch.1 - Chapter 1",
