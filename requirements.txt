@@ -5,3 +5,4 @@ PyQt5>=5.15.4
 lxml>=4.8.0
 pytest>=7.1.2
 pytest-asyncio>=0.18.3
+Nuitka>=0.7.7
