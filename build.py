@@ -22,4 +22,4 @@ if sys.platform == "linux":
     command.append("--linux-onefile-icon=app/resources/icons/app.svg")
     command.extend(["-o", "Nunnix-Manga.bin"])
 
-Popen(command)
+Popen(command).communicate()  # Wait for the process to finish
