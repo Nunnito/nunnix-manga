@@ -5,15 +5,17 @@ from shutil import make_archive
 
 def create_bat():
     # Create .bat file
-    if len(sys.argv) > 1 and (sys.argv[1] == "--zip" or sys.argv[1] == "-z"):
-        with open("dist\\nunnix-manga.bat", "w") as f:
-            f.write("start Nunnix-Manga\\Nunnix-Manga.exe\n")
+    with open("dist\\nunnix-manga.bat", "w") as f:
+        f.write("start Nunnix-Manga\\Nunnix-Manga.exe\n")
 
-def create_zip():
+
+def create_zip() -> None:
     # Create .zip file
-    make_archive("nunnix-manga", "zip", "dist")
+    if len(sys.argv) > 1 and (sys.argv[1] == "--zip" or sys.argv[1] == "-z"):
+        make_archive("nunnix-manga", "zip", "dist")
 
-def get_base_args():
+
+def get_base_args() -> list:
     # Command line arguments
     command = [
         "pyinstaller", "app/main.py",
@@ -28,7 +30,7 @@ def get_base_args():
     return command
 
 
-def get_windows_args():
+def get_windows_args() -> list:
     # Command line arguments for Windows
     command = get_base_args()
     command.extend([
@@ -40,7 +42,7 @@ def get_windows_args():
     return command
 
 
-def get_linux_args():
+def get_linux_args() -> list:
     # Command line arguments for Linux
     command = get_base_args()
     command.extend([
@@ -48,9 +50,10 @@ def get_linux_args():
         "--add-data", "app/ui:ui",
         "--add-data", "app/resources:resources"
     ])
+    return command
 
 
-def build_windows():
+def build_windows() -> None:
     # Build for Windows
     command = get_windows_args()
     Popen(command).communicate()  # Run command
@@ -58,7 +61,7 @@ def build_windows():
     create_zip()  # Create .zip file if --zip or -z is passed
 
 
-def build_linux():
+def build_linux() -> None:
     # Build for Linux
     command = get_linux_args()
     Popen(command).communicate()  # Run command
