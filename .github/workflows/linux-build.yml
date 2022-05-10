@@ -1,10 +1,10 @@
 name: Linux build
 
 on:
-  push:
-    branches: [ development ]
-  pull_request:
-    branches: [ development ]
+  workflow_run:
+    workflows: ["Tests and lint"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -28,7 +28,7 @@ jobs:
 
     - name: Build
       run: |
-        python setup.py --appimage --clean
+        python build.py --appimage --clean
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
