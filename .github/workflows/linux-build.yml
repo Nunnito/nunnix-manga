@@ -36,5 +36,5 @@ jobs:
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
       with:
-        name: Nunnix-Manga.AppImage
+        name: Nunnix-Manga
         path: Nunnix-Manga-x86_64.AppImage

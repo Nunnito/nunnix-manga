@@ -28,10 +28,10 @@ jobs:
 
     - name: Build
       run: |
-        python build.py --zip --clean
+        python build.py --clean
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
       with:
-        name: Nunnix-Manga.zip
-        path: nunnix-manga.zip
+        name: Nunnix-Manga
+        path: dist/
