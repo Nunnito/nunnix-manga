@@ -2,7 +2,7 @@ name: Linux build
 
 on:
   workflow_run:
-    workflows: ["Tests and lint"]
+    workflows: ["CI"]
     types:
       - completed
 
