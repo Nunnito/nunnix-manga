@@ -28,7 +28,7 @@ jobs:
 
     - name: Build
       run: |
-        python build.py --clean
+        python build.py --bootloader --clean
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2

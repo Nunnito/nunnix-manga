@@ -5,6 +5,7 @@ import os
 from urllib.request import urlretrieve
 from subprocess import Popen
 from shutil import make_archive
+from pathlib import Path
 
 
 class CreateAppImage:
@@ -72,6 +73,29 @@ class CreateAppImage:
         self.rename_bash_file("AppRun", "nunnix-manga.sh")
 
 
+def build_pyinstaller_bootloader() -> None:
+    # Build PyInstaller bootloader
+    if "--bootloader" in sys.argv:
+        bootloader_path = Path(Path("pyinstaller")/"bootloader").absolute()
+        clone = [
+            "git", "clone", "https://github.com/pyinstaller/pyinstaller",
+        ]
+        swith_tag = ["git", "checkout", "tags/v5.0"]
+        compile_bootloader = ["python", "waf", "all"]
+        install_package = ["python", "setup.py", "install"]
+
+        Popen(clone).communicate()  # Clone PyInstaller
+        os.chdir(bootloader_path)  # Change to bootloader path
+        Popen(swith_tag).communicate()  # Switch to tag
+        Popen(compile_bootloader).communicate()  # Compile bootloader
+        os.chdir(bootloader_path.parent)  # Change back to PyInstaller path
+        Popen(install_package).communicate()  # Install PyInstaller
+        os.chdir(bootloader_path.parent.parent)  # Change back to root path
+    else:
+        install = ["pip", "install", "pyinstaller"]
+        Popen(install).communicate()  # Install PyInstaller
+
+
 def create_bat():
     # Create .bat file
     with open("dist\\nunnix-manga.bat", "w") as f:
@@ -101,6 +125,7 @@ def clean_up() -> None:
     # Clean up build files
     if "--clean" in sys.argv:
         shutil.rmtree("build")
+        shutil.rmtree("pyinstaller", ignore_errors=True)
         os.remove("Nunnix-Manga.spec")
 
 
@@ -145,6 +170,7 @@ def get_linux_args() -> list:
 def build_windows() -> None:
     # Build for Windows
     command = get_windows_args()
+    build_pyinstaller_bootloader()  # Build bootloader if --bootloader is set
     Popen(command).communicate()  # Run command
     create_bat()
     create_zip()  # Create .zip file if --zip or -z is passed
