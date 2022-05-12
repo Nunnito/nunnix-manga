@@ -5,6 +5,7 @@
 ![Linux build](https://github.com/nunnito/nunnix-manga/actions/workflows/linux-build.yml/badge.svg)
 ![Windows build](https://github.com/nunnito/nunnix-manga/actions/workflows/windows-build.yml/badge.svg)
 [![stable release](https://img.shields.io/github/v/release/nunnito/nunnix-manga?include_prereleases&label=download)](https://github.com/nunnito/nunnix-manga/releases)
+![total downloads](https://img.shields.io/github/downloads/nunnito/nunnix-manga/total?label=total%20downloads)
 
 Nunnix Manga is a free and open-source manga reader written in Python.
 
@@ -18,20 +19,20 @@ For futures features, see the [TODO list](#todo-list)
 
 ## Installation
 ### Using Windows binaries
-- Download the latest release from [here](https://github.com/nunnito/nunnix-manga/releases/download/v0.1.0/Nunnix-Manga-Windows-x86_64.zip)
+- Download the latest release from [here](https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix_Manga_v0.1.1_win64.zip)
 - Unzip the file
-- Run `nunnix-manga.bat` file
+- Run `Nunnix-Manga.exe` file
 
 ### Using Linux binaries
 ```bash
 # Download the latest release
-curl -OL https://github.com/nunnito/nunnix-manga/releases/download/v0.1.0/Nunnix-Manga-Linux-x86_64.AppImage
+curl -OL https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix-Manga_v0.1.1_linux64.AppImage
 
 # Give executable permissions
-chmod +x Nunnix-Manga-Linux-x86_64.AppImage
+chmod +x Nunnix-Manga_v0.1.1_linux64.AppImage
 
 # Run the application
-./Nunnix-Manga-Linux-x86_64.AppImage
+./Nunnix-Manga_v0.1.1_linux64.AppImage
 ```
 
 ### Using Python (3.10+)
