@@ -76,6 +76,7 @@ class CreateAppImage:
 def build_pyinstaller_bootloader() -> None:
     # Build PyInstaller bootloader
     if "--bootloader" in sys.argv:
+        install_wheel = ["pip", "install", "wheel"]
         bootloader_path = Path(Path("pyinstaller")/"bootloader").absolute()
         clone = [
             "git", "clone", "https://github.com/pyinstaller/pyinstaller",
@@ -84,6 +85,7 @@ def build_pyinstaller_bootloader() -> None:
         compile_bootloader = ["python", "waf", "all"]
         install_package = ["python", "setup.py", "install"]
 
+        Popen(install_wheel).communicate()  # Install wheel package
         Popen(clone).communicate()  # Clone PyInstaller
         os.chdir(bootloader_path)  # Change to bootloader path
         Popen(swith_tag).communicate()  # Switch to tag
