@@ -28,10 +28,11 @@ jobs:
 
     - name: Build
       run: |
-        python build.py --bootloader --clean
+        python build.py build remove_bloat
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
       with:
         name: Nunnix-Manga
-        path: dist/
+        path: build/
+        if-no-files-found: error
