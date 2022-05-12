@@ -31,10 +31,11 @@ jobs:
 
     - name: Build
       run: |
-        python build.py --appimage --clean
+        python build.py remove_bloat appimage
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
       with:
         name: Nunnix-Manga
         path: Nunnix-Manga-x86_64.AppImage
+        if-no-files-found: error
