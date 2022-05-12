@@ -55,7 +55,7 @@ def main():
     application.setWindowIcon(QIcon(icon_engine.get_icon("app.svg", False)))
 
     # Load QML file and execute it
-    engine.load(str(Path(__file__).parent / "ui" / "main.qml"))
+    engine.load(str(Path(qml_utils.__file__).parents[2] / "ui" / "main.qml"))
     with loop:
         loop.run_forever()
         loop.create_task(session.close())
