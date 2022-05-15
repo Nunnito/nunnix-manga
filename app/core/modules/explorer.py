@@ -14,8 +14,7 @@ from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp import ClientSession
 
 from ..types import MangaSearch
-from ..utils import SignalHandler
-from ..utils.logger import logger
+from ..utils import SignalHandler, logger
 from .. import scrapers
 
 
@@ -122,92 +121,8 @@ class Explorer(SignalHandler, QObject):
             parameters["title"] = title
         # If the search type is advanced, do a search by advanced search
         elif search_type == "advanced":
-            components = search_root.property("contentItem").childItems()
-            one_iter = ["textField", "comboBox", "slider"]
-
-            # Loop through the search controls (textfield, combobox, slider...)
-            for component in components:
-                if component.objectName() in one_iter:
-                    param = component.property("parameter")
-                    value = component.property("value")
-                    parameters[param] = value  # Add the parameter to the dict
-
-                elif component.objectName() == "tristate-checkBox":
-                    checked_param = component.property("checkedParameter")
-                    unchecked_param = component.property("uncheckedParameter")
-                    parameters[checked_param] = []
-                    parameters[unchecked_param] = []
-
-                    list_view = component.childItems()[1]
-                    delegates = list_view.property("contentItem").childItems()
-
-                    # Loop through the list view check delegates
-                    for delegate in delegates:
-                        # If the delegate is checked, add the parameter to the
-                        # checked parameters list
-                        if delegate.property("parameter") == checked_param:
-                            value = delegate.property("value")
-                            # If value is a list, append all values to params
-                            if type(value) == QtQml.QJSValue:
-                                values = value.toVariant()
-                                for value in values:
-                                    parameters[checked_param].append(value)
-                            else:
-                                parameters[checked_param].append(value)
-                        # If the delegate is unchecked, add the parameter to
-                        # the unchecked parameters list
-                        elif delegate.property("parameter") == unchecked_param:
-                            value = delegate.property("value")
-                            # If value is a list, append all values to params
-                            if type(value) == QtQml.QJSValue:
-                                values = value.toVariant()
-                                for value in values:
-                                    parameters[unchecked_param].append(value)
-                            else:
-                                parameters[unchecked_param].append(value)
-
-                elif component.objectName() == "checkBox":
-                    param = component.property("parameter")
-                    parameters[param] = []
-
-                    list_view = component.childItems()[1]
-                    delegates = list_view.property("contentItem").childItems()
-
-                    for delegate in delegates:
-                        # If the delegate is checked, add the parameter to the
-                        # checked parameters list
-                        if delegate.property("parameter") == param:
-                            value = delegate.property("value")
-                            # If value is a list, append all values to params
-                            if type(value) == QtQml.QJSValue:
-                                values = value.toVariant()
-                                for value in values:
-                                    parameters[param].append(value)
-                            else:
-                                parameters[param].append(value)
-
-                elif component.objectName() == "ascDescMap":
-                    param = component.property("parameter")  # URL parameter
-                    # Values parameter of the dictionary
-                    asc_param = component.property("ascParameter")
-                    desc_param = component.property("descParameter")
-                    parameters[param] = {}  # Create the dictionary
-
-                    list_view = component.childItems()[1]
-                    delegates = list_view.property("contentItem").childItems()
-
-                    for delegate in delegates:
-                        # If the delegate is checked, add the parameter to the
-                        # checked parameters list
-                        if delegate.property("parameter") == param:
-                            # Key parameter of the dictionary
-                            value = delegate.property("value")
-                            # If the checkbox is ascendent
-                            if delegate.property("subParameter") == asc_param:
-                                parameters[param][value] = asc_param
-                            # If the checkbox is descendent
-                            else:
-                                parameters[param][value] = desc_param
+            advanced_params = self.get_advanced_search_parameters(search_root)
+            parameters.update(advanced_params)
 
         parameters["page"] = page  # Add the page to the parameters dict
         data = await self._scraper.search_manga(**parameters)
@@ -226,6 +141,101 @@ class Explorer(SignalHandler, QObject):
                                            self))
 
             self._signals_handler.mangaSearch.emit(results)
+
+    def get_advanced_search_parameters(self, search_root: QObject) -> dict:
+        """
+        Get the advanced search parameters from the given explorer QML object.
+        """
+        parameters = {}  # Create a dict to store the parameters
+
+        components = search_root.property("contentItem").childItems()
+        one_iter = ["textField", "comboBox", "slider"]
+
+        # Loop through the search controls (textfield, combobox, slider...)
+        for component in components:
+            if component.objectName() in one_iter:
+                param = component.property("parameter")
+                value = component.property("value")
+                parameters[param] = value  # Add the parameter to the dict
+
+            elif component.objectName() == "tristate-checkBox":
+                checked_param = component.property("checkedParameter")
+                unchecked_param = component.property("uncheckedParameter")
+                parameters[checked_param] = []
+                parameters[unchecked_param] = []
+
+                list_view = component.childItems()[1]
+                delegates = list_view.property("contentItem").childItems()
+
+                # Loop through the list view check delegates
+                for delegate in delegates:
+                    # If the delegate is checked, add the parameter to the
+                    # checked parameters list
+                    if delegate.property("parameter") == checked_param:
+                        value = delegate.property("value")
+                        # If value is a list, append all values to params
+                        if type(value) == QtQml.QJSValue:
+                            values = value.toVariant()
+                            for value in values:
+                                parameters[checked_param].append(value)
+                        else:
+                            parameters[checked_param].append(value)
+                    # If the delegate is unchecked, add the parameter to
+                    # the unchecked parameters list
+                    elif delegate.property("parameter") == unchecked_param:
+                        value = delegate.property("value")
+                        # If value is a list, append all values to params
+                        if type(value) == QtQml.QJSValue:
+                            values = value.toVariant()
+                            for value in values:
+                                parameters[unchecked_param].append(value)
+                        else:
+                            parameters[unchecked_param].append(value)
+
+            elif component.objectName() == "checkBox":
+                param = component.property("parameter")
+                parameters[param] = []
+
+                list_view = component.childItems()[1]
+                delegates = list_view.property("contentItem").childItems()
+
+                for delegate in delegates:
+                    # If the delegate is checked, add the parameter to the
+                    # checked parameters list
+                    if delegate.property("parameter") == param:
+                        value = delegate.property("value")
+                        # If value is a list, append all values to params
+                        if type(value) == QtQml.QJSValue:
+                            values = value.toVariant()
+                            for value in values:
+                                parameters[param].append(value)
+                        else:
+                            parameters[param].append(value)
+
+            elif component.objectName() == "ascDescMap":
+                param = component.property("parameter")  # URL parameter
+                # Values parameter of the dictionary
+                asc_param = component.property("ascParameter")
+                desc_param = component.property("descParameter")
+                parameters[param] = {}  # Create the dictionary
+
+                list_view = component.childItems()[1]
+                delegates = list_view.property("contentItem").childItems()
+
+                for delegate in delegates:
+                    # If the delegate is checked, add the parameter to the
+                    # checked parameters list
+                    if delegate.property("parameter") == param:
+                        # Key parameter of the dictionary
+                        value = delegate.property("value")
+                        # If the checkbox is ascendent
+                        if delegate.property("subParameter") == asc_param:
+                            parameters[param][value] = asc_param
+                        # If the checkbox is descendent
+                        else:
+                            parameters[param][value] = desc_param
+
+        return parameters
 
     @pyqtProperty(str)
     def scraper(self) -> object:
