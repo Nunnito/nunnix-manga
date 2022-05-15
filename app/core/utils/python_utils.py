@@ -126,7 +126,7 @@ class Thumbnails:
                                                         session))
             return thumbnail
 
-        return str(thumbnail_path)
+        return thumbnail_path.as_uri()
 
     @classmethod
     async def download_thumbnail(self, thumbnail: str, path: Path,
