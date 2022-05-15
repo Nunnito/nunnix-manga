@@ -23,7 +23,7 @@ class Paths:
             config_path.parent.mkdir(parents=True, exist_ok=True)
             config_path.touch()
 
-        return str(config_path)
+        return config_path
 
     @classmethod
     def get_theme_file_path(cls) -> str:
@@ -38,7 +38,7 @@ class Paths:
             theme_path.parent.mkdir(parents=True, exist_ok=True)
             theme_path.write_text("{}")
 
-        return str(theme_path)
+        return theme_path
 
     @classmethod
     def get_theme_file_content(cls) -> dict:
@@ -60,7 +60,7 @@ class Paths:
         if not path.exists():
             path.mkdir(parents=True)
 
-        return str(path)
+        return path
 
     @classmethod
     def get_cache_path(cls) -> str:
@@ -73,7 +73,7 @@ class Paths:
         if not path.exists():
             path.mkdir(parents=True)
 
-        return str(path)
+        return path
 
     @classmethod
     def get_mangas_path(cls) -> str:
