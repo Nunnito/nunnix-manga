@@ -1,8 +1,9 @@
 from pathlib import Path
+from hashlib import md5
+
 import asyncio
 import json
 import sys
-import re
 
 from aiohttp import ClientSession
 
@@ -113,10 +114,10 @@ class Thumbnails:
             str: Thumbnail absolute path
         """
         thumbnail_ext = thumbnail.split(".")[-1]  # Get the extension
-        # Remove URL characters
-        thumbnail_name = re.sub(r"[^\w\s]", "", thumbnail)
+        # Create MD5 hash of the thumbnail url
+        thumbnail_name = md5(f"{scraper}_{thumbnail}".encode()).hexdigest()
         thumbnail_path = (Paths.get_thumbnails_path() /
-                          f"{scraper}_{thumbnail_name}.{thumbnail_ext}")
+                          f"{thumbnail_name}.{thumbnail_ext}")
 
         # If the thumbnail doesn't exist, return the thumbnail url and create a
         # task to download it
