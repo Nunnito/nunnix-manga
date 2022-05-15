@@ -1,6 +1,10 @@
 from pathlib import Path
+import asyncio
 import json
 import sys
+import re
+
+from aiohttp import ClientSession
 
 OS_NAME = sys.platform
 HOME_PATH = Path.home()
@@ -86,4 +90,54 @@ class Paths:
         if not path.exists():
             path.mkdir(parents=True)
 
-        return str(path)
+        return path
+
+
+class Thumbnails:
+    """
+    Class that manages thumbnails operations.
+    """
+
+    @classmethod
+    async def get_thumbnail(self, thumbnail: str, scraper: str,
+                            session: ClientSession) -> str:
+        """
+        Get the thumbnail of a manga.
+
+        Args:
+            thumbnail (str): The thumbnail url
+            scraper (str): Scraper name
+            session (ClientSession): aiohttp session
+
+        Returns:
+            str: Thumbnail absolute path
+        """
+        thumbnail_ext = thumbnail.split(".")[-1]  # Get the extension
+        # Remove URL characters
+        thumbnail_name = re.sub(r"[^\w\s]", "", thumbnail)
+        thumbnail_path = (Paths.get_thumbnails_path() /
+                          f"{scraper}_{thumbnail_name}.{thumbnail_ext}")
+
+        # If the thumbnail doesn't exist, return the thumbnail url and create a
+        # task to download it
+        if not thumbnail_path.exists():
+            asyncio.create_task(self.download_thumbnail(thumbnail,
+                                                        thumbnail_path,
+                                                        session))
+            return thumbnail
+
+        return str(thumbnail_path)
+
+    @classmethod
+    async def download_thumbnail(self, thumbnail: str, path: Path,
+                                 session: ClientSession):
+        """
+        Download a thumbnail.
+
+        Args:
+            thumbnail (str): The thumbnail url
+            path (Path): Thumbnail path
+        """
+        async with session.get(thumbnail) as response:
+            data = await response.read()
+            path.write_bytes(data)
