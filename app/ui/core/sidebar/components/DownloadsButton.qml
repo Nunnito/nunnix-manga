@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 
 SideBarButton {
     target: "downloads"
-    targetPath: "../../downloads/Downloads.qml"
+    targetPath: "../../modules/downloads/Downloads.qml"
     iconFilled: "downloads-filled.svg"
     iconOutlined: "downloads-outlined.svg"
 }

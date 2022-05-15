@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import "../../../components" as C
-import "../../../utils" as U
+import "../../../../components" as C
+import "../../../../utils" as U
 
 
 GridView {

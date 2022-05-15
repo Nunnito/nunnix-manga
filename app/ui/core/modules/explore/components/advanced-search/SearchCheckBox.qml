@@ -1,18 +1,17 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import "../../../../components" as C
-import "../../../../utils" as U
+import "../../../../../components" as C
+import "../../../../../utils" as U
 
 Column {
+    property bool tristate: modelData.type == "tristate-checkbox"
     property var parameter: modelData.parameter
-    property var ascParameter: modelData.asc_parameter
-    property var descParameter: modelData.desc_parameter
-    property var defaultParamName: modelData.default_param.name
-    property var defaultParamValue: modelData.default_param.parameter
+    property var checkedParameter: modelData.checked_parameter
+    property var uncheckedParameter: modelData.unchecked_parameter
 
-    id: ascDesc
-    objectName: "ascDescMap"
+    id: searchCheckBox
+    objectName: tristate ? "tristate-checkBox" : "checkBox"
 
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
     bottomPadding: modelData.bottomPadding ? modelData.bottomPadding : bottomPadding
@@ -65,16 +64,11 @@ Column {
         C.CheckDelegate {
             property var value: modelData.parameter
             property string parameter
-            property string subParameter
-
-            ButtonGroup.group: buttonsGroup
-            ascDescMode: true
 
             text: modelData.name
             width: listView.width
-            tristate: true
-
-            // Never set the value to Qt.Unchecked
+            tristate: searchCheckBox.tristate
+            boolTristate: searchCheckBox.tristate
             nextCheckState: function() {
                 if (checkState === Qt.Checked && tristate) {
                     return Qt.PartiallyChecked
@@ -83,18 +77,7 @@ Column {
                     return Qt.Checked
                 }
                 else {
-                    return Qt.Checked
-                }
-            }
-
-            Component.onCompleted: {
-                if (value == ascDesc.defaultParamName) {
-                    if (ascDesc.defaultParamValue == ascDesc.ascParameter) {
-                        checkState = Qt.Checked
-                    }
-                    else if (ascDesc.defaultParamValue == ascDesc.descParameter) {
-                        checkState = Qt.PartiallyChecked
-                    }
+                    return Qt.Unchecked
                 }
             }
 
@@ -102,31 +85,25 @@ Column {
             Connections {
                 target: advancedSearchButtons.searchButton
                 function onClicked() {
-                    if (checkState == Qt.Checked) {
-                        parameter = ascDesc.parameter
-                        subParameter = ascDesc.ascParameter
-                    }
-                    else if (checkState == Qt.PartiallyChecked) {
-                        parameter = ascDesc.parameter
-                        subParameter = ascDesc.descParameter
+                    if (tristate) {
+                        if (checkState == Qt.Checked) {
+                            parameter = searchCheckBox.checkedParameter
+                        }
+                        else if (checkState == Qt.PartiallyChecked) {
+                            parameter = searchCheckBox.uncheckedParameter
+                        }
+                        else {
+                            parameter = null
+                        }
                     }
                     else {
-                        parameter = null
-                        subParameter = null
+                        if (checkState == Qt.Checked) {
+                            parameter = searchCheckBox.parameter
+                        }
+                        else {
+                            parameter = null
+                        }   
                     }
-                }
-            }
-        }
-    }
-
-    ButtonGroup {
-        id: buttonsGroup
-
-        // This unchecks all buttons but the one that was clicked
-        onClicked: {
-            for (let i in buttons) {
-                if (button != buttons[i]) {
-                    buttons[i].checkState = Qt.Unchecked
                 }
             }
         }

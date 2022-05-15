@@ -10,8 +10,8 @@ from PyQt5.QtGui import QGuiApplication, QIcon
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from qasync import QEventLoop
 
-from core.utils import qml_utils
-from core.types import Explorer, SignalHandler
+import core.utils as utils
+from core.modules import Explorer
 
 # Set init variables
 application = QGuiApplication(sys.argv)
@@ -41,9 +41,9 @@ def main():
     environ["QML_DISABLE_DISK_CACHE"] = "1"  # Disable QML disk cache
 
     # Load variables to QML
-    icon_engine = qml_utils.Icon()
-    theme_engine = qml_utils.Theme()
-    signals_engine = SignalHandler()
+    icon_engine = utils.Icon()
+    theme_engine = utils.Theme()
+    signals_engine = utils.SignalHandler()
     scraper_engine = Explorer(session, signals_engine)
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
@@ -55,7 +55,7 @@ def main():
     application.setWindowIcon(QIcon(icon_engine.get_icon("app.svg", False)))
 
     # Load QML file and execute it
-    engine.load(str(Path(qml_utils.__file__).parents[2] / "ui" / "main.qml"))
+    engine.load(str(Path(utils.__file__).parents[2] / "ui" / "main.qml"))
     with loop:
         loop.run_forever()
         loop.create_task(session.close())

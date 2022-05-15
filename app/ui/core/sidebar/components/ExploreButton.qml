@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 
 SideBarButton {
     target: "explore"
-    targetPath: "../../explore/Explore.qml"
+    targetPath: "../../modules/explore/Explore.qml"
     iconFilled: "explore-filled.svg"
     iconOutlined: "explore-outlined.svg"
 }

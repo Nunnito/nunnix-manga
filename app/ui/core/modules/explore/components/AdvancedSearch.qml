@@ -3,9 +3,9 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import Qt.labs.qmlmodels 1.0
 import "advanced-search"
-import "../../../components" as C
+import "../../../../components" as C
 
-import "../../../utils" as U
+import "../../../../utils" as U
 
 Pane {
     property int _width: 300

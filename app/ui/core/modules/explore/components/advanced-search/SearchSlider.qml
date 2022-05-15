@@ -1,12 +1,11 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import "../../../../components" as C
+import "../../../../../components" as C
 
 Column {
     property string parameter: modelData.parameter
-    property var value
+    property int value
 
-    objectName: "textField"
+    objectName: "slider"
 
     width: listView.width
     topPadding: modelData.topPadding ? modelData.topPadding : topPadding
@@ -17,19 +16,20 @@ Column {
         font.bold: true
         wrapMode: Text.WordWrap
     }
-    C.TextField {
-        id: textField
-
-        outlined: true
+    Row {
         width: parent.width
-        placeholderText: modelData.name
-
-        validator: modelData.validator ? intValid : null
-
-        IntValidator{
-            id: intValid
-            bottom: modelData.validator ? modelData.validator.min : 0
-            top: modelData.validator ? modelData.validator.max : 0
+        C.Slider {
+            id: slider
+            width: parent.width - 25
+            stepSize: modelData.stepSize
+            from: modelData.from
+            to: modelData.to
+        }
+        C.Label {
+            id: sliderLabel
+            text: slider.value
+            font.bold: true
+            anchors.verticalCenter: slider.verticalCenter
         }
     }
 
@@ -37,7 +37,7 @@ Column {
     Connections {
         target: advancedSearchButtons.searchButton
         function onClicked() {
-            value = textField.text
+            value = slider.value
         }
     }
 }

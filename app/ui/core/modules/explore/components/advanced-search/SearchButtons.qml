@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
-import "../../../../components" as C
+import "../../../../../components" as C
 
 // This is the bottom bar that displays "SEARCH" and "RESET" buttons
 Pane {

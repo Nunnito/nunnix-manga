@@ -7,16 +7,16 @@ from functools import wraps
 from pathlib import Path
 
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
-from PyQt5 import QtQuick, QtQml
+from PyQt5 import QtQuick, QtQml  # noqa: F401
 from qasync import asyncSlot
 
 from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp import ClientSession
 
-from . import MangaSearch, SignalHandler
+from ..types import MangaSearch
+from ..utils import SignalHandler
 from ..utils.logger import logger
 from .. import scrapers
-QtQuick
 
 
 def search_manga_deco(qasync_func):

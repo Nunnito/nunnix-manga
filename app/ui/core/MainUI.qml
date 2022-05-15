@@ -30,7 +30,7 @@ Page {
             implicitWidth: sideBar.visible ?
                            parent.width - sideBar.width : parent.width
             implicitHeight: parent.height
-            initialItem: "library/Library.qml"
+            initialItem: "modules/library/Library.qml"
 
             replaceEnter: Transition {
                 OpacityAnimator {from: 0; to: 1; duration: 250}

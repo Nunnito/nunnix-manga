@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 
 SideBarButton {
     target: "library"
-    targetPath: "../../library/Library.qml"
+    targetPath: "../../modules/library/Library.qml"
     iconFilled: "library-filled.svg"
     iconOutlined: "library-outlined.svg"
 }

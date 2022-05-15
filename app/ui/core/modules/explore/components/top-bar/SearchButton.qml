@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import "../../../../components" as C
-import "../../../../theme"  // Only for testing, will be removed in the future
+import "../../../../../components" as C
+import "../../../../../theme"  // Only for testing, will be removed in the future
 
 
 C.RoundButton {
