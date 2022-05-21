@@ -1,3 +1,7 @@
+// TODO: Return the ligth theme
+// This will return, but then the theme system will have to be completely
+// rewritten
+
 pragma Singleton
 import QtQuick 2.15
 

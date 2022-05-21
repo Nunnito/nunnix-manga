@@ -15,5 +15,14 @@ C.RoundButton {
 
     icon.source: Icon.get_icon("search.svg")
 
-    onClicked: theme = theme == Dark ? Light : Dark  // Only for testing
+    onClicked: {
+        searchField.searchText = searchField.text
+        explorer.searchModel.clear()  // Clear search results
+        explorer.currentPage = 1  // Reset page to 1
+        explorer.searchType = searchField.text ? "title" : "empty"
+
+        // Do search
+        Explorer.search_manga(explorer.searchType, explorer,
+                              explorer.currentPage)
+    }
 }

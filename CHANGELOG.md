@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - PointingHandCursor to control components
 
+### Removed
+- Light theme
+
 ## [0.1.1] - 2022-05-12
 ### Added
 - Windows executable icon
