@@ -266,7 +266,7 @@ class Explorer(SignalHandler, QObject):
 
             for attr in dir(module):
                 class_obj = getattr(module, attr)
-                if hasattr(class_obj, "get_manga_data"):
+                if hasattr(class_obj, "TYPE"):
                     classes.append(class_obj(self._session))
 
         return classes
