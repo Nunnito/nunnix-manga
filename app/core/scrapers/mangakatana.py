@@ -33,10 +33,11 @@ def searcher_exception_handler(func):
 
 
 class Mangakatana:
+    NAME = "MangaKatana"
+    TYPE = "manga"
+
     def __init__(self, session: ClientSession):
         self.session = session
-
-        self.NAME = "MangaKatana"
 
         self.BASE_URL = "https://mangakatana.com"
         self.HEADERS = {

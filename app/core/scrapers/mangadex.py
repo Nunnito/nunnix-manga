@@ -29,10 +29,11 @@ def searcher_exception_handler(func):
 
 
 class Mangadex:
+    NAME = "MangaDex"  # Used for GUI
+    TYPE = "manga"
+
     def __init__(self, session: ClientSession):
         self.session = session  # Aiohttp session
-
-        self.NAME = "MangaDex"  # Used for GUI
 
         self.LANG = "en"  # Used to get manga by language
         self.QUALITY_MODE = "data"  # Image quality: "data" or "data-saver"
