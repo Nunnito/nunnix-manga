@@ -74,6 +74,8 @@ Column {
             width: listView.width
             tristate: true
 
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
             // Never set the value to Qt.Unchecked
             nextCheckState: function() {
                 if (checkState === Qt.Checked && tristate) {

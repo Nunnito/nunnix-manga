@@ -24,6 +24,8 @@ Column {
             stepSize: modelData.stepSize
             from: modelData.from
             to: modelData.to
+            
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
         }
         C.Label {
             id: sliderLabel

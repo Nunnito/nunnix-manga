@@ -28,11 +28,11 @@ Rectangle {
         height: sideBar.height
         spacing: 0
 
-        LibraryButton {}
-        ExploreButton {}
-        DownloadsButton {}
-        HistoryButton {}
-        C.Spacer {}
-        SettingsButton {}
+        LibraryButton {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
+        ExploreButton {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
+        DownloadsButton {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
+        HistoryButton {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
+        C.Spacer {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
+        SettingsButton {C.CursorShape {cursorShape: Qt.PointingHandCursor}}
     }
 }

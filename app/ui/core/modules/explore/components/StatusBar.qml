@@ -26,6 +26,8 @@ C.TopBar {
             topInset: 0
             bottomInset: 0
 
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
             onActivated: {
                 model = Explorer.scrapers_list  // Set scrapers list
                 Explorer.scraper = currentText  // Set scraper

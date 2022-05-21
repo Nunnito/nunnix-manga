@@ -27,6 +27,8 @@ Column {
         model: modelData.content
         textRole: "name"
         valueRole: "parameter"
+
+        C.CursorShape {cursorShape: Qt.PointingHandCursor}
     }
 
     // This connection is to just change value property when button is clicked

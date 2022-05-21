@@ -15,7 +15,13 @@ C.TopBar {
         spacing: 0
 
         SearchField {id: searchField}
-        SearchButton {id: searchButton}
-        AdvancedSearchButton {id: advancedSearchButton}
+        SearchButton {
+            id: searchButton
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+        }
+        AdvancedSearchButton {
+            id: advancedSearchButton
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+        }
     }
 }

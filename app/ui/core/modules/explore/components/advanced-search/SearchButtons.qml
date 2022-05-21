@@ -32,6 +32,8 @@ Pane {
 
             text: qsTr("Search")
 
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
             contentItem: C.Label {
                 text: parent.text  
                 color: theme.windowBg
@@ -55,6 +57,8 @@ Pane {
             text: qsTr("RESET")
             flat: true
             highlighted: true
+
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
 
             onClicked: {
                 listView.model = null

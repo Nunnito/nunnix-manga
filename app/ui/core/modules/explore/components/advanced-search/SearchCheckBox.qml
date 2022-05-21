@@ -69,6 +69,9 @@ Column {
             width: listView.width
             tristate: searchCheckBox.tristate
             boolTristate: searchCheckBox.tristate
+
+            C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
             nextCheckState: function() {
                 if (checkState === Qt.Checked && tristate) {
                     return Qt.PartiallyChecked
