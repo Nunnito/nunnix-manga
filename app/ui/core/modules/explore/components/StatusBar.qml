@@ -32,6 +32,13 @@ C.TopBar {
                 model = Explorer.scrapers_list  // Set scrapers list
                 Explorer.scraper = currentText  // Set scraper
 
+                // Set visibility of advanced search
+                if (Explorer.advanced_search) {
+                    explorer.topBar.advancedSearchButton.visible = true
+                } else {
+                    explorer.topBar.advancedSearchButton.visible = false
+                }
+
                 // Set new advanced search controls
                 explorer.advancedSearch.controls.model = Explorer.advanced_search
 
