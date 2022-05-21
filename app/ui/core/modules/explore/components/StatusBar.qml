@@ -39,7 +39,7 @@ C.TopBar {
                 explorer.currentPage = 1  // Reset page to 1
                 explorer.searchType = "empty"  // Reset search type to empty
                 
-                Explorer.search_manga(explorer.searchType, explorer,
+                Explorer.search(explorer.searchType, explorer,
                                     explorer.currentPage)  // Do search
             }
         }

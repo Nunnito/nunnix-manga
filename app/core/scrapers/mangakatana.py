@@ -58,7 +58,7 @@ class Mangakatana:
             "Dec": "12"
         }
 
-    async def get_manga_data(self, url: str) -> dict:
+    async def get_content_data(self, url: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -73,7 +73,7 @@ class Mangakatana:
 
         Example
         -------
-            >>> get_manga_data("http://mangakatana.com/manga/solo-leveling")
+            >>> get_content_data("http://mangakatana.com/manga/solo-leveling")
 
         Dictionary content
         ------------------
@@ -206,7 +206,7 @@ class Mangakatana:
         return images
 
     @searcher_exception_handler
-    async def search_manga(
+    async def search(
         self,
         title: str = "",
         author: str = "",
@@ -260,7 +260,7 @@ class Mangakatana:
 
         Example
         -------
-            >>> search_manga(genres=["Ecchi", "Harem"], status="1")
+            >>> search(genres=["Ecchi", "Harem"], status="1")
 
         List of valid genres
         ----------------------

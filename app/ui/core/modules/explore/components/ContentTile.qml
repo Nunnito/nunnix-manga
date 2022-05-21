@@ -4,24 +4,24 @@ import QtQuick.Controls 2.15
 import "../../../../components" as C
 
 C.Button {
-    id: mangaSearchButton
+    id: searchResultButton
     width: 140
     height: 210
 
     C.ToolTip {visible: hovered; label: title}
 
-    // Manga image
+    // Cover image
     Image {
-        id: mangaCover
+        id: resultCover
         anchors.fill: parent
         mipmap: true
-        source: cover  // Manga cover from ListModel
+        source: cover  // Cover from ListModel
         fillMode: Image.PreserveAspectCrop  // Crop the image
         opacity: 0
 
         OpacityAnimator {
             id: opacityAnimator
-            target: mangaCover
+            target: resultCover
             duration: 250
             easing.type: Easing.InQuart
             from: 0
@@ -49,9 +49,9 @@ C.Button {
                 anchors.bottom: parent.bottom
                 horizontalAlignment: Text.AlignHCenter
 
-                width: mangaSearchButton.width
+                width: searchResultButton.width
 
-                text: title  // Manga title from ListModel
+                text: title  // Title from ListModel
                 font.pixelSize: 14
                 elide: Text.ElideMiddle
 
@@ -70,7 +70,7 @@ C.Button {
 		id: busyIndicator
 
 		anchors.centerIn: parent
-	    running: mangaCover.status != 1  // Run if image is not loaded.
+	    running: resultCover.status != 1  // Run if image is not loaded.
 	}
 
     C.CursorShape {cursorShape: Qt.PointingHandCursor}

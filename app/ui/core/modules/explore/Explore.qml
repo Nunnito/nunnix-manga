@@ -32,7 +32,7 @@ SplitView {
     id: explorer
     clip: true
 
-    // Top bar and container for mangas
+    // Top bar and container
     Column {
         id: searchColumn
 
@@ -53,28 +53,28 @@ SplitView {
     // Connections
     Connections {
         target: SignalHandler
-        function onMangaSearch(mangaSearch) {
-            if (mangaSearch.is_exception) {
-                if (mangaSearch.exception.type == "no_results") {
+        function onSearchResult(searchResult) {
+            if (searchResult.is_exception) {
+                if (searchResult.exception.type == "no_results") {
                     noResults = true
                 }
-                else if (mangaSearch.exception.type == "end_of_results") {
+                else if (searchResult.exception.type == "end_of_results") {
                     endOfResults = true
                 }
-                else if (mangaSearch.exception.type == "connection_error") {
+                else if (searchResult.exception.type == "connection_error") {
                     connectionError = true
                 }
-                else if (mangaSearch.exception.type == "timeout_error") {
+                else if (searchResult.exception.type == "timeout_error") {
                     timeOutError = true
                 }
-                else if (mangaSearch.exception.type == "unknown_error") {
+                else if (searchResult.exception.type == "unknown_error") {
                     unknownError = true
                 }
-                errorMessage = mangaSearch.exception.message
+                errorMessage = searchResult.exception.message
             }
             else {
-                for (var i = 0; i < mangaSearch.length; i++) {
-                    searchModel.append(mangaSearch[i].jsonObject)
+                for (var i = 0; i < searchResult.length; i++) {
+                    searchModel.append(searchResult[i].jsonObject)
                 }
             }
         }
@@ -83,6 +83,6 @@ SplitView {
     // When the component is created
     Component.onCompleted: {
         searchType = "empty"
-        Explorer.search_manga(searchType, explorer, currentPage)
+        Explorer.search(searchType, explorer, currentPage)
     }
 }

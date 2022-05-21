@@ -1,5 +1,7 @@
-from PyQt5.QtCore import QObject, QVariant, QJsonValue, pyqtProperty
+from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from qasync import asyncSlot
+
+from .generic import SearchResult, ContentData
 
 
 class Chapter(QObject):
@@ -59,101 +61,35 @@ class ChaptersData(QObject):
         return self._chapters
 
 
-class Manga(QObject):
+class Manga(ContentData):
     """ Manga type to get all manga data """
     def __init__(self, scraper, title: str, author: str, description: str,
                  cover: str, genres: list[str], status: str, link: str,
                  chapters_data: ChaptersData, parent) -> None:
-        super(Manga, self).__init__(parent)
+        super(Manga, self).__init__(scraper, title, author, description,
+                                    cover, genres, link, parent)
 
-        self._scraper = scraper
-        self._title = title
-        self._author = author
-        self._description = description
-        self._cover = cover
-        self._genres = genres
         self._status = status
-        self._link = link
         self._chapters_data = chapters_data
-        self._parent = parent
-
-    @pyqtProperty(str)
-    def scraper(self) -> str:
-        return self._scraper.NAME
-
-    @pyqtProperty(str, constant=True)
-    def title(self) -> str:
-        return self._title
-
-    @pyqtProperty(str, constant=True)
-    def author(self) -> str:
-        return self._author
-
-    @pyqtProperty(str, constant=True)
-    def description(self) -> str:
-        return self._description
-
-    @pyqtProperty(str, constant=True)
-    def cover(self) -> str:
-        return self._cover
-
-    @pyqtProperty(list, constant=True)
-    def genres(self) -> list[str]:
-        return self._genres
 
     @pyqtProperty(str, constant=True)
     def status(self) -> str:
         return self._status
-
-    @pyqtProperty(str, constant=True)
-    def link(self) -> str:
-        return self._link
 
     @pyqtProperty(QVariant, constant=True)
     def chapters_data(self) -> ChaptersData:
         return self._chapters_data
 
 
-class MangaSearch(QObject):
+class MangaSearch(SearchResult):
     """ Manga search type """
     def __init__(self, scraper, title: str, link: str, cover: str, parent):
-        super(MangaSearch, self).__init__(parent)
-
-        self._scraper = scraper
-        self._title = title
-        self._link = link
-        self._cover = cover
-        self._parent = parent
-
-    @pyqtProperty(str)
-    def scraper(self) -> str:
-        return self._scraper.NAME
-
-    @pyqtProperty(str, constant=True)
-    def title(self) -> str:
-        return self._title
-
-    @pyqtProperty(str, constant=True)
-    def link(self) -> str:
-        return self._link
-
-    @pyqtProperty(str, constant=True)
-    def cover(self) -> str:
-        return self._cover
-
-    @pyqtProperty(QJsonValue, constant=True)
-    def jsonObject(self) -> dict:
-        jsonObject = {
-            "title": self._title,
-            "link": self._link,
-            "cover": self._cover
-        }
-        return jsonObject
+        super(MangaSearch, self).__init__(scraper, title, link, cover, parent)
 
     @asyncSlot()
     async def get_data(self) -> None:
         """ Get manga data """
-        data = await self._scraper.get_manga_data(self._link)
+        data = await self._scraper.get_content_data(self._link)
 
         title = data["title"]
         author = data["author"]
@@ -181,4 +117,4 @@ class MangaSearch(QObject):
             title, author, description, cover, genres, status, self._link,
             chapters_data, self
         )
-        self._parent._signals_handler.mangaData.emit(manga)
+        self._parent._signals_handler.contentData.emit(manga)

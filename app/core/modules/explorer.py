@@ -18,7 +18,7 @@ from ..utils import SignalHandler, logger, Thumbnails
 from .. import scrapers
 
 
-def search_manga_deco(qasync_func):
+def search_deco(qasync_func):
     @wraps(qasync_func)
     def wrapper(func):
         @wraps(func)
@@ -51,7 +51,7 @@ def search_manga_deco(qasync_func):
                     exception_info["exception"]["type"] = "unknown_error"
 
                 # Emit the signal with the exception info
-                self._signals_handler.mangaSearch.emit(exception_info)
+                self._signals_handler.searchResult.emit(exception_info)
 
             # Finally, set the search to not running
             finally:
@@ -91,15 +91,14 @@ class Explorer(SignalHandler, QObject):
         self._searching = False
 
     # Get as input the search type, roo explorer QML object and page index
-    @search_manga_deco(asyncSlot(str, QObject, int))
-    async def search_manga(self, search_type: str, explorer: QObject,
-                           page: int):
+    @search_deco(asyncSlot(str, QObject, int))
+    async def search(self, search_type: str, explorer: QObject,
+                     page: int):
         """
-        Search for manga using the given search type and explorer QML Object.
+        Search using the given search type and explorer QML Object.
 
-        Posibles search types are: empty, to search for all manga; title, to
-        search for a manga by title; advanced, to search for a manga by
-        advanced search.
+        Posibles search types are: empty, to search all; title, to
+        search by title; advanced, to search by advanced search.
         """
         # Set exceptions variables to false
         explorer.setProperty("noResults", False)
@@ -125,11 +124,11 @@ class Explorer(SignalHandler, QObject):
             parameters.update(advanced_params)
 
         parameters["page"] = page  # Add the page to the parameters dict
-        data = await self._scraper.search_manga(**parameters)
+        data = await self._scraper.search(**parameters)
 
         # If the data contains a dict with exceptions, emit it
         if type(data) == dict:
-            self._signals_handler.mangaSearch.emit(data)
+            self._signals_handler.searchResult.emit(data)
         else:
             results = []
             for result in data:
@@ -139,10 +138,11 @@ class Explorer(SignalHandler, QObject):
                                                        self.scraper,
                                                        self._session)
 
-                results.append(MangaSearch(self._scraper, title, link, cover,
-                                           self))
+                if self._scraper.TYPE == "manga":
+                    results.append(MangaSearch(self._scraper, title, link,
+                                               cover, self))
 
-            self._signals_handler.mangaSearch.emit(results)
+            self._signals_handler.searchResult.emit(results)
 
     def get_advanced_search_parameters(self, search_root: QObject) -> dict:
         """

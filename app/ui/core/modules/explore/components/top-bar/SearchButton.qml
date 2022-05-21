@@ -22,7 +22,7 @@ C.RoundButton {
         explorer.searchType = searchField.text ? "title" : "empty"
 
         // Do search
-        Explorer.search_manga(explorer.searchType, explorer,
+        Explorer.search(explorer.searchType, explorer,
                               explorer.currentPage)
     }
 }

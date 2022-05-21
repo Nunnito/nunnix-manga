@@ -118,7 +118,7 @@ class Mangadex:
             75: "631ef465-9aba-4afb-b0fc-ea10efe274a8"
         }
 
-    async def get_manga_data(self, uuid: str) -> dict:
+    async def get_content_data(self, uuid: str) -> dict:
         """ Get manga data.
 
         Parameters
@@ -133,7 +133,7 @@ class Mangadex:
 
         Example
         -------
-            >>> get_manga_data("801513ba-a712-498c-8f57-cae55b38cc92")
+            >>> get_content_data("801513ba-a712-498c-8f57-cae55b38cc92")
 
         Dictionary content
         ------------------
@@ -212,7 +212,7 @@ class Mangadex:
 
     async def get_chapters_data(self, uuid: str,
                                 offset: int = 0) -> dict:
-        """ Get chapters data. This function is used by get_manga_data function.
+        """ Get chapters data. This function is used by get_content_data function.
 
         Parameters
         ----------
@@ -346,7 +346,7 @@ class Mangadex:
         return images
 
     @searcher_exception_handler
-    async def search_manga(
+    async def search(
         self,
         limit: int = 25,
         offset: int = None,
@@ -458,7 +458,7 @@ class Mangadex:
 
         Example
         -------
-            >>> search_manga(title="Kumo", order={"updatedAt": "asc"})
+            >>> search(title="Kumo", order={"updatedAt": "asc"})
 
         Tags list
         ---------

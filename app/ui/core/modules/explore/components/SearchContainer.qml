@@ -98,7 +98,7 @@ GridView {
                 display: AbstractButton.TextUnderIcon
                 x: (gridView.width - (width + gridView.x * 2)) / 2
 
-                onClicked: Explorer.search_manga(explorer.searchType, explorer,
+                onClicked: Explorer.search(explorer.searchType, explorer,
                                                  explorer.currentPage)
             }
         }
@@ -157,7 +157,7 @@ GridView {
                     display: AbstractButton.TextUnderIcon
                     x: (gridView.width - (width + gridView.x * 2)) / 2
 
-                    onClicked: Explorer.search_manga(explorer.searchType,
+                    onClicked: Explorer.search(explorer.searchType,
                                                      explorer,
                                                      explorer.currentPage)
                 }
@@ -177,7 +177,7 @@ GridView {
             !explorer.endOfResults && !explorer.connectionError &&
             !explorer.timeOutError && !explorer.unknownError) {
             explorer.currentPage++  // Increment the page
-            Explorer.search_manga(explorer.searchType,
+            Explorer.search(explorer.searchType,
                                   explorer,
                                   explorer.currentPage)
         }
@@ -188,7 +188,7 @@ GridView {
             !explorer.endOfResults && !explorer.connectionError &&
             !explorer.timeOutError && !explorer.unknownError) {
             explorer.currentPage++  // Increment the page
-            Explorer.search_manga(explorer.searchType,
+            Explorer.search(explorer.searchType,
                                   explorer,
                                   explorer.currentPage)
         }
