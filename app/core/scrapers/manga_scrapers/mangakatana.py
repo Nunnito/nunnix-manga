@@ -5,7 +5,7 @@ import asyncio
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 
-from ..utils.logger import logger
+from ...utils.logger import logger
 
 
 # Decorator to searcher exceptions

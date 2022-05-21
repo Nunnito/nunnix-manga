@@ -11,13 +11,13 @@ import pytest_asyncio
 import pytest
 import aiohttp
 
-from app.core import scrapers
+from app.core.scrapers import manga_scrapers
 
 
 # Get scrapers names
 def scrapers_name():
     names = []
-    for file in Path(scrapers.__path__[0]).glob("*.py"):
+    for file in Path(manga_scrapers.__path__[0]).glob("*.py"):
         names.append(os.path.splitext(os.path.basename(file))[0])
     return names
 
@@ -204,17 +204,17 @@ async def scrapers_dict():
     scrapers_dict = {}  # Dict of scrapers
 
     # Loop in the scrapers directory (app/core/scrapers) and get *.py files
-    for file in Path(scrapers.__path__[0]).glob("*.py"):
+    for file in Path(manga_scrapers.__path__[0]).glob("*.py"):
         # Get the module name
         name = os.path.splitext(os.path.basename(file))[0]
         # Import the module
-        module = import_module(f"{scrapers.__name__}.{name}")
+        module = import_module(f"{manga_scrapers.__name__}.{name}")
 
         # Loop in the module attributes and get the scraper class
         for attr in dir(module):
             class_obj = getattr(module, attr)
             # Check if the class has the "get_content_data" method
-            if hasattr(class_obj, "get_content_data"):
+            if hasattr(class_obj, "TYPE"):
                 scrapers_dict[name] = class_obj(aiohttp_client)
 
     return scrapers_dict

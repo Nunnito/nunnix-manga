@@ -260,9 +260,11 @@ class Explorer(SignalHandler, QObject):
 
     def get_scrapers(self) -> list:
         classes = []
-        for file in Path(scrapers.__path__[0]).glob("*.py"):
+        for file in Path(scrapers.__path__[0]).glob("*/*.py"):
+            dir_name = os.path.basename(file.parent)
             name = os.path.splitext(os.path.basename(file))[0]
-            module = reload(import_module(f"{scrapers.__name__}.{name}"))
+            module = import_module(f"{scrapers.__name__}.{dir_name}.{name}")
+            module = reload(module)
 
             for attr in dir(module):
                 class_obj = getattr(module, attr)

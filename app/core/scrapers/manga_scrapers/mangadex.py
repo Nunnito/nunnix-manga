@@ -3,7 +3,7 @@ import re
 
 from aiohttp import ClientSession
 
-from ..utils.logger import logger
+from ...utils.logger import logger
 
 
 # Decorator to searcher exceptions
