@@ -577,7 +577,6 @@ class Mangadex:
             "includes[]": ["cover_art"]
         }
         payload = {k: v for k, v in payload.items() if v is not None}
-        payload = {k: v for k, v in payload.items() if v != ""}
 
         data = []  # To store searches
 

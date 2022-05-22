@@ -37,7 +37,7 @@ Column {
     Connections {
         target: advancedSearchButtons.searchButton
         function onClicked() {
-            value = textField.text
+            value = textField.text ? textField.text : null
         }
     }
 }
