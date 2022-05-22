@@ -6,6 +6,7 @@ import json
 import sys
 
 from aiohttp import ClientSession
+from . import qml_utils
 
 OS_NAME = sys.platform
 HOME_PATH = Path.home()
@@ -113,6 +114,9 @@ class Thumbnails:
         Returns:
             str: Thumbnail absolute path
         """
+        if thumbnail is None:
+            return qml_utils.Icon().get_icon("broken_image.svg")
+
         thumbnail_ext = thumbnail.split(".")[-1]  # Get the extension
         # Create MD5 hash of the thumbnail url
         thumbnail_name = md5(f"{scraper}_{thumbnail}".encode()).hexdigest()
