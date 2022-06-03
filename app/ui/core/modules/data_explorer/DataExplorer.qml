@@ -11,7 +11,10 @@ Item {
 
     Shortcut {
         sequence: StandardKey.Cancel
-        onActivated: stackView.pop()
+        onActivated: {
+            stackView.pop()
+            sideBar.visible = true
+        }
     }
 
     // Connections
@@ -21,4 +24,6 @@ Item {
             _data = Cast.from_manga(contentData)
         }
     }
+
+    Component.onCompleted: {sideBar.visible = false}
 }
