@@ -14,7 +14,8 @@ from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp import ClientSession
 
 from ..types import MangaSearch
-from ..utils import SignalHandler, logger, Thumbnails
+from ..utils import SignalHandler, logger
+from .. import utils
 from .. import scrapers
 
 
@@ -134,9 +135,9 @@ class Explorer(SignalHandler, QObject):
             for result in data:
                 title = result["title"]
                 link = result["link"]
-                cover = await Thumbnails.get_thumbnail(result["cover"],
-                                                       self.scraper,
-                                                       self._session)
+                cover = await utils.Thumbnails.get_thumbnail(result["cover"],
+                                                             self.scraper,
+                                                             self._session)
 
                 if self._scraper.TYPE == "manga":
                     results.append(MangaSearch(self._scraper, title, link,
