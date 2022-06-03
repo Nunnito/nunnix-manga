@@ -44,11 +44,13 @@ def main():
     icon_engine = utils.Icon()
     theme_engine = utils.Theme()
     signals_engine = utils.SignalHandler()
+    cast_engine = utils.Cast()
     scraper_engine = Explorer(session, signals_engine)
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
     context.setContextProperty("Explorer", scraper_engine)
     context.setContextProperty("SignalHandler", signals_engine)
+    context.setContextProperty("Cast", cast_engine)
 
     # Set application properties
     application.aboutToQuit.connect(before_close)

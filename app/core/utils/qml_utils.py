@@ -2,6 +2,8 @@ from pathlib import Path
 from PyQt5.QtCore import QObject, QVariant, pyqtSlot
 
 from . import python_utils
+from ..modules import DataExplorer
+from ..types import Manga
 
 
 class Icon(QObject):
@@ -40,6 +42,21 @@ class Theme(QObject):
         theme = dark_theme
 
         return theme
+
+
+class Cast(QObject):
+    """This class will be used in QML to cast an object to other type"""
+    @pyqtSlot(Manga, result=DataExplorer)
+    def from_manga(self, manga: Manga) -> DataExplorer:
+        """Cast Manga to DataExplorer
+
+        Args:
+            manga (Manga): Manga object
+
+        Returns:
+            DataExplorer: DataExplorer object
+        """
+        return DataExplorer(manga)
 
 
 def qobject_to_dict(qobject: QObject) -> dict:
