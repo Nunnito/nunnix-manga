@@ -42,7 +42,7 @@ SplitView {
         
         TopBar {id: topBar}
         SearchContainer {id: grid}
-        ListModel {id: searchModel}
+        ListModel {id: searchModel; property var getData: ({})}
         StatusBar {id: statusBar}
     }
 
@@ -74,7 +74,13 @@ SplitView {
             }
             else {
                 for (var i = 0; i < searchResult.length; i++) {
-                    searchModel.append(searchResult[i].jsonObject)
+                    let search = searchResult[i].jsonObject
+                    let getData = searchResult[i].get_data  // get_data function
+                    search.index = i
+                    searchModel.append(search)  // Append the search to the model
+
+                    // Add getData function to the getData dictionary
+                    searchModel.getData[i] = ()=>{getData()}
                 }
             }
         }
