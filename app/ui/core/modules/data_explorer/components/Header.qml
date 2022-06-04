@@ -6,15 +6,28 @@ import "../../../../components" as C
 import "header" as H
 
 Item {
+    id: _header
+
     width: parent.width
 
-    H.Background {}
+    H.Background {id: background}
     Row {
+        id: row
+
         padding: 40
         spacing: 20
 
-        H.Image {}
+        H.Image {id: image}
         Column {
+            spacing: row.spacing
+
+            H.Title {}
+            Column {
+                H.Author {}
+                H.Status {}
+            }
+            H.Genres {}
+            H.Description {}
         }
     }
 }
