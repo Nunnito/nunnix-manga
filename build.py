@@ -127,7 +127,7 @@ base = "Win32GUI" if sys.platform == "win32" else None
 build_exe_options = {
     "build_exe": "build",
     "packages": ["bs4"],
-    "excludes": ["tkinter", "test", "pytest"],
+    "excludes": ["tkinter", "test", "pytest", "soupsieve"],
     "include_files": [
         ("app/core/", "lib/core/"),
         ("app/ui/", "lib/ui/"),
