@@ -8,5 +8,5 @@ C.RoundButton {
     icon.source: Icon.get_icon("arrow_back.svg")
 
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
-    onClicked: stackView.pop()
+    onClicked: stackView.pop(), sideBar.visible = true
 }
