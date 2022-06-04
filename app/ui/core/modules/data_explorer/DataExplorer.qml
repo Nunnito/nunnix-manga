@@ -17,6 +17,8 @@ Item {
         ListView {
             width: parent.width
             height: parent.parent.height - topBar.height
+
+            header: Header {}
         }
     }
 
