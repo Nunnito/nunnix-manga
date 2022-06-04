@@ -19,7 +19,6 @@ Column {
 
         width: _header.width - (image.width + (row.padding * 2))
         height: background.height - (parent.y + row.padding * 2 + row.spacing * 4)
-        Component.onCompleted: console.log(background.height, parent.y)
 
         clip: true
         contentHeight: description.height
@@ -39,7 +38,8 @@ Column {
         ScrollBar.vertical: C.ScrollBar {
             id: scrollBar
             width: 10
-            policy: ScrollBar.AlwaysOn
+            policy: flickable.height > flickable.contentHeight ?
+                                       ScrollBar.AsNeeded : ScrollBar.AlwaysOn
         }
         U.WheelArea {parent: flickable}
     }
