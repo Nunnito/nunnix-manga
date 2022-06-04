@@ -7,6 +7,9 @@ MouseArea {
     property real toContentY: 0
     property real toContentX: 0
 
+    property int mouseSpeedDivider: 2
+    property int touchSpeedDivider: 4
+
     id: mouseArea
 
     z: -1
@@ -15,8 +18,9 @@ MouseArea {
 
     onWheel: {
         if (!horizontalScrolling) {
-            var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y :
-                                                        wheel.angleDelta.y / 4
+            var mouseMove = wheel.angleDelta.y % 120 == 0 ?
+                            wheel.angleDelta.y / mouseSpeedDivider :
+                            wheel.angleDelta.y / touchSpeedDivider
             if (parent.atYEnd || parent.atYBeginning) {
                 contentYAnimation.stop()
             }
@@ -34,8 +38,9 @@ MouseArea {
                                                                         touchpadDuration
             contentYAnimation.start()
         } else {
-            var mouseMove = wheel.angleDelta.y % 120 == 0 ? wheel.angleDelta.y :
-                                                        wheel.angleDelta.y / 4
+            var mouseMove = wheel.angleDelta.y % 120 == 0 ?
+                            wheel.angleDelta.y / mouseSpeedDivider :
+                            wheel.angleDelta.y / touchSpeedDivider
             if (parent.atXEnd || parent.atXBeginning) {
                 contentXAnimation.stop()
             }
