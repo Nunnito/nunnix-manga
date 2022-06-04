@@ -76,11 +76,11 @@ SplitView {
                 for (var i = 0; i < searchResult.length; i++) {
                     let search = searchResult[i].jsonObject
                     let getData = searchResult[i].get_data  // get_data function
-                    search.index = i
-                    searchModel.append(search)  // Append the search to the model
-
                     // Add getData function to the getData dictionary
-                    searchModel.getData[i] = ()=>{getData()}
+                    searchModel.getData[searchModel.count] = ()=>{getData()}
+                    search.index = searchModel.count
+
+                    searchModel.append(search)  // Append the search to the model
                 }
             }
         }
