@@ -5,12 +5,13 @@ import QtGraphicalEffects 1.15
 // A blurry image
 Item {
     width: parent.width
+    height: 448
     
     Image {
         id: background
 
         width: parent.width
-        height: 448
+        height: parent.height
 
         source: _data ? _data.cover : ""
         fillMode: Image.PreserveAspectCrop
