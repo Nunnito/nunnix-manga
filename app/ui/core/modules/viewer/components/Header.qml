@@ -9,25 +9,32 @@ Item {
     id: _header
 
     width: parent.width
+    height: background.height
 
     H.Background {id: background}
-    Row {
-        id: row
+    Column {
+        id: column
+        width: parent.width
 
-        padding: 40
-        spacing: 20
+        Row {
+            id: row
 
-        H.Image {id: image}
-        Column {
-            spacing: row.spacing
+            padding: 40
+            spacing: 20
 
-            H.Title {}
+            H.Image {id: image}
             Column {
-                H.Author {}
-                H.Status {}
+                spacing: row.spacing
+
+                H.Title {}
+                Column {
+                    H.Author {}
+                    H.Status {}
+                }
+                H.Genres {}
+                H.Description {}
             }
-            H.Genres {}
-            H.Description {}
         }
+        H.TotalChapters {}
     }
 }
