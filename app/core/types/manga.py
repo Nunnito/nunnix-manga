@@ -6,12 +6,12 @@ from .generic import SearchResult, ContentData
 
 class Chapter(QObject):
     """ Chapter type to be used in Manga class """
-    def __init__(self, scraper, name: str, date: list[str, str, str],
+    def __init__(self, scraper, title: str, date: list[str, str, str],
                  link: str, scanlation: str, parent) -> None:
         super(Chapter, self).__init__(parent)
 
         self._scraper = scraper
-        self._name = name
+        self._title = title
         self._date = date
         self._link = link
         self._scanlation = scanlation
@@ -22,8 +22,8 @@ class Chapter(QObject):
         return self._scraper.NAME
 
     @pyqtProperty(str, constant=True)
-    def name(self) -> str:
-        return self._name
+    def title(self) -> str:
+        return self._title
 
     @pyqtProperty(list, constant=True)
     def date(self) -> list:
@@ -102,7 +102,7 @@ class MangaSearch(SearchResult):
             chapters.append(
                 Chapter(
                     self._scraper,
-                    chapter["name"],
+                    chapter["title"],
                     chapter["date"],
                     chapter["link"],
                     chapter["scanlation"],

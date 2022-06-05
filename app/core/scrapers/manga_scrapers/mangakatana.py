@@ -88,7 +88,7 @@ class Mangakatana:
                 "total": 100,
                 "chapters": [
                     {
-                        "name": "Ch.1 - Chapter 1",
+                        "title": "Ch.1 - Chapter 1",
                         "date": "2020-01-01",
                         "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
                         "scanlation": "Band of the Hawks"
@@ -138,10 +138,10 @@ class Mangakatana:
         # Here, we get all the chapters attributes
         for chapter in chapters_data[::-1]:
 
-            name = chapter.find("div", {"class": "chapter"}).find("a")
-            name = name.text.strip()
+            c_title = chapter.find("div", {"class": "chapter"}).find("a")
+            c_title = c_title.text.strip()
 
-            # Replace the month name with the corresponding number
+            # Replace the month title with the corresponding number
             date = chapter.find("div", {"class": "update_time"}).text.strip()
             date = [date.replace(m, self.MONTHS[m]) for m in self.MONTHS
                     if m in date][0]
@@ -152,13 +152,14 @@ class Mangakatana:
             link = link.get("href")
             scanlation = None
             chapters.append({
-                "name": name,
+                "title": c_title,
                 "date": date.split("-"),
                 "link": link,
                 "scanlation": None
             })
 
-            logger.debug(f"Name: {name}|Date:{date}|Scanlation: {scanlation}")
+            logger.debug(f"Title: {c_title} | Date: {date} | " +
+                         f"Scanlation: {scanlation}")
 
         # Create dictionary with all the manga data.
         chapters_data = {"total": total_chapters, "chapters": chapters}

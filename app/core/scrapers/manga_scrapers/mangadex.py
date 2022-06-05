@@ -148,7 +148,7 @@ class Mangadex:
                 "total": 100,
                 "chapters": [
                     {
-                        "name": "Ch.1 - Chapter 1",
+                        "title": "Ch.1 - Chapter 1",
                         "date": "2020-01-01",
                         "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
                         "scanlation": "Band of the Hawks"
@@ -253,7 +253,7 @@ class Mangadex:
             attrs = result["attributes"]
             relation = result["relationships"]
 
-            name = f"Ch.{attrs['chapter']} - {attrs['title']}"
+            title = f"Ch.{attrs['chapter']} - {attrs['title']}"
             date = re.match(date_pattern, attrs["publishAt"]).group()
             date = time.strptime(date, "%Y-%m-%d")
             date = time.strftime("%d/%m/%Y", date)
@@ -278,14 +278,14 @@ class Mangadex:
 
             if attrs["pages"] > 0:
                 chapters.append({
-                    "name": name,
+                    "title": title,
                     "date": date.split("/"),
                     "link": chapter_id,
                     "scanlation": scanlation
                 })
 
-                logger.debug(f"Name: {name}|Date: {date}|" +
-                             "Scanlation: {scanlation}")
+                logger.debug(f"Title: {title}|Date: {date}|" +
+                             f"Scanlation: {scanlation}")
 
         data = {"total": total, "chapters": chapters}
 
