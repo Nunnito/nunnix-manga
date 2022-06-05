@@ -253,7 +253,10 @@ class Mangadex:
             attrs = result["attributes"]
             relation = result["relationships"]
 
-            title = f"Ch.{attrs['chapter']} - {attrs['title']}"
+            title = f"Ch.{attrs['chapter']}"
+            if attrs['title'] != "":
+                title += f" - {attrs['title']}"
+
             date = re.match(date_pattern, attrs["publishAt"]).group()
             date = time.strptime(date, "%Y-%m-%d")
             date = time.strftime("%d/%m/%Y", date)
