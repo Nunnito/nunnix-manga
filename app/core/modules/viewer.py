@@ -1,7 +1,7 @@
 from ..types import Manga
 
 
-class DataExplorer(Manga):
+class Viewer(Manga):
     def __init__(self, data: Manga):
         keys = locals()["data"].__dict__
         data_dict = {

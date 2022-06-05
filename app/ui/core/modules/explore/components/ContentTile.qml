@@ -76,8 +76,8 @@ C.Button {
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
 
     onClicked: {
-        // Push DataExplorer to the stack
-        stackView.push("../../data_explorer/DataExplorer.qml")
+        // Push Viewer to the stack
+        stackView.push("../../viewer/Viewer.qml")
         // Call getData() function
         searchModel.getData[index]()
     }

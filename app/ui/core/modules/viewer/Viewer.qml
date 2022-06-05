@@ -5,10 +5,10 @@ import "components"
 
 
 Item {
-    property string name: "data_explorer"
+    property string name: "viewer"
     property var _data
 
-    id: dataExplorer
+    id: viewer
 
     Column {
         width: parent.width
