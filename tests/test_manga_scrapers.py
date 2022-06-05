@@ -72,7 +72,7 @@ class TestContentData:
                 - Chapters:
                     - List of dicts with the following values to be tested,
                       can be empty:
-                        - Name:
+                        - Title:
                             - Value expected: String with length greater than 0
                         - Date:
                             - Value expected: List with the following indexes:
@@ -119,12 +119,12 @@ class TestContentData:
         assert chapters_total > 0 and type(chapters_total) == int,\
             chapters_total
 
-    def test_chapters_name(self, name, content_data):
+    def test_chapters_title(self, name, content_data):
         chapters = content_data[name]["chapters_data"]["chapters"]
         for chapter in chapters:
-            chapter_name = chapter["name"]
-            assert len(chapter_name) > 0 and type(chapter_name) == str,\
-                chapter_name
+            chapter_title = chapter["title"]
+            assert len(chapter_title) > 0 and type(chapter_title) == str,\
+                chapter_title
 
     def test_chapters_date(self, name, content_data):
         chapters = content_data[name]["chapters_data"]["chapters"]
