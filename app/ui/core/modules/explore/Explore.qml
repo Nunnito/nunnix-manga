@@ -91,4 +91,17 @@ SplitView {
         searchType = "empty"
         Explorer.search(searchType, explorer, currentPage)
     }
+
+    // Shortcut to reload
+    Shortcut {
+        autoRepeat: false
+        sequence: StandardKey.Refresh
+        enabled: visible
+
+        onActivated: {
+            explorer.searchModel.clear()  // Clear search results
+            explorer.currentPage = 1  // Reset page to 1
+            Explorer.search(searchType, explorer, currentPage)  // Do search
+        }
+    }
 }
