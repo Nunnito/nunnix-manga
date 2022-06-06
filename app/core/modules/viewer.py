@@ -1,10 +1,17 @@
+import json
+from hashlib import md5
+
 from ..types import Manga
+from ..utils import python_utils
+
+from aiohttp import ClientSession
+from qasync import asyncSlot
 
 
 class Viewer(Manga):
     def __init__(self, data: Manga):
         keys = locals()["data"].__dict__
-        data_dict = {
+        self.data_dict = {
             "scraper": keys["_scraper"],
             "title": keys["_title"],
             "author": keys["_author"],
@@ -17,4 +24,58 @@ class Viewer(Manga):
             "chapters_data": keys["_chapters_data"],
         }
 
-        super().__init__(**data_dict)
+        super().__init__(**self.data_dict)
+
+        self._session = self._parent._parent._session  # type: ClientSession
+
+    @asyncSlot()
+    async def save_to_cache(self):
+        path = (python_utils.Paths.get_cache_path()/f"{self.scraper}"
+                / f"{self.title}")
+        if not path.exists():
+            path.mkdir()
+        file = path/f"{self.title}.json"
+
+        # Convert attributes to dict
+        data = {
+            "scraper": self.scraper,
+            "title": self.title,
+            "author": self.author,
+            "description": self.description,
+            "cover": [self.cover, None],
+            "genres": self.genres,
+            "link": self.link,
+            "status": self.status,
+            "chapters_data": {}
+        }
+
+        # Convert chapters to dict
+        chapters = []
+        for chapter in self.chapters_data.chapters:
+            chapters.append({
+                "title": chapter.title,
+                "date": chapter.date,
+                "link": chapter.link,
+                "scanlation": chapter.scanlation
+            })
+
+        # Add chapters to data
+        data["chapters_data"] = {
+            "total": self.chapters_data.total,
+            "chapters": chapters
+        }
+
+        # Download cover and set it to the second index positions
+        thumbnail_ext = self.cover.split(".")[-1]  # Get the extension
+        # Create MD5 hash of the thumbnail url
+        thumbnail_name = f"{self.scraper}_{self.cover}".encode()
+        thumbnail_name = md5(thumbnail_name).hexdigest()
+        thumbnail_path = path/f"{thumbnail_name}.{thumbnail_ext}"
+        await python_utils.Thumbnails.download_thumbnail(self.cover,
+                                                         thumbnail_path,
+                                                         self._session)
+        data["cover"][1] = thumbnail_path.as_uri()
+
+        # Save data
+        with open(file, "w") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
