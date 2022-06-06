@@ -173,10 +173,16 @@ class Mangadex:
         title = attrs["title"][list(attrs["title"].keys())[0]]  # First title
 
         logger.debug("Getting manga description...")
-        description = attrs["description"][
-                self.LANG if self.LANG in attrs["description"]
-                else list(attrs["description"].keys())[0]  # First description
-            ]
+        # If the language is available
+        if self.LANG in attrs["description"]:
+            description = attrs["description"][self.LANG]
+        # If the language is not available, use the first available
+        elif isinstance(attrs["description"], dict):
+            first_lang = list(attrs["description"].keys())[0]
+            description = attrs["description"][first_lang]
+        # If there is no description, set the value to None
+        else:
+            description = None
 
         logger.debug("Getting manga cover...")
         cover = [i for i in relationships if i["type"] == "cover_art"][0]
@@ -253,8 +259,10 @@ class Mangadex:
             attrs = result["attributes"]
             relation = result["relationships"]
 
-            title = f"Ch.{attrs['chapter']}"
-            if attrs['title'] != "":
+            title = f"Vol.{attrs['volume']}"
+            if attrs["chapter"]:
+                title += f" Ch.{attrs['chapter']}"
+            if attrs["title"]:
                 title += f" - {attrs['title']}"
 
             date = re.match(date_pattern, attrs["publishAt"]).group()
