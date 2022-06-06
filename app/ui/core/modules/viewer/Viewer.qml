@@ -29,6 +29,7 @@ Item {
             interactive: false
 
             model: _data ? _data.chapters_data.chapters : []
+            delegate: Chapters {}
 
             ScrollBar.vertical: C.ScrollBar {}
             U.WheelArea {}
