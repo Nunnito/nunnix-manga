@@ -31,6 +31,11 @@ Column {
             rightInset: 0
             C.CursorShape {cursorShape: Qt.PointingHandCursor}
         }
+        header: C.Label {
+            width: 0
+            text: qsTr("No genres available")
+            visible: _data ? _data.genres.length == 0 : false
+        }
 
         ScrollBar.horizontal: C.ScrollBar {height: 10}
         U.WheelArea {horizontalScrolling: true}

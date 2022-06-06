@@ -30,7 +30,8 @@ Column {
             id: description
 
             width: _header.width - (image.width + (row.padding * 2) + scrollBar.width)
-            text: _data ? _data.description : ""
+            text: _data ? (_data.description ? _data.description :
+                           qsTr("No description available.")) : ""
             wrapMode: Label.WordWrap
             font.pixelSize: 14
         }
