@@ -240,8 +240,10 @@ class Mangadex:
             "offset": offset,
             "order[chapter]": "asc",
             "translatedLanguage[]": self.LANG,
-            "includes[]": ["scanlation_group", "user"]
-            }
+            "includes[]": ["scanlation_group", "user"],
+            "contentRating[]": ["safe", "suggestive", "erotica",
+                                "pornographic"]
+        }
 
         chapters = []
 
