@@ -261,9 +261,12 @@ class Mangadex:
             attrs = result["attributes"]
             relation = result["relationships"]
 
-            title = f"Vol.{attrs['volume']}"
+            title = ""
+            if attrs["volume"]:
+                title += f"Vol.{attrs['volume']}"
             if attrs["chapter"]:
                 title += f" Ch.{attrs['chapter']}"
+                title = title.strip()
             if attrs["title"]:
                 title += f" - {attrs['title']}"
 
