@@ -146,19 +146,19 @@ class Mangakatana:
             date = [date.replace(m, self.MONTHS[m]) for m in self.MONTHS
                     if m in date][0]
             date = time.strptime(date, "%m-%d-%Y")
-            date = time.strftime("%d-%m-%Y", date)
 
             link = chapter.find("div", {"class": "chapter"}).find("a")
             link = link.get("href")
             scanlation = None
             chapters.append({
                 "title": c_title,
-                "date": date.split("-"),
+                "date": date,
                 "link": link,
                 "scanlation": None
             })
 
-            logger.debug(f"Title: {c_title} | Date: {date} | " +
+            logger.debug(f"Title: {c_title} | " +
+                         f"Date: {time.strftime('%d/%m/%Y', date)} | " +
                          f"Scanlation: {scanlation}")
 
         # Create dictionary with all the manga data.

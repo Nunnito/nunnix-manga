@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from qasync import asyncSlot
 
@@ -6,7 +8,7 @@ from .generic import SearchResult, ContentData
 
 class Chapter(QObject):
     """ Chapter type to be used in Manga class """
-    def __init__(self, scraper, title: str, date: list[str, str, str],
+    def __init__(self, scraper, title: str, date: time.struct_time,
                  link: str, scanlation: str, parent) -> None:
         super(Chapter, self).__init__(parent)
 
@@ -25,9 +27,9 @@ class Chapter(QObject):
     def title(self) -> str:
         return self._title
 
-    @pyqtProperty(list, constant=True)
+    @pyqtProperty(str, constant=True)
     def date(self) -> list:
-        return self._date
+        return time.strftime('%d/%m/%Y', self._date)
 
     @pyqtProperty(str, constant=True)
     def link(self) -> str:

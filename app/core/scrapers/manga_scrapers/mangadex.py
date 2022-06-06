@@ -259,7 +259,6 @@ class Mangadex:
 
             date = re.match(date_pattern, attrs["publishAt"]).group()
             date = time.strptime(date, "%Y-%m-%d")
-            date = time.strftime("%d/%m/%Y", date)
 
             # Scanlation group
             scanlations = [i for i in relation if
@@ -282,12 +281,13 @@ class Mangadex:
             if attrs["pages"] > 0:
                 chapters.append({
                     "title": title,
-                    "date": date.split("/"),
+                    "date": date,
                     "link": chapter_id,
                     "scanlation": scanlation
                 })
 
-                logger.debug(f"Title: {title}|Date: {date}|" +
+                logger.debug(f"Title: {title} | " +
+                             f"Date: {time.strftime('%d/%m/%Y', date)} | " +
                              f"Scanlation: {scanlation}")
 
         data = {"total": total, "chapters": chapters}

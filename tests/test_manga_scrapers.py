@@ -2,6 +2,7 @@
 
 import os
 import re
+import time
 import asyncio
 
 from pathlib import Path
@@ -75,10 +76,7 @@ class TestContentData:
                         - Title:
                             - Value expected: String with length greater than 0
                         - Date:
-                            - Value expected: List with the following indexes:
-                                - 0: String, must be the day of the month
-                                - 1: String, must be the month of the year
-                                - 2: String, must be the year
+                            - Value expected: time.struct_time object
                         - Link:
                             - Value expected: String with length greater than 0
                         - Scanlation:
@@ -130,14 +128,10 @@ class TestContentData:
         chapters = content_data[name]["chapters_data"]["chapters"]
         for chapter in chapters:
             chapter_date = chapter["date"]
-            assert len(chapter_date) == 3 and type(chapter["date"]) == list,\
-                chapter["date"]
-            assert len(chapter_date[0]) > 0 and type(chapter_date[0]) == str,\
-                chapter_date[0]
-            assert len(chapter_date[1]) > 0 and type(chapter_date[1]) ==\
-                str, chapter_date[1]
-            assert len(chapter_date[2]) > 0 and type(chapter_date[2]) ==\
-                str, chapter_date[2]
+            assert isinstance(chapter_date, time.struct_time), chapter_date
+            assert chapter_date.tm_year > 0, chapter_date[0]
+            assert chapter_date.tm_mon > 0, chapter_date[1]
+            assert chapter_date.tm_mday > 0, chapter_date[2]
 
     def test_chapters_link(self, name, content_data):
         chapters = content_data[name]["chapters_data"]["chapters"]
