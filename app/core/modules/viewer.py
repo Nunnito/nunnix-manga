@@ -30,11 +30,15 @@ class Viewer(Manga):
 
     @asyncSlot()
     async def save_to_cache(self):
+        # Encode title and scraper to MD5
+        encode_title = md5(self.title.encode()).hexdigest()
+
+        # Create path
         path = (python_utils.Paths.get_cache_path()/f"{self.scraper}"
-                / f"{self.title}")
+                / f"{encode_title}")
         if not path.exists():
-            path.mkdir()
-        file = path/f"{self.title}.json"
+            path.mkdir(parents=True, exist_ok=True)
+        file = path/f"{encode_title}.json"  # Create file
 
         # Convert attributes to dict
         data = {

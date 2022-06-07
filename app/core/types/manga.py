@@ -1,5 +1,6 @@
 import time
 import json
+from hashlib import md5
 
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from qasync import asyncSlot
@@ -132,10 +133,13 @@ class MangaSearch(SearchResult):
             - from cache if exists
             - from scraper if not exists
         """
+        # Encode title and scraper to MD5
+        encode_title = md5(self.title.encode()).hexdigest()
+
         config_file = (python_utils.Paths.get_mangas_path()/self.scraper /
-                       self.title/f"{self.title}.json")
+                       encode_title/f"{encode_title}.json")
         cache_file = (python_utils.Paths.get_cache_path()/self.scraper /
-                      self.title/f"{self.title}.json")
+                      encode_title/f"{encode_title}.json")
 
         # If the manga is in the config folder, load it
         if config_file.exists():
