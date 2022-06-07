@@ -4,6 +4,7 @@ from hashlib import md5
 from ..types import Manga
 from ..utils import python_utils
 
+from PyQt5.QtCore import QObject, pyqtSlot
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
@@ -85,3 +86,18 @@ class Viewer(Manga):
         # Save data
         with open(file, "w") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
+
+
+# Class to create a new instance of the viewer
+class ViewerFactory(QObject):
+    @pyqtSlot(Manga, result=Viewer)
+    def from_manga(self, manga: Manga) -> Viewer:
+        """Cast Manga to Viewer
+
+        Args:
+            manga (Manga): Manga object
+
+        Returns:
+            Viewer: Viewer object
+        """
+        return Viewer(manga)

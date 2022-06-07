@@ -48,7 +48,7 @@ Item {
     Connections {
         target: SignalHandler
         function onContentData(contentData) {
-            _data = Cast.from_manga(contentData)
+            _data = Viewer.from_manga(contentData)
             _data.save_to_cache()  // Save to cache for later use
         }
     }

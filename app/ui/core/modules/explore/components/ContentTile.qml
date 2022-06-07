@@ -77,7 +77,7 @@ C.Button {
 
     onClicked: {
         // Push Viewer to the stack
-        stackView.push("../../viewer/Viewer.qml")
+        stackView.push("../../viewer/ViewerM.qml")
         // Call getData() function
         searchModel.getData[index]()
     }

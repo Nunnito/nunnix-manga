@@ -2,8 +2,6 @@ from pathlib import Path
 from PyQt5.QtCore import QObject, QVariant, pyqtSlot
 
 from . import python_utils
-from ..modules import Viewer
-from ..types import Manga
 
 
 class Icon(QObject):
@@ -42,21 +40,6 @@ class Theme(QObject):
         theme = dark_theme
 
         return theme
-
-
-class Cast(QObject):
-    """This class will be used in QML to cast an object to other type"""
-    @pyqtSlot(Manga, result=Viewer)
-    def from_manga(self, manga: Manga) -> Viewer:
-        """Cast Manga to Viewer
-
-        Args:
-            manga (Manga): Manga object
-
-        Returns:
-            Viewer: Viewer object
-        """
-        return Viewer(manga)
 
 
 def qobject_to_dict(qobject: QObject) -> dict:

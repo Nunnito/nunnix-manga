@@ -11,7 +11,7 @@ from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from qasync import QEventLoop
 
 import core.utils as utils
-from core.modules import Explorer
+from core.modules import Explorer, ViewerFactory
 
 # Set init variables
 application = QGuiApplication(sys.argv)
@@ -44,13 +44,13 @@ def main():
     icon_engine = utils.Icon()
     theme_engine = utils.Theme()
     signals_engine = utils.SignalHandler()
-    cast_engine = utils.Cast()
+    viewer_engine = ViewerFactory()
     scraper_engine = Explorer(session, signals_engine)
     context.setContextProperty("Icon", icon_engine)
     context.setContextProperty("Theme", theme_engine)
     context.setContextProperty("Explorer", scraper_engine)
     context.setContextProperty("SignalHandler", signals_engine)
-    context.setContextProperty("Cast", cast_engine)
+    context.setContextProperty("Viewer", viewer_engine)
 
     # Set application properties
     application.aboutToQuit.connect(before_close)
