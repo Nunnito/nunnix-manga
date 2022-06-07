@@ -46,7 +46,8 @@ class SearchResult(QObject):
 
 class ContentData(QObject):
     def __init__(self, scraper, title: str, author: str, description: str,
-                 cover: str, genres: list[str], link: str, parent) -> None:
+                 cover: list[str], genres: list[str], link: str,
+                 parent) -> None:
         super(ContentData, self).__init__(parent)
 
         self._scraper = scraper
@@ -76,7 +77,14 @@ class ContentData(QObject):
 
     @pyqtProperty(str, constant=True)
     def cover(self) -> str:
-        return self._cover
+        """
+        The first index represents the remote URL, the second index represents
+        the local URL
+        """
+        if self._cover[1] is not None:
+            return self._cover[1]
+        else:
+            return self._cover[0]
 
     @pyqtProperty(list, constant=True)
     def genres(self) -> list[str]:

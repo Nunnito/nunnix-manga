@@ -42,7 +42,7 @@ class Viewer(Manga):
             "title": self.title,
             "author": self.author,
             "description": self.description,
-            "cover": [self.cover, None],
+            "cover": [self._cover[0], None],
             "genres": self.genres,
             "link": self.link,
             "status": self.status,
@@ -66,14 +66,16 @@ class Viewer(Manga):
         }
 
         # Download cover and set it to the second index positions
-        thumbnail_ext = self.cover.split(".")[-1]  # Get the extension
+        thumbnail_ext = self._cover[0].split(".")[-1]  # Get the extension
         # Create MD5 hash of the thumbnail url
-        thumbnail_name = f"{self.scraper}_{self.cover}".encode()
+        thumbnail_name = f"{self.scraper}_{self._cover[0]}".encode()
         thumbnail_name = md5(thumbnail_name).hexdigest()
         thumbnail_path = path/f"{thumbnail_name}.{thumbnail_ext}"
-        await python_utils.Thumbnails.download_thumbnail(self.cover,
-                                                         thumbnail_path,
-                                                         self._session)
+
+        if not thumbnail_path.exists():
+            await python_utils.Thumbnails.download_thumbnail(self._cover[0],
+                                                             thumbnail_path,
+                                                             self._session)
         data["cover"][1] = thumbnail_path.as_uri()
 
         # Save data

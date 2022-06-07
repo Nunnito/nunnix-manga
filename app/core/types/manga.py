@@ -1,9 +1,11 @@
 import time
+import json
 
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from qasync import asyncSlot
 
 from .generic import SearchResult, ContentData
+from ..utils import python_utils
 
 
 class Chapter(QObject):
@@ -66,7 +68,7 @@ class ChaptersData(QObject):
 class Manga(ContentData):
     """ Manga type to get all manga data """
     def __init__(self, scraper, title: str, author: str, description: str,
-                 cover: str, genres: list[str], status: str, link: str,
+                 cover: list[str], genres: list[str], status: str, link: str,
                  chapters_data: ChaptersData, parent) -> None:
         super(Manga, self).__init__(scraper, title, author, description,
                                     cover, genres, link, parent)
@@ -91,7 +93,7 @@ class MangaSearch(SearchResult):
     @asyncSlot()
     async def get_data(self) -> None:
         """ Get manga data """
-        data = await self._scraper.get_content_data(self._link)
+        data = await self._create_data()
 
         title = data["title"]
         author = data["author"]
@@ -114,9 +116,44 @@ class MangaSearch(SearchResult):
         chapters_data = ChaptersData(data["chapters_data"]["total"], chapters,
                                      self)
 
+        if not isinstance(cover, list):
+            cover = [cover, None]
+
         manga = Manga(
             self._scraper,
             title, author, description, cover, genres, status, self._link,
             chapters_data, self
         )
         self._parent._signals_handler.contentData.emit(manga)
+
+    async def _create_data(self) -> dict:
+        """ Retrieve manga data from different sources:
+            - from config if exists
+            - from cache if exists
+            - from scraper if not exists
+        """
+        config_file = (python_utils.Paths.get_mangas_path()/self.scraper /
+                       self.title/f"{self.title}.json")
+        cache_file = (python_utils.Paths.get_cache_path()/self.scraper /
+                      self.title/f"{self.title}.json")
+
+        # If the manga is in the config folder, load it
+        if config_file.exists():
+            # Load from config
+            with open(config_file, "r") as f:
+                data = json.load(f)
+        # Else if the manga is in the cache folder, load it
+        elif cache_file.exists():
+            # Load from cache
+            with open(cache_file, "r") as f:
+                data = json.load(f)
+        # Else, get data from scraper
+        else:
+            data = await self._scraper.get_content_data(self._link)
+
+        if (config_file.exists() or cache_file.exists()):
+            # Update chapters date
+            for chapter in data["chapters_data"]["chapters"]:
+                chapter["date"] = time.strptime(chapter["date"], "%d/%m/%Y")
+
+        return data
