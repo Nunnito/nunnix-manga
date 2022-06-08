@@ -91,9 +91,5 @@ class ContentData(QObject):
         return self._genres
 
     @pyqtProperty(str, constant=True)
-    def status(self) -> str:
-        return self._status
-
-    @pyqtProperty(str, constant=True)
     def link(self) -> str:
         return self._link
