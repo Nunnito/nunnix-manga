@@ -12,13 +12,14 @@ from ..utils import python_utils
 class Chapter(QObject):
     """ Chapter type to be used in Manga class """
     def __init__(self, scraper, title: str, date: time.struct_time,
-                 link: str, scanlation: str, parent) -> None:
+                 link: str, web_link: str, scanlation: str, parent) -> None:
         super(Chapter, self).__init__(parent)
 
         self._scraper = scraper
         self._title = title
         self._date = date
         self._link = link
+        self._web_link = web_link
         self._scanlation = scanlation
         self._parent = parent
 
@@ -37,6 +38,10 @@ class Chapter(QObject):
     @pyqtProperty(str, constant=True)
     def link(self) -> str:
         return self._link
+
+    @pyqtProperty(str, constant=True)
+    def web_link(self) -> str:
+        return self._web_link
 
     @pyqtProperty(str, constant=True)
     def scanlation(self) -> str:
@@ -70,9 +75,9 @@ class Manga(ContentData):
     """ Manga type to get all manga data """
     def __init__(self, scraper, title: str, author: str, description: str,
                  cover: list[str], genres: list[str], status: str, link: str,
-                 chapters_data: ChaptersData, parent) -> None:
+                 web_link: str, chapters_data: ChaptersData, parent) -> None:
         super(Manga, self).__init__(scraper, title, author, description,
-                                    cover, genres, link, parent)
+                                    cover, genres, link, web_link, parent)
 
         self._status = status
         self._chapters_data = chapters_data
@@ -88,8 +93,10 @@ class Manga(ContentData):
 
 class MangaSearch(SearchResult):
     """ Manga search type """
-    def __init__(self, scraper, title: str, link: str, cover: str, parent):
-        super(MangaSearch, self).__init__(scraper, title, link, cover, parent)
+    def __init__(self, scraper, title: str, link: str, web_link: str,
+                 cover: str, parent):
+        super(MangaSearch, self).__init__(scraper, title, link, web_link,
+                                          cover, parent)
 
     @asyncSlot()
     async def get_data(self) -> None:
@@ -110,6 +117,7 @@ class MangaSearch(SearchResult):
                     chapter["title"],
                     chapter["date"],
                     chapter["link"],
+                    chapter["web_link"],
                     chapter["scanlation"],
                     self
                 )
@@ -123,7 +131,7 @@ class MangaSearch(SearchResult):
         manga = Manga(
             self._scraper,
             title, author, description, cover, genres, status, self._link,
-            chapters_data, self
+            self._web_link, chapters_data, self
         )
         self._parent._signals_handler.contentData.emit(manga)
 

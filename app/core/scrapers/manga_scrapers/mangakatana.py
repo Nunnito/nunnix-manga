@@ -84,13 +84,15 @@ class Mangakatana:
             "cover": "https://i3.mangakatana.com/token/3A32n%2Ag%3A9o%2Ab.jpg",
             "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
             "status": "completed" | "ongoing" | "hiatus" | "cancelled",
+            "web_link": "http://mangakatana.com/manga/solo-leveling",
             "chapters_data": {
                 "total": 100,
                 "chapters": [
                     {
                         "title": "Ch.1 - Chapter 1",
                         "date": "2020-01-01",
-                        "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
+                        "link": "http://mangakatana.com/manga/leveling/c1"
+                        "web_link: "http://mangakatana.com/manga/leveling/c1"
                         "scanlation": "Band of the Hawks"
                     }
                 ]
@@ -154,6 +156,7 @@ class Mangakatana:
                 "title": c_title,
                 "date": date,
                 "link": link,
+                "web_link": link,
                 "scanlation": None
             })
 
@@ -170,6 +173,7 @@ class Mangakatana:
             "cover": cover,
             "genres": genres,
             "status": status,
+            "web_link": url,
             "chapters_data": chapters_data
         }
 
@@ -323,6 +327,7 @@ class Mangakatana:
                 {
                     "title": title,
                     "link": link,
+                    "web_link": link,
                     "cover": cover
                 }
             )
@@ -340,6 +345,7 @@ class Mangakatana:
                     {
                         "title": title,
                         "link": link,
+                        "web_link": link,
                         "cover": cover
                     }
                 )

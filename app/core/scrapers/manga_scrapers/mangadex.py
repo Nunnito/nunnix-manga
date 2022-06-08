@@ -144,6 +144,7 @@ class Mangadex:
             "cover": "https://uploads.mangadex.org/covers/UID/UID.jpg.512.jpg",
             "genres: ["Ecchi", "BL", "Zombies", "Yuri"],
             "status": "completed" | "ongoing" | "hiatus" | "cancelled",
+            "web_link": "https://mangadex.org/title/a96676e58ae2425eb5497f15dd"
             "chapters_data": {
                 "total": 100,
                 "chapters": [
@@ -151,6 +152,7 @@ class Mangadex:
                         "title": "Ch.1 - Chapter 1",
                         "date": "2020-01-01",
                         "link": "6310f6a1-17ee-4890-b837-2ec1b372905b",
+                        "web_link": "https://mangadex.org/chapter/6310f6a1/"
                         "scanlation": "Band of the Hawks"
                     }
                 ]
@@ -210,6 +212,7 @@ class Mangadex:
             "cover": cover,
             "genres": genres,
             "status": status,
+            "web_link": f"https://mangadex.org/title/{uuid}",
             "chapters_data": chapters_data
         }
 
@@ -296,6 +299,7 @@ class Mangadex:
                     "title": title,
                     "date": date,
                     "link": chapter_id,
+                    "web_link": f"https://mangadex.org/chapter/{chapter_id}",
                     "scanlation": scanlation
                 })
 
@@ -623,6 +627,7 @@ class Mangadex:
             data.append({
                 "title": title,
                 "link": link,
+                "web_link": f"https://mangadex.org/title/{link}",
                 "cover": cover
             })
 

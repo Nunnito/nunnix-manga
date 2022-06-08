@@ -20,6 +20,7 @@ class Viewer(Manga):
             "cover": keys["_cover"],
             "genres": keys["_genres"],
             "link": keys["_link"],
+            "web_link": keys["_web_link"],
             "parent": keys["_parent"],
             "status": keys["_status"],
             "chapters_data": keys["_chapters_data"],
@@ -50,6 +51,7 @@ class Viewer(Manga):
             "cover": [self._cover[0], None],
             "genres": self.genres,
             "link": self.link,
+            "web_link": self.web_link,
             "status": self.status,
             "chapters_data": {}
         }
@@ -61,6 +63,7 @@ class Viewer(Manga):
                 "title": chapter.title,
                 "date": chapter.date,
                 "link": chapter.link,
+                "web_link": chapter.web_link,
                 "scanlation": chapter.scanlation
             })
 

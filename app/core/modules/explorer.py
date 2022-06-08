@@ -135,13 +135,14 @@ class Explorer(SignalHandler, QObject):
             for result in data:
                 title = result["title"]
                 link = result["link"]
+                web_link = result["web_link"]
                 cover = await utils.Thumbnails.get_thumbnail(result["cover"],
                                                              self.scraper,
                                                              self._session)
 
                 if self._scraper.TYPE == "manga":
                     results.append(MangaSearch(self._scraper, title, link,
-                                               cover, self))
+                                               web_link, cover, self))
 
             self._signals_handler.searchResult.emit(results)
 
