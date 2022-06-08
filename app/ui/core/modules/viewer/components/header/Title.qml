@@ -22,10 +22,12 @@ Flickable {
         font.pixelSize: 24
         font.bold: true
 
-        C.ToolTip {visible: hovered; label: _data ? _data.title : ""}
+        C.ToolTip {visible: mouseArea.containsMouse; label: _data ? _data.title : ""}
 
         // MouseArea to start the scroll text animation
         MouseArea {
+            id: mouseArea
+
             anchors.fill: parent
             hoverEnabled: true
 
