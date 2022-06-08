@@ -1,7 +1,7 @@
 import json
 from hashlib import md5
 
-from ..types import Manga
+from ..types import Manga, Chapter, ChaptersData
 from ..utils import python_utils
 
 from PyQt5.QtCore import QObject, pyqtSlot
@@ -89,6 +89,43 @@ class Viewer(Manga):
         # Save data
         with open(file, "w") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
+
+    @asyncSlot()
+    async def reload(self) -> None:
+        """ Reload manga data """
+        data = await self._scraper.get_content_data(self._link)
+
+        title = data["title"]
+        author = data["author"]
+        description = data["description"]
+        cover = data["cover"]
+        genres = data["genres"]
+        status = data["status"]
+        chapters = []
+        for chapter in data["chapters_data"]["chapters"]:
+            chapters.append(
+                Chapter(
+                    self._scraper,
+                    chapter["title"],
+                    chapter["date"],
+                    chapter["link"],
+                    chapter["web_link"],
+                    chapter["scanlation"],
+                    self._parent
+                )
+            )
+        chapters_data = ChaptersData(data["chapters_data"]["total"], chapters,
+                                     self._parent)
+
+        if not isinstance(cover, list):
+            cover = [cover, None]
+
+        manga = Manga(
+            self._scraper,
+            title, author, description, cover, genres, status, self._link,
+            self._web_link, chapters_data, self._parent
+        )
+        self._parent._parent._signals_handler.contentData.emit(manga)
 
 
 # Class to create a new instance of the viewer
