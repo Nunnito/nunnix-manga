@@ -9,6 +9,7 @@ import "../../../utils" as U
 Item {
     property string name: "viewer"
     property var _data
+    property var _chapters
 
     id: viewer
 
@@ -28,7 +29,7 @@ Item {
             boundsMovement: Flickable.StopAtBounds
             interactive: false
 
-            model: _data ? _data.chapters_data.chapters : []
+            model: _chapters ? _chapters : []
             delegate: Chapters {}
 
             ScrollBar.vertical: C.ScrollBar {}
@@ -49,6 +50,7 @@ Item {
         target: SignalHandler
         function onContentData(contentData) {
             _data = Viewer.from_manga(contentData)
+            _chapters = _data.chapters_data.chapters
             _data.save_to_cache()  // Save to cache for later use
         }
     }
