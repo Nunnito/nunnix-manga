@@ -12,5 +12,9 @@ C.TopBar {
         spacing: 0
 
         BackButton {}
+        C.Spacer {orientation: "horizontal"}
+        BookmarkButton {}
+        DownloadButton {}
+        MenuButton {}
     }
 }
