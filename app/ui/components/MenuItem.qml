@@ -104,7 +104,7 @@ T.MenuItem {
     background: Rectangle {
         implicitWidth: 200
         implicitHeight: control.Material.menuItemHeight
-        color: control.highlighted ? colorBg : "transparent"
+        color: control.highlighted ? colorBg : colorBg
 
         Ripple {
             width: parent.width
