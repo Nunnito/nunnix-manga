@@ -13,6 +13,8 @@ C.Button {
     // Cover image
     Image {
         id: resultCover
+        
+        asynchronous: true
         anchors.fill: parent
         mipmap: true
         source: cover  // Cover from ListModel

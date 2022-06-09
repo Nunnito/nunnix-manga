@@ -13,6 +13,7 @@ Item {
         width: parent.width
         height: parent.height
 
+        asynchronous: true
         source: _data ? _data.cover : ""
         fillMode: Image.PreserveAspectCrop
         opacity: 0
