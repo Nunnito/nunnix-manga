@@ -2,35 +2,41 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 // Manga image
-Image {
-    id: image
-
+Rectangle {
     width: 210
     height: 315
 
-    source: _data ? _data.cover : ""
-    fillMode: Image.PreserveAspectCrop
+    color: theme.controlBg
 
-    
-    Rectangle {
-        anchors.fill: parent
-        color: theme.controlBg
-        visible: image.status == 1 ? 0:1
-    }
+    Image {
+        id: image
 
-    BusyIndicator {
-        anchors.centerIn: parent
-        running: image.status == 1 ? 0:1
-    }
+        width: parent.width
+        height: parent.height
 
-    OpacityAnimator {id: opacityAnim; target: image; from: 0; to: 1; duration: 500}
+        source: _data ? _data.cover : ""
+        fillMode: Image.PreserveAspectCrop
 
-    onStatusChanged: {
-        if (status == 1) {
-            opacityAnim.start()
-        } else if (status == 3) {  // Retry if loading failed
-            source = ""
-            source = _data.cover
+        
+        BusyIndicator {
+            anchors.centerIn: parent
+            running: image.status == 1 ? 0:1
+        }
+
+        OpacityAnimator {
+            id: opacityAnim
+            target: image
+            from: 0; to: 1
+            duration: 500
+            easing.type: Easing.InQuart
+            running: image.status == 1 ? 1:0
+        }
+
+        onStatusChanged: {
+            if (status == 3) {  // Retry if loading failed
+                source = ""
+                source = _data.cover
+            }
         }
     }
 }

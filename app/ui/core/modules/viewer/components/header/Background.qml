@@ -15,45 +15,66 @@ Item {
 
         source: _data ? _data.cover : ""
         fillMode: Image.PreserveAspectCrop
-        
-        Rectangle {
-            anchors.fill: parent
-
-            // Add a gradient to the image background
-            gradient: Gradient {
-                GradientStop { position: 0.6; color: "#CC000000"}
-                GradientStop { position: 0.9; color: theme.windowBg}
-                GradientStop { position: 1.0; color: theme.windowBg}
-            }
-        }
-
-        // If there is no image
-        Rectangle {
-            anchors.fill: parent
-            visible: background.status == 1 ? 0:1
-
-            gradient: Gradient {
-                GradientStop { position: 0.6; color: theme.topBarBg}
-                GradientStop { position: 0.9; color: theme.windowBg}
-                GradientStop { position: 1.0; color: theme.windowBg}
-            }
-        }
+        opacity: 0
 
         onStatusChanged: {
-            if (status == 1) {
-                opacityAnim.start()
-            } else if (status == 3) {  // Retry if loading failed
+            if (status == 3) {  // Retry if loading failed
                 source = ""
                 source = _data.cover
             }
         }
     }
 
+    Rectangle {
+        id: gradient
+        anchors.fill: background
+        z: 1
+
+        // Add a gradient to the image background
+        gradient: Gradient {
+            GradientStop {id: ano; position: 0.6; color: theme.topBarBg}
+            GradientStop { position: 0.9; color: theme.windowBg}
+            GradientStop { position: 1.0; color: theme.windowBg}
+        }
+    }
+
+    // If there is no image
+    Rectangle {
+        anchors.fill: background
+        visible: background.status == 1 ? 0:1
+        z: 1
+
+        gradient: Gradient {
+            GradientStop { position: 0.6; color: theme.topBarBg}
+            GradientStop { position: 0.9; color: theme.windowBg}
+            GradientStop { position: 1.0; color: theme.windowBg}
+        }
+    }
+
     FastBlur {
+        id: blur
+
         width: background.width
         height: background.height
         source: background
         radius: 32
     }
-    OpacityAnimator {id: opacityAnim; target: background; from: 0; to: 1; duration: 500}
+
+    OpacityAnimator {
+        target: blur
+        from: 0; to: 1
+        duration: 500
+        easing.type: Easing.InQuart
+        running: background.status == 1 ? 1:0
+    }
+
+    PropertyAnimation {
+        target: ano
+        properties: "color"
+        from: theme.topBarBg
+        to: "#CC000000"
+        duration: 500
+        easing.type: Easing.InQuart
+        running: background.status == 1 ? 1 : 0
+    }
 }

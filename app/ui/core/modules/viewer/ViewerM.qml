@@ -51,7 +51,7 @@ Item {
         function onContentData(contentData) {
             _data = Viewer.from_manga(contentData)
             _chapters = _data.chapters_data.chapters
-            // _data.save(true)  // Save to cache for later use
+            _data.save(true)  // Save to cache for later use
         }
     }
 

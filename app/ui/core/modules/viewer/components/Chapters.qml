@@ -5,6 +5,8 @@ import "../../../../components" as C
 
 
 C.ItemDelegate {
+    id: chapterDelegate
+
     width: listView.width
     height: 64
 
@@ -34,5 +36,13 @@ C.ItemDelegate {
             text: modelData.date + (modelData.scanlation ?
                             " • " + modelData.scanlation : "")
         }
+    }
+
+    OpacityAnimator {
+        target: chapterDelegate
+        from: 0; to: 1
+        duration: 500
+        easing.type: Easing.InQuart
+        running: _data ? true : false
     }
 }

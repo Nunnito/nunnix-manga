@@ -26,16 +26,26 @@ Item {
             Column {
                 spacing: row.spacing
 
-                H.Title {}
+                H.Title {id: title}
                 Column {
                     spacing: _data ? 0 : 6
-                    H.Author {}
-                    H.Status {}
+                    H.Author {id: author}
+                    H.Status {id: status}
                 }
-                H.Genres {}
-                H.Description {}
+                H.Genres {id: genres}
+                H.Description {id: description}
             }
         }
-        H.TotalChapters {}
+        H.TotalChapters {id: totalChapters}
+    }
+
+    // Opacity animation
+    PropertyAnimation {
+        targets: [title, author, status, genres, description, totalChapters]
+        properties: "opacity"
+        from: 0; to: 1
+        duration: 500
+        running: _data ? true : false
+        easing.type: Easing.InQuart
     }
 }
