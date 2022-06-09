@@ -1,15 +1,18 @@
 import json
 from hashlib import md5
+import shutil
 
 from ..types import Manga, Chapter, ChaptersData
 from ..utils import python_utils
 
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 from aiohttp import ClientSession
 from qasync import asyncSlot
 
 
 class Viewer(Manga):
+    saved = pyqtSignal(bool)  # Emitted when the content is saved
+
     def __init__(self, data: Manga):
         keys = locals()["data"].__dict__
         self.data_dict = {
@@ -94,6 +97,32 @@ class Viewer(Manga):
         # Save data
         with open(file, "w") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
+
+        if not to_cache:
+            self.saved.emit(True)
+
+    @pyqtProperty(bool, notify=saved)
+    def is_saved(self) -> bool:
+        # Encode title and scraper to MD5
+        encode_title = md5(self.title.encode()).hexdigest()
+        config_file = (python_utils.Paths.get_mangas_path()/self.scraper /
+                       encode_title/f"{encode_title}.json")
+
+        return config_file.exists()
+
+    @asyncSlot()
+    async def remove(self) -> None:
+        # Encode title and scraper to MD5
+        encode_title = md5(self.title.encode()).hexdigest()
+
+        # Create path
+        path = (python_utils.Paths.get_mangas_path()/self.scraper
+                / f"{encode_title}")
+
+        # Remove path
+        shutil.rmtree(path)
+
+        self.saved.emit(False)
 
     @asyncSlot()
     async def reload(self) -> None:

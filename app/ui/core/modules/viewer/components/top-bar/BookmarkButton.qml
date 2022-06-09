@@ -5,8 +5,16 @@ import "../../../../../components" as C
 
 C.RoundButton {
     flat: true
-    icon.source: Icon.get_icon("bookmark_outlined.svg")
+    icon.source: {
+        if (_data && _data.is_saved) {
+            Icon.get_icon("bookmark_filled.svg")
+        } else {
+            Icon.get_icon("bookmark_outlined.svg")
+        }
+    }
 
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
     C.ToolTip {label: qsTr("Save to library"); visible: hovered}
+
+    onClicked: _data.is_saved ? _data.remove() : _data.save(false)
 }
