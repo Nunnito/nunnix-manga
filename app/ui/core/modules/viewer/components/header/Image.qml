@@ -15,6 +15,8 @@ Rectangle {
         height: parent.height
 
         asynchronous: true
+        mipmap: true
+
         source: _data ? _data.cover : ""
         fillMode: Image.PreserveAspectCrop
 
