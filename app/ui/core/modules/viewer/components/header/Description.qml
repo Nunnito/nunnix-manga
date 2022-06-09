@@ -12,6 +12,7 @@ Column {
         text: qsTr("Description")
         font.bold: true
         font.pixelSize: 14
+        visible: _data ? true : false
     }
 
     Flickable {
@@ -25,6 +26,7 @@ Column {
 
         boundsMovement: Flickable.StopAtBounds
         interactive: false
+        visible: _data ? true : false
 
         C.Label {
             id: description
@@ -44,4 +46,7 @@ Column {
         }
         U.WheelArea {parent: flickable}
     }
+
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: flickable.height + description.height; width: description.width}
 }

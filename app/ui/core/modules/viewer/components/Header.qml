@@ -28,6 +28,7 @@ Item {
 
                 H.Title {}
                 Column {
+                    spacing: _data ? 0 : 6
                     H.Author {}
                     H.Status {}
                 }

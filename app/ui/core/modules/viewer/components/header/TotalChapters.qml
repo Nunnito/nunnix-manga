@@ -6,14 +6,22 @@ import "../../../../../components" as C
 import "../../../../../utils" as U
 
 
-C.Label {
-    property string one_chapter: qsTr("chapter")
-    property string many_chapters: qsTr("chapters")
-    property int total: listView.count
+Column {
+    C.Label {
+        property string one_chapter: qsTr("chapter")
+        property string many_chapters: qsTr("chapters")
+        property int total: listView.count
 
-    leftPadding: 40
-    text: total + " " + (total == 1 ? one_chapter : many_chapters) 
+        id: label
 
-    font.pixelSize: 20
-    font.bold: true
+        leftPadding: 40
+        text: total + " " + (total == 1 ? one_chapter : many_chapters) 
+
+        font.pixelSize: 20
+        font.bold: true
+        visible: _data ? true : false
+
+    }
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: label.height; width: 125; x: label.leftPadding}
 }

@@ -9,9 +9,14 @@ Row {
         text: qsTr("Author: ")
         font.bold: true
         font.pixelSize: 14
+        visible: _data ? true : false
     }
     C.Label {
+        id: author
         text: _data ? _data.author : ""
         font.pixelSize: 14
     }
+
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: author.height; width: 150}
 }

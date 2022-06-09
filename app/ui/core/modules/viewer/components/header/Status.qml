@@ -9,9 +9,14 @@ Row {
         text: qsTr("Status: ")
         font.bold: true
         font.pixelSize: 14
+        visible: _data ? true : false
     }
     C.Label {
+        id: status
         text: _data ? _data.status : ""
         font.pixelSize: 14
     }
+
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: status.height; width: 100}
 }

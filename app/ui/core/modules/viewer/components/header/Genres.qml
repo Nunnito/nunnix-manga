@@ -8,17 +8,23 @@ import "../../../../../utils" as U
 
 Column {
     C.Label {
+        id: label
+
         text: qsTr("Genres")
         font.bold: true
         font.pixelSize: 14
+        visible: _data ? true : false
     }
 
     ListView {
+        id: genres
+
         width: _header.width - (image.width + (row.padding * 2))
         height: 40
 
         clip: true
         spacing: 5
+        visible: _data ? true : false
 
         interactive: false
         boundsMovement: GridView.StopAtBounds
@@ -40,4 +46,7 @@ Column {
         ScrollBar.horizontal: C.ScrollBar {height: 10}
         U.WheelArea {horizontalScrolling: true}
     }
+
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: genres.height + label.height; width: genres.width}
 }

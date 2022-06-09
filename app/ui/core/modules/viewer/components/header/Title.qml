@@ -21,6 +21,7 @@ Flickable {
         text: _data ? _data.title : ""
         font.pixelSize: 24
         font.bold: true
+        visible: _data ? true : false
 
         C.ToolTip {visible: mouseArea.containsMouse; label: _data ? _data.title : ""}
 
@@ -43,6 +44,9 @@ Flickable {
             }
         }
     }
+
+    // Rectangle placeholder when no data is available
+    LoaderPlaceHolder {height: label.height; width: 250}
 
     PropertyAnimation {
         id: startAnimation
