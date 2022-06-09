@@ -1,6 +1,7 @@
 import json
-from hashlib import md5
 import shutil
+from hashlib import md5
+from pathlib import Path
 
 from ..types import Manga, Chapter, ChaptersData
 from ..utils import python_utils
@@ -88,11 +89,7 @@ class Viewer(Manga):
         thumbnail_name = md5(thumbnail_name).hexdigest()
         thumbnail_path = path/f"{thumbnail_name}.{thumbnail_ext}"
 
-        if not thumbnail_path.exists():
-            await python_utils.Thumbnails.download_thumbnail(self._cover[0],
-                                                             thumbnail_path,
-                                                             self._session)
-        data["cover"][1] = thumbnail_path.as_uri()
+        data["cover"][1] = None  # Set cover to None, will be set later
 
         # Save data
         with open(file, "w") as f:
@@ -100,6 +97,14 @@ class Viewer(Manga):
 
         if not to_cache:
             self.saved.emit(True)
+
+        # Download cover and set it to the second index positions
+        data["cover"][1] = await self.save_image(self._cover[0],
+                                                 thumbnail_path)
+
+        # Save data with new cover
+        with open(file, "w") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
 
     @pyqtProperty(bool, notify=saved)
     def is_saved(self) -> bool:
@@ -160,6 +165,16 @@ class Viewer(Manga):
             self._web_link, chapters_data, self._parent
         )
         self._parent._parent._signals_handler.contentData.emit(manga)
+
+    async def save_image(self, image_url: str, path: Path) -> str | None:
+        """ Save image to path """
+        try:
+            if not path.exists():
+                await python_utils.Thumbnails.download_thumbnail(
+                    image_url, path, self._session)
+            return path.as_uri()
+        except Exception:
+            return None
 
 
 # Class to create a new instance of the viewer
