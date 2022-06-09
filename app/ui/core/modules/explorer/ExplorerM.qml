@@ -95,7 +95,7 @@ SplitView {
     // Shortcut to reload
     Shortcut {
         autoRepeat: false
-        sequence: StandardKey.Refresh
+        sequence: "F5"
         enabled: visible
 
         onActivated: {

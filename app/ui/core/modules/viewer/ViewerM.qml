@@ -39,7 +39,7 @@ Item {
     }
 
     Shortcut {
-        sequence: StandardKey.Cancel
+        sequence: "Escape"
         onActivated: {
             stackView.pop()
             sideBar.visible = true

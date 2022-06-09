@@ -19,8 +19,8 @@ C.RoundButton {
             action: Action {
                 id: reloadAction
                 text: qsTr("Reload")
-                shortcut: StandardKey.Refresh
-                onTriggered: _data.reload()
+                shortcut: "F5"
+                onTriggered: _data.reload(), _data = null, _chapters = null
             }
         }
 
