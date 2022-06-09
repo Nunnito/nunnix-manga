@@ -14,6 +14,7 @@ Rectangle {
         width: parent.width
         height: parent.height
 
+        opacity: _data ? 0 : 0
         asynchronous: true
         mipmap: true
 
