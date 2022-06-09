@@ -47,5 +47,7 @@ Item {
         duration: 500
         running: _data ? true : false
         easing.type: Easing.InQuart
+
+        onFinished: completedAnims = true
     }
 }

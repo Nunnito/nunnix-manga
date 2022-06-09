@@ -8,6 +8,7 @@ import "../../../utils" as U
 
 Item {
     property string name: "viewer"
+    property bool completedAnims: false
     property var _data
     property var _chapters
 
@@ -49,6 +50,7 @@ Item {
     Connections {
         target: SignalHandler
         function onContentData(contentData) {
+            completedAnims = false
             _data = Viewer.from_manga(contentData)
             _chapters = _data.chapters_data.chapters
             _data.save(true)  // Save to cache for later use

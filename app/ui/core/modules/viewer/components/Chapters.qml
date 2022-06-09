@@ -43,6 +43,6 @@ C.ItemDelegate {
         from: 0; to: 1
         duration: 500
         easing.type: Easing.InQuart
-        running: _data ? true : false
+        running: _data && !completedAnims ? true : false
     }
 }
