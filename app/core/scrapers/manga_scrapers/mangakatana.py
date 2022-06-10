@@ -283,9 +283,9 @@ class Mangakatana:
         data = []
 
         # If title is not none, search only the title.
-        if title != "":
+        if title != "" and title is not None:
             url = f"{self.BASE_URL}/page/{page}?search={title}"
-        elif author != "":
+        elif author != "" and author is not None:
             url = f"{self.BASE_URL}/page/{page}?search={author}"
             url += "&search_by=author"
         else:
@@ -302,11 +302,13 @@ class Mangakatana:
             "exclude": "_".join(exclude_genres)
         }
         payload = {k: v for k, v in payload.items() if v is not None}
+        if not ((title == "" or title is None) and
+                (author == "" or author is None)):
+            payload = None
 
         # Prepare requests
         logger.debug("Requesting search...")
-        async with self.session.get(url, params=payload
-                                    if title == "" and author == "" else None,
+        async with self.session.get(url, params=payload,
                                     headers=self.HEADERS) as response:
             logger.debug(f"Requested search at {response.url}")
 
