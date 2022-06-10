@@ -7,14 +7,16 @@ import "top-bar"
 
 
 C.TopBar {
-    RowLayout {
-        width: parent.width
-        spacing: 0
+    property alias tbStackView: tbStackView
 
-        BackButton {}
-        C.Spacer {orientation: "horizontal"}
-        BookmarkButton {}
-        DownloadButton {}
-        MenuButton {}
+    id: topBar
+
+    StackView {
+        id: tbStackView
+
+        width: parent.width
+        height: parent.height
+
+        initialItem: Menu {}
     }
 }

@@ -1,8 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-import "../../../../../components" as C
-import "../../../../../utils/utils.js" as Utils
+import "../../../../../../components" as C
+import "../../../../../../utils/utils.js" as Utils
 
 C.RoundButton {
     flat: true
