@@ -2,17 +2,19 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../../../../components" as C
+import "top-bar"
 
 
 C.ItemDelegate {
+    property bool selected
     id: chapterDelegate
 
     width: listView.width
     height: 64
 
     rightPadding: 40
+    highlighted: selected
 
-    C.CursorShape {cursorShape: Qt.PointingHandCursor}
 
     // Custom content
     contentItem: Item {
@@ -44,5 +46,22 @@ C.ItemDelegate {
         duration: 500
         easing.type: Easing.InQuart
         running: _data && !completedAnims ? true : false
+    }
+
+    // MouseArea to select chapter with ctrl+click
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+
+        onPressed: {
+            if ((mouse.button == Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)) {
+                selected = !selected
+                if (!(topBar.tbStackView.currentItem.name == "selection")) {
+                    topBar.tbStackView.push("top-bar/Selection.qml")
+                }
+            } else {
+                mouse.accepted = false
+            }
+        }
     }
 }
