@@ -47,7 +47,8 @@ T.Button {
     // Added properties
     property string colorBg: theme.controlBg
     property string colorFg: Material.foreground
-    property string colorBgOver: theme.controlBgOver
+    property string colorBgOver: highlighted && !flat ? theme.controlBgHighlight:
+                                                        theme.controlBgOver
     property string colorFgOver: theme.controlFgOver
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,

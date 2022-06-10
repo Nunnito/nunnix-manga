@@ -28,7 +28,6 @@ Pane {
 
             highlighted: true
             width: parent.width / 2 - spacing
-            colorBgOver: theme.advancedSearchSearchButtonBgOver
 
             text: qsTr("Search")
 

@@ -22,6 +22,8 @@ QtObject {
     property string controlFgClick: "#ededed"
     // Default control background dialog color
     property string controlBgDialog: "#282828"
+    // Default highlight control with mouse over (ripple color in #AARRGGBB)
+    property string controlBgHighlight: "#22111111"
 
 
     // Sidebar background
@@ -110,8 +112,6 @@ QtObject {
     property string advancedSearchSeparator: "#626262"
     // Advanced search scrollbar item background
     property string advancedSearchScrollbarItemBg: "#2a2a2a"
-    // Advanced search search button background over (ripple color in #AARRGGBB)
-    property string advancedSearchSearchButtonBgOver: "#22111111"
     // Advanced search search background 2
     property string advancedSearchSearchBg2: "#282828"
 
