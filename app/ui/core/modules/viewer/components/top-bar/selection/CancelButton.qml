@@ -9,5 +9,5 @@ BaseButton {
     text: qsTr("Cancel")
 
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
-    onClicked: tbStackView.pop()
+    onClicked: tbStackView.pop(), _data.chapters_data.unselect_all()
 }

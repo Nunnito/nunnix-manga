@@ -210,14 +210,14 @@ class ViewerChapter(Chapter):
 
     @selected.setter
     def selected(self, value: bool) -> None:
+        # Update selected length from parent
+        if value and not self._selected:
+            self._parent.selected_length += 1
+        elif not value and self._selected:
+            self._parent.selected_length -= 1
+
         self._selected = value
         self.selected_signal.emit()
-
-        # Update selected length from parent
-        if value:
-            self._parent.selected_length += 1
-        else:
-            self._parent.selected_length -= 1
 
     @pyqtProperty(bool, notify=readed_signal)
     def readed(self) -> str:
@@ -259,6 +259,11 @@ class ChaptersDataViewer(ChaptersData):
         # Set chapters parent
         for chapter in self._chapters:
             chapter._parent = self
+
+    @asyncSlot()
+    async def unselect_all(self) -> None:
+        for chapter in self._chapters:
+            chapter.selected = False
 
     @pyqtProperty(int, notify=selected_length_signal)
     def selected_length(self) -> int:
