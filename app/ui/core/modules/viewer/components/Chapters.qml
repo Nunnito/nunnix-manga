@@ -6,14 +6,13 @@ import "top-bar"
 
 
 C.ItemDelegate {
-    property bool selected
     id: chapterDelegate
 
     width: listView.width
     height: 64
 
     rightPadding: 40
-    highlighted: selected
+    highlighted: modelData.selected
 
 
     // Custom content
@@ -54,11 +53,10 @@ C.ItemDelegate {
         cursorShape: Qt.PointingHandCursor
 
         onPressed: {
-            if ((mouse.button == Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)) {
-                selected = !selected
-                if (!(topBar.tbStackView.currentItem.name == "selection")) {
-                    topBar.tbStackView.push("top-bar/Selection.qml")
-                }
+            if ((mouse.button == Qt.LeftButton) &&
+                    (mouse.modifiers & Qt.ControlModifier ||
+                        _data.chapters_data.selected_length > 0)) {
+                modelData.selected = !modelData.selected
             } else {
                 mouse.accepted = false
             }

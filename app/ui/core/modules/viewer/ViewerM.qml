@@ -41,8 +41,10 @@ Item {
     Shortcut {
         sequence: "Escape"
         onActivated: {
-            stackView.pop()
-            sideBar.visible = true
+            if (topBar.tbStackView.currentItem.name != "selection") {
+                stackView.pop()
+                sideBar.visible = true
+            }
         }
     }
 

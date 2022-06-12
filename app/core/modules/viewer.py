@@ -1,4 +1,5 @@
 import json
+import time
 import shutil
 from hashlib import md5
 from pathlib import Path
@@ -16,6 +17,15 @@ class Viewer(Manga):
 
     def __init__(self, data: Manga):
         keys = locals()["data"].__dict__
+
+        # Convert chapters type to ViewerChapter
+        chapters = []
+        for chapter in keys["_chapters_data"].chapters:
+            chapters.append(ViewerChapter(*chapter.__dict__.values()))
+        chapters_data = ChaptersDataViewer(keys["_chapters_data"]._total,
+                                           chapters,
+                                           keys["_chapters_data"].parent())
+
         self.data_dict = {
             "scraper": keys["_scraper"],
             "title": keys["_title"],
@@ -27,7 +37,7 @@ class Viewer(Manga):
             "web_link": keys["_web_link"],
             "parent": keys["_parent"],
             "status": keys["_status"],
-            "chapters_data": keys["_chapters_data"],
+            "chapters_data": chapters_data,
         }
 
         super().__init__(**self.data_dict)
@@ -175,6 +185,89 @@ class Viewer(Manga):
             return path.as_uri()
         except Exception:
             return None
+
+
+class ViewerChapter(Chapter):
+    selected_signal = pyqtSignal()
+    readed_signal = pyqtSignal()
+    bookmarked_signal = pyqtSignal()
+    downloaded_signal = pyqtSignal()
+
+    def __init__(self, scraper, title: str, date: time.struct_time, link: str,
+                 web_link: str, scanlation: str, parent):
+        super().__init__(scraper, title, date, link, web_link, scanlation,
+                         parent)
+
+        # New properties
+        self._selected = False
+        self._readed = False
+        self._bookmarked = False
+        self._downloaded = False
+
+    @pyqtProperty(bool, notify=selected_signal)
+    def selected(self) -> str:
+        return self._selected
+
+    @selected.setter
+    def selected(self, value: bool) -> None:
+        self._selected = value
+        self.selected_signal.emit()
+
+        # Update selected length from parent
+        if value:
+            self._parent.selected_length += 1
+        else:
+            self._parent.selected_length -= 1
+
+    @pyqtProperty(bool, notify=readed_signal)
+    def readed(self) -> str:
+        return self._readed
+
+    @readed.setter
+    def readed(self, value: bool) -> None:
+        self._readed = value
+        self.readed_signal.emit()
+
+    @pyqtProperty(bool, notify=bookmarked_signal)
+    def bookmarked(self) -> str:
+        return self._bookmarked
+
+    @bookmarked.setter
+    def bookmarked(self, value: bool) -> None:
+        self._bookmarked = value
+        self.bookmarked_signal.emit()
+
+    @pyqtProperty(bool, notify=downloaded_signal)
+    def downloaded(self) -> str:
+        return self._downloaded
+
+    @downloaded.setter
+    def downloaded(self, value: bool) -> None:
+        self._downloaded = value
+        self.downloaded_signal.emit()
+
+
+class ChaptersDataViewer(ChaptersData):
+    selected_length_signal = pyqtSignal(int, name="selectedLength")
+
+    def __init__(self, total: int, chapters: list[ViewerChapter], parent):
+        super().__init__(total, chapters, parent)
+
+        # New properties
+        self._selected_length = 0
+
+        # Set chapters parent
+        for chapter in self._chapters:
+            chapter._parent = self
+
+    @pyqtProperty(int, notify=selected_length_signal)
+    def selected_length(self) -> int:
+        return self._selected_length
+
+    @selected_length.setter
+    def selected_length(self, value: int) -> None:
+        self._selected_length = value
+        self.selected_length_signal.emit(value)
 
 
 # Class to create a new instance of the viewer

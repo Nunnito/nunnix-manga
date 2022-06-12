@@ -19,4 +19,16 @@ C.TopBar {
 
         initialItem: Menu {}
     }
+
+    Connections{
+        target: _data ? _data.chapters_data : null
+
+        function onSelectedLength(length) {
+            if (tbStackView.currentItem.name == "selection" && length == 0) {
+                topBar.tbStackView.pop()
+            } else if (tbStackView.currentItem.name == "menu" && length > 0) {
+                topBar.tbStackView.push("top-bar/Selection.qml")
+            }
+        }
+    }
 }
