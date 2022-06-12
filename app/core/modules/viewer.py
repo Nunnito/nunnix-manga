@@ -261,6 +261,11 @@ class ChaptersDataViewer(ChaptersData):
             chapter._parent = self
 
     @asyncSlot()
+    async def select_all(self) -> None:
+        for chapter in self._chapters:
+            chapter.selected = True
+
+    @asyncSlot()
     async def unselect_all(self) -> None:
         for chapter in self._chapters:
             chapter.selected = False

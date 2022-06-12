@@ -9,4 +9,5 @@ BaseButton {
     text: qsTr("Select all")
 
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
+    onClicked: _data.chapters_data.select_all()
 }
