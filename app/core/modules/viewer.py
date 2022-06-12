@@ -12,7 +12,7 @@ from qasync import asyncSlot
 
 
 class Viewer(Manga):
-    saved = pyqtSignal(bool)  # Emitted when the content is saved
+    saved = pyqtSignal()  # Emitted when the content is saved
 
     def __init__(self, data: Manga):
         keys = locals()["data"].__dict__
@@ -96,7 +96,7 @@ class Viewer(Manga):
             json.dump(data, f, indent=4, ensure_ascii=False)
 
         if not to_cache:
-            self.saved.emit(True)
+            self.saved.emit()
 
         # Download cover and set it to the second index positions
         data["cover"][1] = await self.save_image(self._cover[0],
@@ -127,7 +127,7 @@ class Viewer(Manga):
         # Remove path
         shutil.rmtree(path)
 
-        self.saved.emit(False)
+        self.saved.emit()
 
     @asyncSlot()
     async def reload(self) -> None:
