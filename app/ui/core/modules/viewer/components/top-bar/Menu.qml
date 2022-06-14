@@ -14,6 +14,6 @@ RowLayout {
     BackButton {}
     C.Spacer {orientation: "horizontal"}
     BookmarkButton {}
-    DownloadButton {}
+    DownloadButton {visible: false}
     MenuButton {}
 }

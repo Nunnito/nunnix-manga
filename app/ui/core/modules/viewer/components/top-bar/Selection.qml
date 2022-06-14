@@ -11,8 +11,8 @@ RowLayout {
     width: topBar.width
     spacing: 10
 
-    DownloadButton {Layout.leftMargin: 10}
-    BookmarkButton {}
+    DownloadButton {Layout.leftMargin: 10; visible: false}
+    BookmarkButton {Layout.leftMargin: 10}
     MarkAsReadButton {}
     C.Spacer {orientation: "horizontal"}
     SelectAllButton {}
