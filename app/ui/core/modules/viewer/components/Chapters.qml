@@ -51,8 +51,14 @@ C.ItemDelegate {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onPressed: {
+            // If right button is clicked, open context menu
+            if (mouse.button == Qt.RightButton) {
+                loader.active = true
+            }
+
             if ((mouse.button == Qt.LeftButton) &&
                     (mouse.modifiers & Qt.ControlModifier ||
                         _data.chapters_data.selected_length > 0)) {
@@ -61,5 +67,11 @@ C.ItemDelegate {
                 mouse.accepted = false
             }
         }
+    }
+
+    Loader {
+        id: loader
+        active: false
+        source: "ChaptersContextMenu.qml"
     }
 }
