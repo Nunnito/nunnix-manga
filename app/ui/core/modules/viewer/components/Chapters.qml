@@ -27,6 +27,8 @@ C.ItemDelegate {
 
             text: modelData.title
             font.pixelSize: 14
+            color: modelData.readed ? theme.textfieldDecorationInactive :
+                                      theme.windowFg
         }
         // Chapter date and scanlation
         C.Label {
@@ -36,6 +38,8 @@ C.ItemDelegate {
 
             text: modelData.date + (modelData.scanlation ?
                             " • " + modelData.scanlation : "")
+            color: modelData.readed ? theme.textfieldDecorationInactive :
+                                      theme.windowFg
         }
     }
 
