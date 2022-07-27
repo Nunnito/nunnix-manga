@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../../../../components" as C
+import "../../../../utils" as U
 import "top-bar"
 
 
@@ -19,16 +20,28 @@ C.ItemDelegate {
     contentItem: Item {
         width: parent.width
 
-        // Chapter title
-        C.Label {
-            anchors.top: parent.top
+        // Chapter title row, with bookmark icon
+        Row {
             leftPadding: 25
-            topPadding: 2
+            spacing: 5
 
-            text: modelData.title
-            font.pixelSize: 14
-            color: modelData.readed ? theme.textfieldDecorationInactive :
-                                      theme.windowFg
+            Image {
+                sourceSize.width: 24
+                sourceSize.height: 24
+
+                source: Icon.get_icon("bookmark_filled.svg")
+                visible: modelData.bookmarked
+                U.ChangeColor {color: theme.windowAccent}  // Accent color
+            }
+            C.Label {
+                anchors.top: parent.top
+                topPadding: 2
+
+                text: modelData.title
+                font.pixelSize: 14
+                color: modelData.readed ? theme.textfieldDecorationInactive :
+                    modelData.bookmarked ? theme.windowAccent : theme.windowFg
+            }
         }
         // Chapter date and scanlation
         C.Label {
@@ -39,7 +52,7 @@ C.ItemDelegate {
             text: modelData.date + (modelData.scanlation ?
                             " • " + modelData.scanlation : "")
             color: modelData.readed ? theme.textfieldDecorationInactive :
-                                      theme.windowFg
+                   modelData.bookmarked ? theme.windowAccent : theme.windowFg
         }
     }
 
