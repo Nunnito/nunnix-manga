@@ -270,6 +270,18 @@ class ChaptersDataViewer(ChaptersData):
         for chapter in self._chapters:
             chapter.selected = False
 
+    @asyncSlot()
+    async def mark_selected_as_readed(self) -> None:
+        for chapter in self._chapters:
+            if chapter.selected:
+                chapter.readed = True
+
+    @asyncSlot()
+    async def unmark_selected_as_readed(self) -> None:
+        for chapter in self._chapters:
+            if chapter.selected:
+                chapter.readed = False
+
     @pyqtProperty(int, notify=selected_length_signal)
     def selected_length(self) -> int:
         return self._selected_length
