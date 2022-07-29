@@ -44,6 +44,9 @@ Item {
             if (topBar.tbStackView.currentItem.name != "selection") {
                 stackView.pop()
                 sideBar.visible = true
+            } else {
+                topBar.tbStackView.pop()
+                _data.chapters_data.unselect_all()
             }
         }
     }
