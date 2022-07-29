@@ -41,6 +41,10 @@ Menu {
     C.MenuItem {
         id: previousAsRead
         text: qsTr("Mark previous as read")
+        onTriggered: {
+            _data.chapters_data.mark_previous_as_read(index)
+            _data.is_saved ? _data.save(false) : _data.save(true)
+        }
     }
 
 

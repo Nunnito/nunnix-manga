@@ -307,6 +307,11 @@ class ChaptersDataViewer(ChaptersData):
             if chapter.selected:
                 chapter.bookmarked = False
 
+    @asyncSlot(int)
+    async def mark_previous_as_read(self, index: int) -> None:
+        for chapter in self._chapters[:index]:
+            chapter.readed = True
+
     @pyqtProperty(int, notify=selected_length_signal)
     def selected_length(self) -> int:
         return self._selected_length
