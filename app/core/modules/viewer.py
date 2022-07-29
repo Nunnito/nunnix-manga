@@ -43,6 +43,7 @@ class Viewer(Manga):
         super().__init__(**self.data_dict)
 
         self._session = self._parent._parent._session  # type: ClientSession
+        self.chapters_data._parent = self  # Set chapters data parent to self
 
     @asyncSlot(bool)
     async def save(self, to_cache: bool = True):
@@ -83,7 +84,10 @@ class Viewer(Manga):
                 "date": chapter.date,
                 "link": chapter.link,
                 "web_link": chapter.web_link,
-                "scanlation": chapter.scanlation
+                "scanlation": chapter.scanlation,
+                "readed": chapter.readed,
+                "bookmarked": chapter.bookmarked,
+                "downloaded": chapter.downloaded
             })
 
         # Add chapters to data
@@ -255,10 +259,19 @@ class ChaptersDataViewer(ChaptersData):
 
         # New properties
         self._selected_length = 0
+        self._chapters_saved_data = self._parent._get_saved_data()
 
         # Set chapters parent
         for chapter in self._chapters:
             chapter._parent = self
+
+        # Set chapters data
+        if self._chapters_saved_data is not None:
+            saved_ch = self._chapters_saved_data["chapters_data"]["chapters"]
+            for i, chapter in enumerate(self._chapters):
+                chapter.readed = saved_ch[i]["readed"]
+                chapter.bookmarked = saved_ch[i]["bookmarked"]
+                chapter.downloaded = saved_ch[i]["downloaded"]
 
     @asyncSlot()
     async def select_all(self) -> None:

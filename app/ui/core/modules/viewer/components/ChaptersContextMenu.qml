@@ -8,13 +8,19 @@ Menu {
     C.MenuItem {
         id: bookmark
         text: modelData.bookmarked ? qsTr("Unbookmark") : qsTr("Bookmark")
-        onTriggered: modelData.bookmarked = !modelData.bookmarked
+        onTriggered: {
+            modelData.bookmarked = !modelData.bookmarked
+             _data.is_saved ? _data.save(false) : _data.save(true)
+        }
     }
     // Mark chapter as read/unread
     C.MenuItem {
         id: markAsRead
         text: modelData.readed ? qsTr("Mark as unread") : qsTr("Mark as read")
-        onTriggered: modelData.readed = !modelData.readed
+        onTriggered: {
+            modelData.readed = !modelData.readed
+             _data.is_saved ? _data.save(false) : _data.save(true)
+        }
     }
 
     C.MenuSeparator {}

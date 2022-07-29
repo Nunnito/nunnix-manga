@@ -61,6 +61,7 @@ class ChaptersData(QObject):
 
         self._total = total
         self._chapters = chapters
+        self._parent = parent
 
     @pyqtProperty(int, constant=True)
     def total(self) -> int:
@@ -135,6 +136,31 @@ class MangaSearch(SearchResult):
         )
         self._parent._signals_handler.contentData.emit(manga)
 
+    def _get_saved_data(self) -> dict | None:
+        # Encode title and scraper to MD5
+        encode_title = md5(self.title.encode()).hexdigest()
+
+        config_file = (python_utils.Paths.get_mangas_path() /
+                       self.scraper/encode_title/f"{encode_title}.json")
+        cache_file = (python_utils.Paths.get_cache_path() /
+                      self.scraper/encode_title/f"{encode_title}.json")
+
+        # If the manga is in the config folder, load it
+        if config_file.exists():
+            # Load from config
+            with open(config_file) as f:
+                data = json.load(f)
+        # Else if the manga is in the cache folder, load it
+        elif cache_file.exists():
+            # Load from cache
+            with open(cache_file) as f:
+                data = json.load(f)
+        # Else, return None
+        else:
+            data = None
+
+        return data
+
     async def _create_data(self) -> dict:
         """ Retrieve manga data from different sources:
             - from config if exists
@@ -149,18 +175,8 @@ class MangaSearch(SearchResult):
         cache_file = (python_utils.Paths.get_cache_path()/self.scraper /
                       encode_title/f"{encode_title}.json")
 
-        # If the manga is in the config folder, load it
-        if config_file.exists():
-            # Load from config
-            with open(config_file, "r") as f:
-                data = json.load(f)
-        # Else if the manga is in the cache folder, load it
-        elif cache_file.exists():
-            # Load from cache
-            with open(cache_file, "r") as f:
-                data = json.load(f)
-        # Else, get data from scraper
-        else:
+        data = self._get_saved_data()  # Get data from config or cache
+        if data is None:  # If data is None, get it from scraper
             data = await self._scraper.get_content_data(self._link)
 
         if (config_file.exists() or cache_file.exists()):

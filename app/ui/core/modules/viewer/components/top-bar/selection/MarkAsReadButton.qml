@@ -21,6 +21,8 @@ BaseButton {
         } else {
             _data.chapters_data.mark_selected_as_readed()
         }
+
+        _data.is_saved ? _data.save(false) : _data.save(true)
     }
 
 
