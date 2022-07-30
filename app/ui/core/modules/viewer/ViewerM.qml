@@ -59,6 +59,9 @@ Item {
             _data = Viewer.from_manga(contentData)
             _chapters = _data.chapters_data.chapters
             _data.save(true)  // Save to cache for later use
+            if (_data.is_saved) {  // Save to manga folder if already exists
+                _data.save(false)
+            }
         }
     }
 
