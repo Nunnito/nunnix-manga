@@ -36,7 +36,12 @@ Item {
                 H.Description {id: description}
             }
         }
-        H.TotalChapters {id: totalChapters}
+        RowLayout {
+            width: column.width
+            H.TotalChapters {id: totalChapters}
+            C.Spacer {orientation: "horizontal"}
+            H.FilterChapters {id: filterChapters}
+        }
     }
 
     // Opacity animation
