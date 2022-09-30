@@ -6,10 +6,32 @@ import "../../../../../components" as C
 import "../../../../../utils" as U
 
 
-C.RoundButton {
-    flat: true
-    icon.source: Icon.get_icon("filter-list.svg")
+RowLayout {
+    spacing: 0
 
-    Layout.rightMargin: 20
-    C.CursorShape {cursorShape: Qt.PointingHandCursor}
+    C.RoundButton {
+        flat: true
+        icon.source: Icon.get_icon("swap-vert.svg")
+
+        C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
+        onClicked: {
+            // Reverse the chapters order
+            let chapters = _chapters
+
+            let new_chapters = []
+            for (let i = chapters.length - 1; i >= 0; i--) {
+                new_chapters.push(chapters[i])
+            }
+            
+            _chapters = new_chapters
+        }
+    }
+    C.RoundButton {
+        flat: true
+        icon.source: Icon.get_icon("filter-list.svg")
+
+        Layout.rightMargin: 20
+        C.CursorShape {cursorShape: Qt.PointingHandCursor}
+    }
 }
