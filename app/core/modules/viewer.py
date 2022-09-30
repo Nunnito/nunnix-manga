@@ -269,9 +269,16 @@ class ChaptersDataViewer(ChaptersData):
         if self._chapters_saved_data is not None:
             saved_ch = self._chapters_saved_data["chapters_data"]["chapters"]
             for i, chapter in enumerate(self._chapters):
-                chapter.readed = saved_ch[i]["readed"]
-                chapter.bookmarked = saved_ch[i]["bookmarked"]
-                chapter.downloaded = saved_ch[i]["downloaded"]
+                # If current chapter number is less or equal than total saved
+                # chapters, set chapter data
+                if i <= len(saved_ch) - 1:
+                    chapter.readed = saved_ch[i]["readed"]
+                    chapter.bookmarked = saved_ch[i]["bookmarked"]
+                    chapter.downloaded = saved_ch[i]["downloaded"]
+                else:
+                    chapter.readed = False
+                    chapter.bookmarked = False
+                    chapter.downloaded = False
 
     @asyncSlot()
     async def select_all(self) -> None:
