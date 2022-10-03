@@ -108,4 +108,21 @@ T.CheckDelegate {
             color: colorBgOver
         }
     }
+
+    // Function to control the next state of the checkbox
+    nextCheckState: function() {
+        if (tristate) {
+            if (checkState === Qt.Checked) {
+                return boolTristate ? Qt.PartiallyChecked : Qt.Unchecked
+            }
+            else if (checkState === Qt.PartiallyChecked) {
+                return boolTristate ? Qt.Unchecked : Qt.Checked
+            }
+            else {
+                return boolTristate ? Qt.Checked : Qt.PartiallyChecked
+            }
+        } else {
+            return checkState === Qt.Checked ? Qt.Unchecked : Qt.Checked
+        }
+    }
 }

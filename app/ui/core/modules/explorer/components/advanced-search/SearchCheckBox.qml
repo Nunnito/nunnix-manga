@@ -72,18 +72,6 @@ Column {
 
             C.CursorShape {cursorShape: Qt.PointingHandCursor}
 
-            nextCheckState: function() {
-                if (checkState === Qt.Checked && tristate) {
-                    return Qt.PartiallyChecked
-                }
-                else if (checkState === Qt.Unchecked) {
-                    return Qt.Checked
-                }
-                else {
-                    return Qt.Unchecked
-                }
-            }
-
             // This connection is to just change value property when button is clicked
             Connections {
                 target: advancedSearchButtons.searchButton
