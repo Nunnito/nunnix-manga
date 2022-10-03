@@ -22,7 +22,7 @@ C.ItemDelegate {
 
         // Chapter title row, with bookmark icon
         Row {
-            leftPadding: 25
+            leftPadding: 20
             spacing: 5
 
             Image {
