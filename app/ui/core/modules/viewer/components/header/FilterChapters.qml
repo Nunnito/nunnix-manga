@@ -38,6 +38,8 @@ Pane {
             placeholderText: qsTr("Search")
             outlined: true
             width: parent.parent.width / 2
+
+            onTextEdited: viewer.filterSearch = text
         }
 
         // Filters
@@ -51,16 +53,47 @@ Pane {
                 text: qsTr("Downloaded")
                 tristate: true
                 boolTristate: true
+                visible: false
+
+                onCheckStateChanged: {
+                    if (checkState == Qt.Checked) {
+                        viewer.filterDownloaded = true
+                    } else if (checkState == Qt.PartiallyChecked) {
+                        viewer.filterDownloaded = false
+                    } else {
+                        viewer.filterDownloaded = null
+                    }
+                }
             }
             C.CheckDelegate {
                 text: qsTr("Unread")
                 tristate: true
                 boolTristate: true
+
+                onCheckStateChanged: {
+                    if (checkState == Qt.Checked) {
+                        viewer.filterUnread = true
+                    } else if (checkState == Qt.PartiallyChecked) {
+                        viewer.filterUnread = false
+                    } else {
+                        viewer.filterUnread = null
+                    }
+                }
             }
             C.CheckDelegate {
                 text: qsTr("Bookmarked")
                 tristate: true
                 boolTristate: true
+
+                onCheckStateChanged: {
+                    if (checkState == Qt.Checked) {
+                        viewer.filterBookmarked = true
+                    } else if (checkState == Qt.PartiallyChecked) {
+                        viewer.filterBookmarked = false
+                    } else {
+                        viewer.filterBookmarked = null
+                    }
+                }
             }
         }
     }

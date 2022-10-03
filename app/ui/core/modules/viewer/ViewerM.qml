@@ -12,6 +12,11 @@ Item {
     property var _data
     property var _chapters
 
+    property var filterDownloaded: null
+    property var filterUnread: null
+    property var filterBookmarked: null
+    property string filterSearch: ""
+
     id: viewer
 
     Column {
