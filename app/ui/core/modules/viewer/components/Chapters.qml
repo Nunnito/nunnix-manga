@@ -39,7 +39,7 @@ C.ItemDelegate {
 
                 text: modelData.title
                 font.pixelSize: 14
-                color: modelData.readed ? theme.textfieldDecorationInactive :
+                color: modelData.read ? theme.textfieldDecorationInactive :
                     modelData.bookmarked ? theme.windowAccent : theme.windowFg
             }
         }
@@ -51,7 +51,7 @@ C.ItemDelegate {
 
             text: modelData.date + (modelData.scanlation ?
                             " • " + modelData.scanlation : "")
-            color: modelData.readed ? theme.textfieldDecorationInactive :
+            color: modelData.read ? theme.textfieldDecorationInactive :
                    modelData.bookmarked ? theme.windowAccent : theme.windowFg
         }
     }

@@ -30,7 +30,7 @@ Pane {
 
         // Search field
         C.Label {
-            text: qsTr("Search ")
+            text: qsTr("Search")
             font.bold: true
             font.capitalization: Font.AllUppercase
         }
@@ -42,7 +42,7 @@ Pane {
 
         // Filters
         C.Label {
-            text: qsTr("View ")
+            text: qsTr("View")
             font.bold: true
             font.capitalization: Font.AllUppercase
         }
@@ -53,7 +53,7 @@ Pane {
                 boolTristate: true
             }
             C.CheckDelegate {
-                text: qsTr("Unreaded")
+                text: qsTr("Unread")
                 tristate: true
                 boolTristate: true
             }

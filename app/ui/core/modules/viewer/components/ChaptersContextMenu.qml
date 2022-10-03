@@ -16,9 +16,9 @@ Menu {
     // Mark chapter as read/unread
     C.MenuItem {
         id: markAsRead
-        text: modelData.readed ? qsTr("Mark as unread") : qsTr("Mark as read")
+        text: modelData.read ? qsTr("Mark as unread") : qsTr("Mark as read")
         onTriggered: {
-            modelData.readed = !modelData.readed
+            modelData.read = !modelData.read
              _data.is_saved ? _data.save(false) : _data.save(true)
         }
     }

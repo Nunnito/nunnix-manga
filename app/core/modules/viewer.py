@@ -85,7 +85,7 @@ class Viewer(Manga):
                 "link": chapter.link,
                 "web_link": chapter.web_link,
                 "scanlation": chapter.scanlation,
-                "readed": chapter.readed,
+                "read": chapter.read,
                 "bookmarked": chapter.bookmarked,
                 "downloaded": chapter.downloaded
             })
@@ -193,7 +193,7 @@ class Viewer(Manga):
 
 class ViewerChapter(Chapter):
     selected_signal = pyqtSignal()
-    readed_signal = pyqtSignal()
+    read_signal = pyqtSignal()
     bookmarked_signal = pyqtSignal()
     downloaded_signal = pyqtSignal()
 
@@ -204,7 +204,7 @@ class ViewerChapter(Chapter):
 
         # New properties
         self._selected = False
-        self._readed = False
+        self._read = False
         self._bookmarked = False
         self._downloaded = False
 
@@ -223,14 +223,14 @@ class ViewerChapter(Chapter):
         self._selected = value
         self.selected_signal.emit()
 
-    @pyqtProperty(bool, notify=readed_signal)
-    def readed(self) -> str:
-        return self._readed
+    @pyqtProperty(bool, notify=read_signal)
+    def read(self) -> str:
+        return self._read
 
-    @readed.setter
-    def readed(self, value: bool) -> None:
-        self._readed = value
-        self.readed_signal.emit()
+    @read.setter
+    def read(self, value: bool) -> None:
+        self._read = value
+        self.read_signal.emit()
 
     @pyqtProperty(bool, notify=bookmarked_signal)
     def bookmarked(self) -> str:
@@ -272,11 +272,11 @@ class ChaptersDataViewer(ChaptersData):
                 # If current chapter number is less or equal than total saved
                 # chapters, set chapter data
                 if i <= len(saved_ch) - 1:
-                    chapter.readed = saved_ch[i]["readed"]
+                    chapter.read = saved_ch[i]["read"]
                     chapter.bookmarked = saved_ch[i]["bookmarked"]
                     chapter.downloaded = saved_ch[i]["downloaded"]
                 else:
-                    chapter.readed = False
+                    chapter.read = False
                     chapter.bookmarked = False
                     chapter.downloaded = False
 
@@ -291,16 +291,16 @@ class ChaptersDataViewer(ChaptersData):
             chapter.selected = False
 
     @asyncSlot()
-    async def mark_selected_as_readed(self) -> None:
+    async def mark_selected_as_read(self) -> None:
         for chapter in self._chapters:
             if chapter.selected:
-                chapter.readed = True
+                chapter.read = True
 
     @asyncSlot()
-    async def unmark_selected_as_readed(self) -> None:
+    async def unmark_selected_as_read(self) -> None:
         for chapter in self._chapters:
             if chapter.selected:
-                chapter.readed = False
+                chapter.read = False
 
     @asyncSlot()
     async def mark_selected_as_bookmarked(self) -> None:
@@ -317,7 +317,7 @@ class ChaptersDataViewer(ChaptersData):
     @asyncSlot(int)
     async def mark_previous_as_read(self, index: int) -> None:
         for chapter in self._chapters[:index]:
-            chapter.readed = True
+            chapter.read = True
 
     @pyqtProperty(int, notify=selected_length_signal)
     def selected_length(self) -> int:

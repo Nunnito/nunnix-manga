@@ -6,7 +6,7 @@ import "../../../../../../components" as C
 BaseButton {
     highlighted: true
     text: {
-        if (allSelectedAreReaded()) {
+        if (allSelectedAreread()) {
             return qsTr("Mark as unread")
         } else {
             return qsTr("Mark as read")
@@ -16,20 +16,20 @@ BaseButton {
     C.CursorShape {cursorShape: Qt.PointingHandCursor}
 
     onClicked: {
-        if (allSelectedAreReaded()) {
-            _data.chapters_data.unmark_selected_as_readed()
+        if (allSelectedAreread()) {
+            _data.chapters_data.unmark_selected_as_read()
         } else {
-            _data.chapters_data.mark_selected_as_readed()
+            _data.chapters_data.mark_selected_as_read()
         }
 
         _data.is_saved ? _data.save(false) : _data.save(true)
     }
 
 
-    function allSelectedAreReaded() {
+    function allSelectedAreread() {
         let chapters = _data.chapters_data.chapters
         for (let i = 0; i < chapters.length; i++) {
-            if (!chapters[i].readed && chapters[i].selected) {
+            if (!chapters[i].read && chapters[i].selected) {
                 return false
             }
         }
