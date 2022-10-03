@@ -36,6 +36,7 @@ Item {
                 H.Description {id: description}
             }
         }
+        H.FilterChapters {id: filterChapters}
         RowLayout {
             width: column.width
             H.TotalChapters {id: totalChapters}

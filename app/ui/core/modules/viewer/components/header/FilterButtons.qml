@@ -33,5 +33,13 @@ RowLayout {
 
         Layout.rightMargin: 20
         C.CursorShape {cursorShape: Qt.PointingHandCursor}
+
+        onClicked: {
+            if (filterChapters.height == 0) {
+                filterChapters.openAnimation.start()
+            } else {
+                filterChapters.closeAnimation.start()
+            }
+        }
     }
 }
