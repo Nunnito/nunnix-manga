@@ -10,35 +10,10 @@ C.ItemDelegate {
     id: chapterDelegate
 
     width: listView.width
+    height: 64
 
     rightPadding: 40
     highlighted: modelData.selected
-
-    visible: width > 0 && height > 0 && opacity > 0
-    height: {
-        if (viewer.filterDownloaded && !modelData.downloaded) {
-            return 0
-        }
-        if (viewer.filterDownloaded == false && modelData.downloaded) {
-            return 0
-        }
-        if (viewer.filterUnread && modelData.read) {
-            return 0
-        }
-        if (viewer.filterUnread == false && !modelData.read) {
-            return 0
-        }
-        if (viewer.filterBookmarked && !modelData.bookmarked) {
-            return 0
-        }
-        if (viewer.filterBookmarked == false && modelData.bookmarked) {
-            return 0
-        }
-        if (!title.text.toLowerCase().includes(viewer.filterSearch.toLowerCase())) {
-            return 0
-        }
-        return 64
-    }
 
     // Custom content
     contentItem: Item {

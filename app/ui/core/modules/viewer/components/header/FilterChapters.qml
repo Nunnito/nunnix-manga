@@ -35,11 +35,13 @@ Pane {
             font.capitalization: Font.AllUppercase
         }
         C.TextField {
+            id: searchField
+
             placeholderText: qsTr("Search")
             outlined: true
             width: parent.parent.width / 2
 
-            onTextEdited: viewer.filterSearch = text
+            onTextEdited: filter(), forceActiveFocus()
         }
 
         // Filters
@@ -50,50 +52,34 @@ Pane {
         }
         Row {
             C.CheckDelegate {
+                id: downloadedCheck
+
                 text: qsTr("Downloaded")
                 tristate: true
                 boolTristate: true
-                visible: false
+                // visible: false
 
-                onCheckStateChanged: {
-                    if (checkState == Qt.Checked) {
-                        viewer.filterDownloaded = true
-                    } else if (checkState == Qt.PartiallyChecked) {
-                        viewer.filterDownloaded = false
-                    } else {
-                        viewer.filterDownloaded = null
-                    }
-                }
+                onCheckStateChanged: filter()
+
             }
             C.CheckDelegate {
+                id: readCheck
+
                 text: qsTr("Unread")
                 tristate: true
                 boolTristate: true
 
-                onCheckStateChanged: {
-                    if (checkState == Qt.Checked) {
-                        viewer.filterUnread = true
-                    } else if (checkState == Qt.PartiallyChecked) {
-                        viewer.filterUnread = false
-                    } else {
-                        viewer.filterUnread = null
-                    }
-                }
+                onCheckStateChanged: filter()
+
             }
             C.CheckDelegate {
+                id: bookmarkCheck
+
                 text: qsTr("Bookmarked")
                 tristate: true
                 boolTristate: true
 
-                onCheckStateChanged: {
-                    if (checkState == Qt.Checked) {
-                        viewer.filterBookmarked = true
-                    } else if (checkState == Qt.PartiallyChecked) {
-                        viewer.filterBookmarked = false
-                    } else {
-                        viewer.filterBookmarked = null
-                    }
-                }
+                onCheckStateChanged: filter()
             }
         }
     }
@@ -135,5 +121,31 @@ Pane {
             easing.type: Easing.OutQuart
             duration: 250
         }
+    }
+
+    
+    // Filter function
+    function filter() {
+        let chapters = viewer.chapters.slice()
+
+        for (let i = chapters.length - 1; i >= 0; i--) {
+            if (downloadedCheck.checkState == Qt.Checked && !chapters[i].downloaded) {
+                chapters.splice(i, 1)
+            } else if (downloadedCheck.checkState == Qt.PartiallyChecked && chapters[i].downloaded) {
+                chapters.splice(i, 1)
+            } else if (readCheck.checkState == Qt.Checked && chapters[i].read) {
+                chapters.splice(i, 1)
+            } else if (readCheck.checkState == Qt.PartiallyChecked && !chapters[i].read) {
+                chapters.splice(i, 1)
+            } else if (bookmarkCheck.checkState == Qt.Checked && !chapters[i].bookmarked) {
+                chapters.splice(i, 1)
+            } else if (bookmarkCheck.checkState == Qt.PartiallyChecked && chapters[i].bookmarked) {
+                chapters.splice(i, 1)
+            } else if (!chapters[i].title.toLowerCase().includes(searchField.text.toLowerCase())) {
+                chapters.splice(i, 1)
+            }
+        }
+
+        listView.model = chapters
     }
 }

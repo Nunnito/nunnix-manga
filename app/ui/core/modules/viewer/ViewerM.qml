@@ -11,11 +11,7 @@ Item {
     property bool completedAnims: false
     property var _data
     property var _chapters
-
-    property var filterDownloaded: null
-    property var filterUnread: null
-    property var filterBookmarked: null
-    property string filterSearch: ""
+    property var chapters: _chapters
 
     id: viewer
 
@@ -35,7 +31,7 @@ Item {
             boundsMovement: Flickable.StopAtBounds
             interactive: false
 
-            model: _chapters ? _chapters : []
+            model: chapters ? chapters : []
             delegate: Chapters {}
 
             ScrollBar.vertical: C.ScrollBar {}
