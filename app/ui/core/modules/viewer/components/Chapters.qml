@@ -22,7 +22,7 @@ C.ItemDelegate {
 
         // Chapter title row, with bookmark icon
         Row {
-            leftPadding: 20
+            leftPadding: modelData.bookmarked ? 20 : 25
             spacing: 5
 
             Image {
