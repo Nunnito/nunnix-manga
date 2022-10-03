@@ -40,7 +40,7 @@ Item {
             width: column.width
             H.TotalChapters {id: totalChapters}
             C.Spacer {orientation: "horizontal"}
-            H.FilterChapters {id: filterChapters}
+            H.FilterButtons {id: filterButtons}
         }
     }
 
