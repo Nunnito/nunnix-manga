@@ -6,6 +6,7 @@ import "../../../../components" as C
 import "header" as H
 
 Item {
+    property alias filterChapters: filterChapters
     id: _header
 
     width: parent.width
