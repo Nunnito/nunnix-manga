@@ -9,7 +9,7 @@ Item {
     id: _header
 
     width: parent.width
-    height: background.height
+    height: column.height
 
     H.Background {id: background}
     Column {
