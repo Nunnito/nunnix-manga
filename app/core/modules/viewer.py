@@ -107,7 +107,7 @@ class Viewer(Manga):
 
         # Save data
         with open(file, "w") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+            json.dump(data, f, indent=4)
 
         if not to_cache:
             self.saved.emit()
@@ -118,7 +118,7 @@ class Viewer(Manga):
 
         # Save data with new cover
         with open(file, "w") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+            json.dump(data, f, indent=4)
 
     @pyqtProperty(bool, notify=saved)
     def is_saved(self) -> bool:

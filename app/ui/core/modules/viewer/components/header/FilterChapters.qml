@@ -57,7 +57,7 @@ Pane {
                 text: qsTr("Downloaded")
                 tristate: true
                 boolTristate: true
-                // visible: false
+                visible: false
 
                 onCheckStateChanged: filter()
 

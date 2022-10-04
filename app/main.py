@@ -32,6 +32,7 @@ with warnings.catch_warnings():
 def before_close():
     """Actions before the application exits"""
     del globals()["engine"]
+    sys.exit(0)
 
 
 def main():
