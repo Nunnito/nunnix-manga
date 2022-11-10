@@ -4,7 +4,7 @@ import shutil
 from hashlib import md5
 from pathlib import Path
 
-from ..types import Manga, Chapter, ChaptersData
+from ..types import Manga, Chapter, ChaptersData, viewer_deco
 from ..utils import python_utils
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
@@ -143,7 +143,7 @@ class Viewer(Manga):
 
         self.saved.emit()
 
-    @asyncSlot()
+    @viewer_deco(asyncSlot())
     async def reload(self) -> None:
         """ Reload manga data """
         data = await self._scraper.get_content_data(self._link)

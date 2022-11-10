@@ -1,6 +1,38 @@
 from abc import abstractmethod
+from functools import wraps
+
 from PyQt5.QtCore import QObject, QJsonValue, pyqtProperty
 from qasync import asyncSlot
+
+from .. import modules
+from ..utils import logger
+
+
+def viewer_deco(qasync_func):
+    @wraps(qasync_func)
+    def wrapper(func):
+        @wraps(func)
+        async def wrapped(self, *args, **kwargs):
+            try:
+                await func(self, *args, **kwargs)  # Run the function
+
+            # If an exception is raised, do the following
+            except Exception as e:
+                exception_info = {"is_exception": True, "exception": {}}
+                exception_info["exception"]["message"] = str(e)
+
+                logger.error(e)
+                exception_info["exception"]["type"] = "unknown_error"
+
+                # Emit the signal with the exception info
+                if not isinstance(self, modules.viewer.Viewer):
+                    self._parent._signals_handler\
+                        .contentData.emit(exception_info)
+                else:
+                    self._parent._parent._signals_handler\
+                        .contentData.emit(exception_info)
+        return qasync_func(wrapped)
+    return wrapper
 
 
 class SearchResult(QObject):

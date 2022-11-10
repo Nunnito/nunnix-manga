@@ -5,7 +5,7 @@ from hashlib import md5
 from PyQt5.QtCore import QObject, QVariant, pyqtProperty
 from qasync import asyncSlot
 
-from .generic import SearchResult, ContentData
+from .generic import SearchResult, ContentData, viewer_deco
 from ..utils import python_utils
 
 
@@ -99,7 +99,7 @@ class MangaSearch(SearchResult):
         super(MangaSearch, self).__init__(scraper, title, link, web_link,
                                           cover, parent)
 
-    @asyncSlot()
+    @viewer_deco(asyncSlot())
     async def get_data(self) -> None:
         """ Get manga data """
         data = await self._create_data()

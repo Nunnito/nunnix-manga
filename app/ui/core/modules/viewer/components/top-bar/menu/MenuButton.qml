@@ -21,7 +21,8 @@ C.RoundButton {
                 text: qsTr("Reload")
                 shortcut: "F5"
                 onTriggered: {
-                    _data.reload(), _data = null, _chapters = null
+                    _data ? _data.reload() : getData()
+                    _data = null, _chapters = null
                     listView.headerItem.filterChapters.height = 0
                     listView.headerItem.filterChapters.opacity = 0
                 }

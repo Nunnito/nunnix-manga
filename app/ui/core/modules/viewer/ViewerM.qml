@@ -8,6 +8,8 @@ import "../../../utils" as U
 
 Item {
     property string name: "viewer"
+    property var getData
+
     property bool completedAnims: false
     property var _data
     property var _chapters
@@ -56,12 +58,18 @@ Item {
     Connections {
         target: SignalHandler
         function onContentData(contentData) {
-            completedAnims = false
-            _data = Viewer.from_manga(contentData)
-            _chapters = _data.chapters_data.chapters
-            _data.save(true)  // Save to cache for later use
-            if (_data.is_saved) {  // Save to manga folder if already exists
-                _data.save(false)
+            if (contentData.is_exception) {
+                listView.visible = false
+            }
+            else {
+                listView.visible = true
+                completedAnims = false
+                _data = Viewer.from_manga(contentData)
+                _chapters = _data.chapters_data.chapters
+                _data.save(true)  // Save to cache for later use
+                if (_data.is_saved) {  // Save to manga folder if already exists
+                    _data.save(false)
+                }
             }
         }
     }
