@@ -46,7 +46,7 @@ class RemoveBloatFiles(build):
         qt_files = ["libQt5PrintSupport.so.5", "libQt5Help.so.5",
                     "libQt5Bluetooth.so.5", "libQt5Multimedia.so.5",
                     "libQt5Location.so.5", "libQt5XmlPatterns.so.5",
-                    "libQt5Designer.so.5", "libQt5Widgets.so.5"]
+                    "libQt5Designer.so.5"]
 
         os.chdir("build/lib/PyQt5/Qt5/lib")  # Change dir to the PyQt5 folder
         for file in qt_files:
@@ -147,7 +147,7 @@ setup(
             target_name="Nunnix-Manga",
             base=base,
             icon=None if sys.platform == "linux"
-            else"app/resources/icons/app.ico"
+            else "app/resources/icons/app.ico"
         )
     ],
     cmdclass={
