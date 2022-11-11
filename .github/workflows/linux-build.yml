@@ -36,7 +36,7 @@ jobs:
         python build.py build appimage
 
     - name: Upload to GitHub
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: Nunnix-Manga
         path: Nunnix-Manga-x86_64.AppImage
