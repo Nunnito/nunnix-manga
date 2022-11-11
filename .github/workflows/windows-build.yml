@@ -28,7 +28,7 @@ jobs:
 
     - name: Build
       run: |
-        python build.py build remove_bloat
+        python build.py build
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
