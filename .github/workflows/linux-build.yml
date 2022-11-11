@@ -23,7 +23,7 @@ jobs:
 
     - name: Install Qt5 dependencies
       run: |
-        sudo apt-get install libxcb-xinerama0 libfuse2 python3-pyqt5
+        sudo apt-get install libxcb-xinerama0 libfuse2
 
     - name: Install dependencies
       run: |
