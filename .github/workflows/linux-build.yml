@@ -23,7 +23,7 @@ jobs:
 
     - name: Install Qt5 dependencies
       run: |
-        sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
+        sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libfuse2
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3.0.0
