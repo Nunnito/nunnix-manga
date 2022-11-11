@@ -31,7 +31,7 @@ jobs:
 
     - name: Build
       run: |
-        python build.py build remove_bloat appimage
+        python build.py build appimage
 
     - name: Upload to GitHub
       uses: actions/upload-artifact@v2
