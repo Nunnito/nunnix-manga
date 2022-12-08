@@ -180,8 +180,13 @@ class Mangadex:
             description = attrs["description"][self.LANG]
         # If the language is not available, use the first available
         elif isinstance(attrs["description"], dict):
-            first_lang = list(attrs["description"].keys())[0]
-            description = attrs["description"][first_lang]
+            available_langs = list(attrs["description"].keys())
+            # If there is no description, set the value to None
+            if not available_langs:
+                description = None
+            else:
+                first_lang = available_langs[0]
+                description = attrs["description"][first_lang]
         # If there is no description, set the value to None
         else:
             description = None
@@ -221,7 +226,7 @@ class Mangadex:
 
     async def get_chapters_data(self, uuid: str,
                                 offset: int = 0) -> dict:
-        """ Get chapters data. This function is used by get_content_data function.
+        """ Get chapters data. This function is used by get_content_data.
 
         Parameters
         ----------
