@@ -5,10 +5,10 @@ from pathlib import Path
 from urllib.request import urlretrieve
 from subprocess import Popen
 
-from cx_Freeze import setup, Executable, build
+from cx_Freeze import setup, Executable, build_exe
 
 
-class CreateZipFile(build):
+class CreateZipFile(build_exe):
     """Create a zip file with the executable and the resources"""
     description = "Create a zip file with the executable and the resources"
 
@@ -18,7 +18,7 @@ class CreateZipFile(build):
         print("Zip file created")
 
 
-class RemoveBloatFiles(build):
+class RemoveBloatFiles(build_exe):
     """Remove unnecessary files from the executable"""
     description = "Remove unnecessary files from the executable"
 
@@ -55,7 +55,7 @@ class RemoveBloatFiles(build):
         os.chdir(Path(__file__).parent)  # Change dir back to the main folder
 
 
-class MakeAppImage(build):
+class MakeAppImage(build_exe):
     """Create an .appimage with the resources"""
     description = "Create an .appimage with the resources"
 
@@ -109,7 +109,7 @@ class MakeAppImage(build):
         os.chmod("build/AppRun", 0o755)
 
 
-class CleanUp(build):
+class CleanUp(build_exe):
     """Clean up AppImage files"""
     description = "Clean up AppImage files"
 
