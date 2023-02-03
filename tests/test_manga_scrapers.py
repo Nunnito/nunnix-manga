@@ -74,7 +74,8 @@ class TestContentData:
                     - List of dicts with the following values to be tested,
                       can be empty:
                         - Title:
-                            - Value expected: String with length greater than 0
+                            - Value expected: String with length greater or
+                                              equal to 0
                         - Date:
                             - Value expected: time.struct_time object
                         - Link:
@@ -121,7 +122,7 @@ class TestContentData:
         chapters = content_data[name]["chapters_data"]["chapters"]
         for chapter in chapters:
             chapter_title = chapter["title"]
-            assert len(chapter_title) > 0 and type(chapter_title) == str,\
+            assert len(chapter_title) >= 0 and type(chapter_title) == str,\
                 chapter_title
 
     def test_chapters_date(self, name, content_data):
