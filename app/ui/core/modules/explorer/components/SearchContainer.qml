@@ -82,7 +82,7 @@ GridView {
 
         C.Label {
             text: explorer.connectionError ? qsTr("Connection error")
-                  : explorer.timeOutError ? qsTr("Time out error")
+                  : explorer.timeOutError ? qsTr("Time out")
                   : explorer.errorMessage
             font.bold: true
             font.pixelSize: 18
@@ -141,7 +141,7 @@ GridView {
 
             C.Label {
                 text: explorer.connectionError ? qsTr("Connection error")
-                       : explorer.timeOutError ? qsTr("Time out error")
+                       : explorer.timeOutError ? qsTr("Time out")
                        : explorer.errorMessage
                 font.bold: true
                 font.pixelSize: 14

@@ -1,13 +1,16 @@
+import asyncio
 from abc import abstractmethod
 from functools import wraps
 
 from PyQt5.QtCore import QObject, QJsonValue, pyqtProperty
+from aiohttp.client_exceptions import ClientConnectorError
 from qasync import asyncSlot
 
 from .. import modules
 from ..utils import logger
 
 
+# Decorator to catch exceptions for Viewer functions
 def viewer_deco(qasync_func):
     @wraps(qasync_func)
     def wrapper(func):
@@ -21,8 +24,19 @@ def viewer_deco(qasync_func):
                 exception_info = {"is_exception": True, "exception": {}}
                 exception_info["exception"]["message"] = str(e)
 
-                logger.error(e)
-                exception_info["exception"]["type"] = "unknown_error"
+                # Connection error
+                if isinstance(e, ClientConnectorError):
+                    logger.error("Connection error")
+                    logger.error(e)
+                    exception_info["exception"]["type"] = "connection_error"
+                # Timeout error
+                elif isinstance(e, asyncio.TimeoutError):
+                    logger.error("Timeout error")
+                    exception_info["exception"]["type"] = "timeout_error"
+                # Other errors
+                else:
+                    logger.error(e)
+                    exception_info["exception"]["type"] = "unknown_error"
 
                 # Emit the signal with the exception info
                 if not isinstance(self, modules.viewer.Viewer):

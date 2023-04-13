@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "components"
+import "components/exceptions"
 import "../../../components" as C
 import "../../../utils" as U
 
@@ -14,6 +15,11 @@ Item {
     property var _data
     property var _chapters
     property var chapters: _chapters
+
+    property bool connectionError: false
+    property bool timeoutError: false
+    property bool unknownError: false
+    property string exceptionMessage: ""
 
     id: viewer
 
@@ -41,6 +47,11 @@ Item {
         }
     }
 
+    // Exceptions
+    ConnectionError {}
+    TimeOutError {}
+    UnknownError {}
+
     Shortcut {
         sequence: "Escape"
         onActivated: {
@@ -59,7 +70,13 @@ Item {
         target: SignalHandler
         function onContentData(contentData) {
             if (contentData.is_exception) {
+                let exceptionType = contentData.exception.type
                 listView.visible = false
+
+                connectionError = exceptionType == "connection_error"
+                timeoutError = exceptionType == "timeout_error"
+                unknownError = exceptionType == "unknown_error"
+                exceptionMessage = contentData.exception.message
             }
             else {
                 listView.visible = true
@@ -70,6 +87,11 @@ Item {
                 if (_data.is_saved) {  // Save to manga folder if already exists
                     _data.save(false)
                 }
+
+                // Set exceptions to false
+                connectionError = false
+                timeoutError = false
+                unknownError = false
             }
         }
     }

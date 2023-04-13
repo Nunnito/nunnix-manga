@@ -8,7 +8,7 @@ from ..types import Manga, Chapter, ChaptersData, viewer_deco
 from ..utils import python_utils
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
-from aiohttp import ClientSession
+from aiohttp import ClientSession  # noqa: F401
 from qasync import asyncSlot
 
 
