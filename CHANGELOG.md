@@ -5,8 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+
+## [0.2.0] - 2023-04-17
 ### Added
 - PointingHandCursor to control components
+- A viewer to view manga data
+    - Title
+    - Author
+    - Description
+    - Cover
+    - Chapters
+    - Genres
+    - Status
+- Initial MacOS "support" (uses GNU/Linux paths)
+
+### Changed
+- Update cx_Freeze version to 6.14.2
+- Update all GitHub Actions workflows
 
 ### Removed
 - Light theme
