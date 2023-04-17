@@ -41,6 +41,10 @@ class Viewer(Manga):
         }
 
         super().__init__(**self.data_dict)
+        saved_data = self._parent._get_saved_data()  # type: dict | None
+
+        if saved_data is not None:
+            self.chapters_data._reversed = saved_data["reversed_chapters"]
 
         self._session = self._parent._parent._session  # type: ClientSession
         self.chapters_data._parent = self  # Set chapters data parent to self
@@ -73,6 +77,7 @@ class Viewer(Manga):
             "link": self.link,
             "web_link": self.web_link,
             "status": self.status,
+            "reversed_chapters": self.chapters_data._reversed,
             "chapters_data": {}
         }
 
@@ -253,6 +258,8 @@ class ViewerChapter(Chapter):
 
 class ChaptersDataViewer(ChaptersData):
     selected_length_signal = pyqtSignal(int, name="selectedLength")
+    reversed_signal = pyqtSignal(bool, name="reversed")
+    chapters_changed_signal = pyqtSignal()
 
     def __init__(self, total: int, chapters: list[ViewerChapter], parent):
         super().__init__(total, chapters, parent)
@@ -260,6 +267,7 @@ class ChaptersDataViewer(ChaptersData):
         # New properties
         self._selected_length = 0
         self._chapters_saved_data = self._parent._get_saved_data()
+        self._reversed = False
 
         # Set chapters parent
         for chapter in self._chapters:
@@ -327,6 +335,21 @@ class ChaptersDataViewer(ChaptersData):
     def selected_length(self, value: int) -> None:
         self._selected_length = value
         self.selected_length_signal.emit(value)
+
+    @pyqtProperty(bool, notify=reversed_signal)
+    def reversed(self) -> bool:
+        return self._reversed
+
+    @reversed.setter
+    def reversed(self, value: bool) -> None:
+        self._reversed = value
+        self.reversed_signal.emit(value)
+
+        # Reverse chapters
+        self._chapters = self._chapters[::-1]
+
+        # Emit chapters changed signal
+        self.chapters_changed_signal.emit()
 
 
 # Class to create a new instance of the viewer

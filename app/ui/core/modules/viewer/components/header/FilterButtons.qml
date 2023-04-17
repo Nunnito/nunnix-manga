@@ -17,15 +17,9 @@ RowLayout {
 
         onClicked: {
             // Reverse the chapters order
-            let chapters = viewer.chapters
-
-            let new_chapters = []
-            for (let i = chapters.length - 1; i >= 0; i--) {
-                new_chapters.push(chapters[i])
-            }
-            
-            viewer.chapters = new_chapters
-            listView.model = viewer.chapters
+            _data.chapters_data.reversed = !_data.chapters_data.reversed
+            _chapters = _data.chapters_data.chapters  // Force the chapters to be reloaded
+            _data.save(!_data.is_saved)
         }
     }
     C.RoundButton {
