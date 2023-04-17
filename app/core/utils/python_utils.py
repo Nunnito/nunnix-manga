@@ -19,7 +19,7 @@ class Paths:
     @classmethod
     def get_config_file_path(cls) -> str:
         """ Returns the config file path and creates it if it doesn't exist """
-        if OS_NAME == "linux":
+        if OS_NAME == "linux" or OS_NAME == "darwin":
             config_path = HOME_PATH/".config"/"nunnix-manga"/"config.json"
         if OS_NAME == "win32":
             config_path = (HOME_PATH/"AppData"/"Local"/"nunnix-manga" /
@@ -34,7 +34,7 @@ class Paths:
     @classmethod
     def get_theme_file_path(cls) -> str:
         """ Returns the theme file path and creates it if it doesn't exist """
-        if OS_NAME == "linux":
+        if OS_NAME == "linux" or OS_NAME == "darwin":
             theme_path = HOME_PATH/".config"/"nunnix-manga"/"theme.json"
         if OS_NAME == "win32":
             theme_path = (HOME_PATH/"AppData"/"Local"/"nunnix-manga" /
@@ -57,7 +57,7 @@ class Paths:
         """ Returns the thumbnails dir path and creates
         it if it doesn't exist
         """
-        if OS_NAME == "linux":
+        if OS_NAME == "linux" or OS_NAME == "darwin":
             path = HOME_PATH/".cache"/"nunnix-manga"/"thumbnails"
         if OS_NAME == "win32":
             path = (HOME_PATH/"AppData"/"Local"/"nunnix-manga"/"cache" /
@@ -71,7 +71,7 @@ class Paths:
     @classmethod
     def get_cache_path(cls) -> str:
         """ Returns the cache dir path and creates it if it doesn't exist """
-        if OS_NAME == "linux":
+        if OS_NAME == "linux" or OS_NAME == "darwin":
             path = HOME_PATH/".cache"/"nunnix-manga"/"manga"
         if OS_NAME == "win32":
             path = HOME_PATH/"AppData"/"Local"/"nunnix-manga"/"cache"/"manga"
@@ -84,7 +84,7 @@ class Paths:
     @classmethod
     def get_mangas_path(cls) -> str:
         """ Returns the mangas dir path and creates it if it doesn't exist """
-        if OS_NAME == "linux":
+        if OS_NAME == "linux" or OS_NAME == "darwin":
             path = HOME_PATH/".local"/"share"/"nunnix-manga"/"manga"
         if OS_NAME == "win32":
             path = HOME_PATH/"AppData"/"Local"/"nunnix-manga"/"manga"
