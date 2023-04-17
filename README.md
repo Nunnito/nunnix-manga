@@ -9,30 +9,31 @@
 
 Nunnix Manga is a free and open-source manga reader written in Python.
 
-This is a early alpha release. Bugs are expected. Currently only works the explorer with MangaDex and ManagaKatana.
+This is an early alpha release. Bugs are expected. Currently only the browser and manga viewer (not the reader) are working.
 
 For futures features, see the [TODO list](#todo-list)
 
 
 ![](https://i.imgur.com/LaUypU3.jpg)
+![](https://i.imgur.com/hkubjYp.png)
 
 
 ## Installation
 ### Using Windows binaries
-- Download the latest release from [here](https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix_Manga_v0.1.1_win64.zip)
+- Download the latest release from [here](https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix_Manga_v0.2.0_win64.zip)
 - Unzip the file
 - Run `Nunnix-Manga.exe` file
 
 ### Using Linux binaries
 ```bash
 # Download the latest release
-curl -OL https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix-Manga_v0.1.1_linux64.AppImage
+curl -OL https://github.com/nunnito/nunnix-manga/releases/latest/download/Nunnix-Manga_v0.2.0_linux64.AppImage
 
 # Give executable permissions
-chmod +x Nunnix-Manga_v0.1.1_linux64.AppImage
+chmod +x Nunnix-Manga_v0.2.0_linux64.AppImage
 
 # Run the application
-./Nunnix-Manga_v0.1.1_linux64.AppImage
+./Nunnix-Manga_v0.2.0_linux64.AppImage
 ```
 
 ### Using Python (3.10+)
@@ -53,12 +54,12 @@ python3 app/main.py
 
 ## TODO list
 - [x] Explorer, this contains the search engine
-- [ ] Data viewer, this contains the manga information
-- [ ] Reader, this contains the manga viewer
+- [x] Data viewer, this contains the manga information
+- [ ] Reader, this contains the manga reader
 - [ ] Library, where you can store your manga
 - [ ] Downloader, where it will download the manga
 - [ ] History, where you can see your history
 - [ ] Settings, where you can change the application settings
 - [ ] Import from local storage
 - [ ] Export to PDF, EPUB and CBZ
-- [ ] Better light theme
+- [ ] Light theme
