@@ -35,7 +35,6 @@ Column {
             text: _data.genres[index]
             leftInset: 0
             rightInset: 0
-            C.CursorShape {cursorShape: Qt.PointingHandCursor}
         }
         header: C.Label {
             width: 0
