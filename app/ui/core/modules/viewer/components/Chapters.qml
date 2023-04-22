@@ -92,4 +92,8 @@ C.ItemDelegate {
         active: false
         source: "ChaptersContextMenu.qml"
     }
+
+    onClicked: {
+        stackView.push("../../reader/ReaderM.qml")
+    }
 }

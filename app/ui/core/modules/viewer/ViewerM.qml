@@ -54,6 +54,7 @@ Item {
 
     Shortcut {
         sequence: "Escape"
+        enabled: stackView.currentItem.name == "viewer"
         onActivated: {
             if (topBar.tbStackView.currentItem.name != "selection") {
                 stackView.pop()
