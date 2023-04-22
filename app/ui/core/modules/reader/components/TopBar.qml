@@ -7,7 +7,26 @@ import "top-bar"
 
 C.TopBar {
     RowLayout {
+        anchors.verticalCenter: parent.verticalCenter
         width: parent.width
         spacing: 0
+
+        RowLayout {
+            Layout.leftMargin: parent.width / 2 - width / 2
+            spacing: 8
+
+            NextPageButton {}
+            CurrentPageLabel {}
+            PreviousPageButton {}
+        }
+        RowLayout {
+            Layout.alignment: Qt.AlignRight
+            Layout.rightMargin: 8
+            spacing: 8
+
+            ZoomOutButton {}
+            SizeComboBox {}
+            ZoomInButton {}
+        }
     }
 }
