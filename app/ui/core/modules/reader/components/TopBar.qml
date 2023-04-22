@@ -15,9 +15,9 @@ C.TopBar {
             Layout.leftMargin: parent.width / 2 - width / 2
             spacing: 8
 
-            NextPageButton {}
-            CurrentPageLabel {}
             PreviousPageButton {}
+            CurrentPageLabel {}
+            NextPageButton {}
         }
         RowLayout {
             Layout.alignment: Qt.AlignRight
